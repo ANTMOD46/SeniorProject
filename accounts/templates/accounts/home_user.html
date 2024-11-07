@@ -1,0 +1,128 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
+</head>
+
+<body class="bg-pink-50">
+
+    <!-- รวม header_logged_in.html -->
+    {% include 'accounts/header_logged_in.html' %}
+
+    <!-- Main Image responsive with Swiper -->
+    <div class="swiper-container mySwiper">
+        <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide">
+                <img src="https://s359.kapook.com/pagebuilder/54ddd684-5b71-43c4-b093-51c7d128e93e.jpg" 
+                     class="rounded-lg w-full object-contain" alt="Image 1">
+            </div>
+            <!-- Slide 2 -->
+            <div class="swiper-slide">
+                <img src="https://s3.ap-southeast-1.amazonaws.com/members.project.cover/ee8604c4-5d22-475f-af67-61dcfab023df/eacbd98c-11f1-4775-b184-19cff7bab344.jpg" 
+                     class="rounded-lg w-full object-contain" alt="Image 2">
+            </div>
+            <!-- Slide 3 -->
+            <div class="swiper-slide">
+                <img src="https://png.pngtree.com/background/20210710/original/pngtree-garbage-classification-green-travel-minimalist-background-picture-image_1062842.jpg" 
+                     class="rounded-lg w-full object-contain" alt="Image 3">
+            </div>
+        </div>
+        <!-- Swiper Pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="bg-pink-50 p-6">
+        <h1 class="text-3xl font-bold text-center text-pink-600 mt-4">Keep the world clean and share</h1>
+        <p class="text-center text-lg text-pink-500 mt-2">รักษาโลกให้สะอาดและแบ่งปัน</p>
+        <!-- ปุ่มต่าง ๆ อยู่ตรงกลางและขนาดใหญ่ขึ้น -->
+        <div class="text-center">
+            <a href="{% url 'separate_waste' %}">
+                <button class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded mx-2">การแยกขยะ</button>
+            </a>
+            <a href="{% url 'sell_item_all' %}">
+                <button class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mx-2">การซื้อ-ขาย</button>
+            </a>
+            <a href="{% url 'donation_all' %}" class="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded mx-2">
+                การบริจาค
+            </a>
+            <a href="{% url 'announcement_all' %}" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded mx-2">
+                การประกาศทั่วไป
+            </a>
+        </div>
+
+        <!-- ข้อความรายละเอียด -->
+        <p class="text-center text-lg text-black mt-2">รู้หรือไม่ การแยกขยะ, การซื้อขายขยะของเก่า, การบริจาคยังไง แล้วได้อะไร</p>
+
+        <!-- ข้อความที่เหลือให้จัดแบบ justify -->
+        <div class="mt-6">
+            <p class="text-base text-black text-justify mx-auto">
+                <strong>การแยกขยะ:</strong> การแยกขยะคือกระบวนการคัดแยกขยะออกเป็นประเภทต่าง ๆ เช่น ขยะทั่วไป ขยะรีไซเคิล ขยะอินทรีย์ และขยะอันตราย ซึ่งจะช่วยให้การจัดการขยะมีประสิทธิภาพมากขึ้น ขยะที่สามารถรีไซเคิลได้จะถูกนำกลับมาใช้ใหม่ในกระบวนการผลิต ลดการใช้ทรัพยากรธรรมชาติและพลังงาน ช่วยลดปริมาณขยะที่ต้องนำไปฝังกลบ ทำให้เกิดความสะอาดและความยั่งยืนในชุมชน
+            </p>
+            <p class="text-base text-black text-justify mx-auto mt-2">
+                <strong>ประโยชน์:</strong> การแยกขยะช่วยลดปริมาณขยะที่ต้องนำไปกำจัด ลดการปล่อยก๊าซเรือนกระจก และยังส่งเสริมการรีไซเคิลที่มีประสิทธิภาพ
+            </p>
+            <p class="text-base text-black text-justify mx-auto mt-2">
+                <strong>ขยะประเภทไหนบ้างที่ควรแยก:</strong> ขยะรีไซเคิล (เช่น ขวดพลาสติก, กระดาษ, แก้ว), ขยะทั่วไป (เช่น ซองขนม), ขยะอินทรีย์ (เศษอาหาร), และขยะอันตราย (เช่น ถ่านไฟฉาย, หลอดไฟ)
+            </p>
+
+            <!-- การซื้อขายขยะของเก่า -->
+            <p class="text-base text-black text-justify mx-auto mt-6">
+                <strong>การซื้อขายขยะของเก่า:</strong> ขยะของเก่าที่สามารถขายได้ เช่น ขวดแก้ว กระดาษ โลหะ และพลาสติก สามารถนำไปขายให้กับร้านรับซื้อของเก่าหรือโรงงานรีไซเคิลได้ ซึ่งนอกจากจะช่วยลดปริมาณขยะแล้ว ยังช่วยสร้างรายได้เสริมให้กับประชาชนหรือธุรกิจบางประเภท
+            </p>
+            <p class="text-base text-black text-justify mx-auto mt-2">
+                <strong>ประโยชน์:</strong> ช่วยลดปริมาณขยะและเพิ่มรายได้จากการขายขยะที่ไม่ใช้แล้ว ขยะที่ขายได้จะถูกนำไปรีไซเคิลและนำกลับมาใช้ในกระบวนการผลิตสินค้าใหม่ ๆ
+            </p>
+            <p class="text-base text-black text-justify mx-auto mt-2">
+                <strong>สิ่งที่ขายได้:</strong> ขวดแก้ว, ขวดพลาสติก, กระดาษ, เหล็ก, อะลูมิเนียม, และเครื่องใช้ไฟฟ้าเก่า เป็นต้น
+            </p>
+
+            <!-- การบริจาค -->
+            <p class="text-base text-black text-justify mx-auto mt-6">
+                <strong>การบริจาค:</strong> การบริจาคของเหลือใช้ที่ยังมีประโยชน์ เช่น เสื้อผ้าเก่า หนังสือ หรือเครื่องใช้ไฟฟ้าที่ไม่ใช้แล้ว สามารถส่งต่อให้กับผู้ที่ต้องการได้ นอกจากจะช่วยลดขยะที่เกิดจากการทิ้งสิ่งของที่ยังใช้ได้แล้ว ยังสามารถช่วยเหลือผู้คนที่ต้องการสิ่งของเหล่านี้
+            </p>
+            <p class="text-base text-black text-justify mx-auto mt-2">
+                <strong>ประโยชน์:</strong> การบริจาคช่วยลดขยะที่ไม่จำเป็น และส่งเสริมให้สิ่งของที่ยังใช้งานได้ถูกส่งต่อไปยังผู้ที่ต้องการ นอกจากนี้ยังสร้างความสุขและประโยชน์ให้กับทั้งผู้ให้และผู้รับ
+            </p>
+            <p class="text-base text-black text-justify mx-auto mt-2">
+                <strong>สิ่งที่บริจาคได้:</strong> เสื้อผ้า, หนังสือ, เครื่องครัว, อุปกรณ์การเรียน, และอุปกรณ์อิเล็กทรอนิกส์เก่า
+            </p>
+        </div>
+
+    </main>
+
+    <!-- JavaScript for Hamburger Dropdown and Swiper -->
+    <script>
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        hamburgerButton.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('show');
+        });
+
+        var swiper = new Swiper('.swiper-container', {
+            loop: true,
+            autoplay: {
+                delay: 3000, 
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    </script>
+
+</body>
+
+</html>

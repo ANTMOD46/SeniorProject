@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Kanit", serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+
+        /* ปรับขนาดของโลโก้ */
+        .logo-img {
+            width: 60px; /* ลดขนาดโลโก้ลง */
+            height: auto;
+        }
+
+        .nav-buttons a {
+            padding: 0.625rem 1.25rem;
+        }
+
+        /* Media queries สำหรับหน้าจอใหญ่ขึ้น */
+        @media (min-width: 768px) {
+            .logo-img {
+                width: 80px; /* เพิ่มขนาดโลโก้ในหน้าจอใหญ่ */
+            }
+            .nav-buttons a {
+                padding: 0.75rem 1.5rem;
+            }
+        }
+    </style>
+    <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
+</head>
+
+<body class="bg-pink-50 overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed w-full bg-white border-b border-pink-200 shadow-lg z-50">
+        <div class="flex items-center justify-between max-w-screen-xl mx-auto px-6 py-2">
+            <div class="flex items-center">
+                <!-- Logo -->
+                <img class="logo-img object-cover rounded-full" src="{% static 'css/dist/Seniorproject/img/logo.png' %}" alt="Logo">
+            </div>
+            <div class="flex items-center space-x-4 nav-buttons">
+                <!-- ปุ่มสมัครสมาชิก -->
+                <a href="{% url 'signup' %}" class="text-white bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-full text-sm text-center">สมัครสมาชิก</a>
+                <!-- ปุ่มเข้าสู่ระบบ -->
+                <a href="{% url 'login' %}" class="text-white bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-full text-sm text-center">เข้าสู่ระบบ</a>
+            </div>
+        </div>
+    </header>
+</body>
+</html>

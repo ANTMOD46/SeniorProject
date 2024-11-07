@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/accounts/login/'  # URL สำหรับหน้า login
+LOGIN_REDIRECT_URL = 'home_user'  # URL ที่จะเปลี่ยนไปหลังจากล็อกอินสำเร็จ
+LOGOUT_REDIRECT_URL = 'login'  # URL ที่จะเปลี่ยนไปหลังจากออกจากระบบ
+
+
 
 # Application definition
 
@@ -37,6 +43,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "tailwind",
+    "theme",
+    "posts",
+    "comments",
+    "accounts",
+    "waste_separation",
 ]
 
 MIDDLEWARE = [
@@ -47,6 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "SeniorProject.urls"
@@ -54,7 +67,8 @@ ROOT_URLCONF = "SeniorProject.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [BASE_DIR / 'theme/templates/SeniorProject'],
+
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -68,17 +82,24 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "SeniorProject.wsgi.application"
+TAILWIND_APP_NAME = 'theme'
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"  # Path to Node.js if you're using Tailwind CSS
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',  # ชื่อฐานข้อมูลที่คุณมีอยู่
+        'USER': 'postgres',     # ชื่อผู้ใช้ PostgreSQL
+        'PASSWORD': 'Modnoii59',  # รหัสผ่านของผู้ใช้
+        'HOST': 'localhost',     # ที่อยู่ของเซิร์ฟเวอร์ฐานข้อมูล
+        'PORT': '5432',          # พอร์ตที่ใช้
     }
 }
+
 
 
 # Password validation
@@ -115,9 +136,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "theme/static"]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = 'accounts.CustomUser'  # เปลี่ยนตามที่คุณสร้างโมเดล CustomUser
+

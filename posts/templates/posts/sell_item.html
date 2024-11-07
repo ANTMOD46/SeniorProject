@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Kanit", serif;
+        }
+        .category-button {
+            background-color: #edf7d6;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .category-button:hover {
+            background-color: #d7f3a9;
+        }
+    </style>
+    <title>ลงประกาศขายสินค้า</title>
+</head>
+<body class="bg-pink-50">
+    {% include 'accounts/header_logged_in.html' %}
+    <main class="p-6">
+        <h1 class="text-4xl font-bold text-center text-pink-600 mb-6">ลงประกาศขายสินค้า</h1>
+        <form action="{% url 'sell_item' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- ฟิลด์ตัวเลือกว่าผู้ใช้เป็นผู้ซื้อหรือผู้ขาย -->
+            <div>
+                <label for="user_role" class="block text-lg font-semibold text-pink-600 mb-1">คุณเป็นผู้ซื้อหรือผู้ขาย*</label>
+                <select id="user_role" name="user_role" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" required>
+                    <option value="" disabled selected>เลือก...</option>
+                    <option value="buyer">ผู้ซื้อ</option>
+                    <option value="seller">ผู้ขาย</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="title" class="block text-lg font-semibold text-pink-600 mb-1">หัวข้อที่คุณต้องการซื้อ-ขาย*</label>
+                <input type="text" id="title" name="title" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="ชื่อสินค้าเช่น ขวดพลาสติก เหล็ก" required>
+            </div>
+
+            <div>
+                <label for="price" class="block text-lg font-semibold text-pink-600 mb-1">ระบุราคาที่เหมาะสม*</label>
+                <input type="text" id="price" name="price" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="ระบุราคาเป็นตัวเลขเช่น 100" required>
+            </div>
+
+            <div>
+                <label for="images" class="block text-lg font-semibold text-pink-600 mb-1">รูปภาพสินค้า*</label>
+                <input type="file" id="images" name="images" class="w-full px-4 py-2 border border-pink-300 rounded-md bg-pink-50" multiple required>
+                <p class="text-sm text-gray-500 mt-1">ใส่ไฟล์สูงสุด 10 ภาพ</p>
+            </div>
+            
+            <div>
+                <label for="description" class="block text-lg font-semibold text-pink-600 mb-1">รายละเอียดสินค้า*</label>
+                <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="ข้อมูลเพิ่มเติมที่ทำให้สินค้าของคุณได้แสดงรายละเอียด" required></textarea>
+            </div>
+
+            <div>
+                <label for="location" class="block text-lg font-semibold text-pink-600 mb-1">ระบุพื้นที่ของสินค้า*</label>
+                <input type="text" id="location" name="location" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
+            </div>
+
+            <div>
+                <label for="phone" class="block text-lg font-semibold text-pink-600 mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
+                <input type="text" id="phone" name="phone" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="เช่น 09xxxxxxxx" required>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-md">ลงประกาศ</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

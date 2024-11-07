@@ -15,8 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
+
+from . import views  # นำเข้า views จากโปรเจกต์หลัก
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("__reload__/", include("django_browser_reload.urls")),
+    path('', views.home, name='home'),  # เส้นทางสำหรับหน้าหลัก
+    path('posts/', include('posts.urls')),  # เส้นทางสำหรับ posts
+    path('comments/', include('comments.urls')),  # ตัวอย่าง comments
+    path('accounts/', include('accounts.urls')),
+    path('waste/', include('waste_separation.urls')),
+    
+    
+    path('recycle/', views.recycle_view, name='recycle'),  # เส้นทางสำหรับขยะรีไซเคิล
+    path('organic/', views.organic_view, name='organic'),  # เส้นทางสำหรับขยะเปียก
+    path('general/', views.general_view, name='general'),  # เส้นทางสำหรับขยะทั่วไป
+    path('hazardous/', views.hazardous_view, name='hazardous'),  # เส้นทางสำหรับขยะอันตราย
+    
+
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+

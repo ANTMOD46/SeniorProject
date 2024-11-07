@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Kanit", serif;
+        }
+
+        .category-button {
+            background-color: #edf7d6;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-button:hover {
+            background-color: #d7f3a9;
+        }
+
+        .category-arrow {
+            font-size: 1.5rem;
+            color: #f06565;
+        }
+
+        .disabled-button {
+            pointer-events: none; /* ปิดการใช้งานคลิก */
+            opacity: 0.6; /* ทำให้ดูจาง ๆ เพื่อบอกว่าคลิกไม่ได้ */
+        }
+    </style>
+    <title>ลงประกาศใหม่</title>
+</head>
+
+<body class="bg-pink-50">
+
+    <!-- ใช้ include เพื่อดึง header จากไฟล์ header_logged_in.html -->
+    {% include 'accounts/header_logged_in.html' %}
+    
+    <!-- Main Content -->
+    <main class="p-6">
+        <h1 class="text-3xl text-center font-bold text-pink-600 mb-4">ลงประกาศใหม่</h1>
+        <p class="text-center text-gray-600 mb-8">เลือกหมวดหมู่</p>
+
+        <!-- Category Buttons -->
+        <div class="space-y-4">
+            <a href="{% url 'sell_item' %}" class="category-button">ซื้อขายขยะ/ของเก่า</a> <!-- ปุ่มที่คลิกได้ -->
+
+            <div class="category-button disabled-button">การบริจาค
+                <span class="category-arrow">></span>
+            </div>
+            <div class="category-button disabled-button">การประกาศทั่วไป
+                <span class="category-arrow">></span>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Connection",
+            "database": "Moddatabase",
+            "username": "ANTMOD"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "mydatabase",
+            "database": "mydatabase",
+            "username": "postgres"
+        }
+    ]
+}
