@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <title>หน้าร้านของ {{ user_profile.username }}</title>
+    <style>
+        * {
+            font-family: "Kanit", sans-serif;
+        }
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+        .filter-button {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+        .filter-button:hover {
+            background-color: #e5e7eb;
+        }
+        .filter-button.active {
+            background-color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-pink-600">หน้าร้านของ {{ user_profile.username }}</h1>
+            <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url }}{% else %}{% static 'css/dist/Seniorproject/img/default-profile.png' %}{% endif %}" alt="Profile Image" class="profile-img">
+            <p class="mt-2 text-gray-600">ชื่อผู้ใช้: {{ user_profile.username }}</p>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex justify-center mt-6">
+            <button class="filter-button active" data-filter="all">ทั้งหมด</button>
+            <button class="filter-button" data-filter="GeneralAnnouncement">การประกาศทั่วไป</button>
+            <button class="filter-button" data-filter="SellItem">การซื้อขาย</button>
+            <button class="filter-button" data-filter="Donation">การบริจาค</button>
+        </div>
+
+        <!-- Posts Section -->
+        <h2 class="text-2xl font-semibold mt-6">การประกาศทั้งหมด</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {% for post in posts %}
+                <div class="p-4 bg-gray-50 rounded-lg shadow-md post-item" data-type="{{ post.model_name }}">
+                    <!-- แสดงภาพโพสต์ -->
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="ภาพโพสต์" class="w-full h-40 object-cover rounded-md mb-2">
+                    {% else %}
+                        <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="w-full h-40 object-cover rounded-md mb-2">
+                    {% endif %}
+        
+                    <!-- แสดงชื่อเรื่องโพสต์ -->
+                    {% if post.title %}
+                        <h3 class="text-xl font-bold">{{ post.title }}</h3>
+                    {% else %}
+                        <h3 class="text-xl font-bold">{{ post.recipient }}</h3> <!-- สำหรับ Donation -->
+                    {% endif %}
+        
+                    <!-- แสดงวันที่โพสต์ -->
+                    <p class="text-gray-500 text-sm">
+                        โพสต์เมื่อ: {{ post.created_at|date:"d F Y, H:i" }}
+                    </p>
+        
+                    <!-- แสดงเนื้อหาย่อ -->
+                    <p class="text-gray-600">{{ post.content|truncatewords:15 }}</p>
+        
+                    <!-- ลิงก์ดูเพิ่มเติม -->
+                    <a href="{% if post.model_name == 'GeneralAnnouncement' %}
+                                {% url 'general_announcement_detail' post.id %}
+                             {% elif post.model_name == 'SellItem' %}
+                                {% url 'sell_item_details' post.id %}
+                             {% else %}
+                                {% url 'donation_details' post.id %}
+                             {% endif %}" 
+                       class="text-blue-500 hover:underline">ดูเพิ่มเติม</a>
+                </div>
+            {% empty %}
+                <p class="text-gray-500">ไม่มีประกาศในขณะนี้</p>
+            {% endfor %}
+        </div>
+        
+
+    <script>
+        // JavaScript สำหรับการกรองโพสต์
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.getAttribute('data-filter');
+                document.querySelectorAll('.post-item').forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-type') === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

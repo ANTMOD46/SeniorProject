@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <title>แก้ไขประกาศ</title>
+    <style>
+        * {
+            font-family: "Kanit", serif;
+        }
+    </style>
+</head>
+
+<body class="bg-pink-50">
+    {% include 'accounts/header_logged_in.html' %}
+
+    <main class="max-w-lg mx-auto p-4 mt-10 bg-white shadow-lg rounded-lg">
+        <h1 class="text-3xl font-bold text-pink-600 mb-6 text-center">แก้ไขประกาศ</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <!-- ฟิลด์สำหรับหัวข้อการประกาศ -->
+            <div class="mb-6">
+                <label for="title" class="block text-lg font-semibold text-gray-700 mb-2">หัวข้อการประกาศ</label>
+                <input type="text" name="title" value="{{ form.title.value }}" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
+                {{ form.title.errors }}
+            </div>
+
+            <!-- ฟิลด์สำหรับเนื้อหาของประกาศ -->
+            <div class="mb-6">
+                <label for="content" class="block text-lg font-semibold text-gray-700 mb-2">รายละเอียดประกาศ</label>
+                <textarea name="content" rows="4" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">{{ form.content.value }}</textarea>
+                {{ form.content.errors }}
+            </div>
+
+            <!-- ฟิลด์สำหรับสถานที่ -->
+            <div class="mb-6">
+                <label for="location" class="block text-lg font-semibold text-gray-700 mb-2">สถานที่</label>
+                <input type="text" name="location" value="{{ form.location.value }}" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
+                {{ form.location.errors }}
+            </div>
+
+            <!-- ฟิลด์สำหรับรูปภาพ -->
+            <div class="mb-6">
+                <label for="image" class="block text-lg font-semibold text-gray-700 mb-2">รูปภาพ</label>
+                <input type="file" name="image" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
+                {% if announcement.image %}
+                    <img src="{{ announcement.image.url }}" alt="ประกาศ" class="w-full h-48 object-cover mt-2">
+                {% endif %}
+                {{ form.image.errors }}
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-md">บันทึกการแก้ไข</button>
+            </div>
+        </form>
+    </main>
+</body>
+
+</html>

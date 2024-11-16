@@ -33,6 +33,14 @@ LOGIN_REDIRECT_URL = 'home_user'  # URL ที่จะเปลี่ยนไ�
 LOGOUT_REDIRECT_URL = 'login'  # URL ที่จะเปลี่ยนไปหลังจากออกจากระบบ
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # หรือใช้บริการ SMTP ของคุณ
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'juntarisil55@gmail.com'  # ใส่อีเมลของคุณ
+EMAIL_HOST_PASSWORD = 'sywswjuxfliphcra'  # รหัสผ่านของอีเมลคุณ
+
+
 
 # Application definition
 
@@ -66,20 +74,20 @@ ROOT_URLCONF = "SeniorProject.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [BASE_DIR / 'theme/templates/SeniorProject'],
-
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],  # ตรวจสอบว่ามี 'templates' ใน DIRS
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = "SeniorProject.wsgi.application"
 TAILWIND_APP_NAME = 'theme'

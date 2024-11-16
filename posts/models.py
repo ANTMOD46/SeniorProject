@@ -14,6 +14,7 @@ class SellItem(models.Model):
     phone = models.CharField(max_length=15)  # ฟิลด์เบอร์โทรศัพท์
     image = models.ImageField(upload_to='sell_items/')
     created_at = models.DateTimeField(auto_now_add=True)  # เพิ่มวันที่ประกาศ
+    updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_closed = models.BooleanField(default=False)  # ฟิลด์เพื่อบันทึกว่าสินค้าปิดการขายแล้วหรือยัง
     
@@ -23,12 +24,6 @@ class SellItem(models.Model):
 
 
 
-class SellItemImage(models.Model):
-    item = models.ForeignKey(SellItem, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='sell_items/')
-
-    def __str__(self):
-        return f"Image for {self.item.title}"
     
     
 
@@ -53,14 +48,7 @@ class Donation(models.Model):
 
 
 
-class DonationImage(models.Model):
-    donation = models.ForeignKey(Donation, related_name='images', on_delete=models.CASCADE)  # เชื่อมโยงกับการบริจาค
-    image = models.ImageField(upload_to='donations/')  # รูปภาพการบริจาค
 
-    def __str__(self):
-        return f"Image for {self.donation.title}"  # แสดงชื่อการบริจาคที่มีรูปภาพ
-
-from django.conf import settings
 
 class GeneralAnnouncement(models.Model):
     title = models.CharField(max_length=255)

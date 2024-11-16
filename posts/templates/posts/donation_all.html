@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>รายการโพสต์ทั้งหมด</title>
+</head>
+<body class="bg-gray-100">
+
+<div class="container mx-auto py-8">
+    <h1 class="text-2xl font-bold mb-4">รายการโพสต์ทั้งหมด</h1>
+
+    <!-- ฟอร์มกรองข้อมูล -->
+    <form method="get" class="mb-6 flex space-x-4">
+        <select name="role" class="p-2 border rounded">
+            <option value="">-- ทุกบทบาท --</option>
+            <option value="donor" {% if selected_role == 'donor' %}selected{% endif %}>ผู้บริจาค</option>
+            <option value="recipient" {% if selected_role == 'recipient' %}selected{% endif %}>ผู้รับบริจาค</option>
+        </select>
+
+        <select name="status" class="p-2 border rounded">
+            <option value="">-- ทุกสถานะ --</option>
+            <option value="open" {% if selected_status == 'open' %}selected{% endif %}>เปิดการบริจาค</option>
+            <option value="closed" {% if selected_status == 'closed' %}selected{% endif %}>ปิดการบริจาค</option>
+        </select>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">กรอง</button>
+    </form>
+
+    <!-- แสดงรายการโพสต์ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for donation in donations %}
+        <div class="bg-white p-4 shadow rounded">
+            <img src="{{ donation.image.url }}" alt="{{ donation.title }}" class="w-full h-48 object-cover rounded">
+            <h2 class="text-lg font-bold mt-2">{{ donation.title }}</h2>
+            <p class="text-gray-500">{{ donation.description|truncatewords:10 }}</p>
+            <p class="text-gray-600">
+                <span class="font-semibold">บทบาท:</span> {{ donation.role|title }}
+            </p>
+            <p class="text-gray-600">
+                <span class="font-semibold">สถานะ:</span> 
+                {% if donation.is_closed %}
+                    <span class="text-red-500">ปิดการบริจาค</span>
+                {% else %}
+                    <span class="text-green-500">เปิดการบริจาค</span>
+                {% endif %}
+            </p>
+            <a href="{% url 'donation_details' pk=donation.id %}" class="block mt-4 text-blue-500">ดูรายละเอียด</a>
+        </div>
+        {% empty %}
+        <p class="col-span-full text-center text-gray-500">ไม่มีโพสต์ที่ตรงกับเงื่อนไข</p>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

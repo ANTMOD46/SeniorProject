@@ -23,6 +23,7 @@
             font-size: 1.2rem;
             color: #333;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-decoration: none; /* ลบขีดเส้นใต้ของลิงก์ */
         }
 
         .category-button:hover {
@@ -56,12 +57,13 @@
         <div class="space-y-4">
             <a href="{% url 'sell_item' %}" class="category-button">ซื้อขายขยะ/ของเก่า</a> <!-- ปุ่มที่คลิกได้ -->
 
-            <div class="category-button disabled-button">การบริจาค
+            <a href="{% url 'donation_form' %}" class="category-button">การบริจาค
                 <span class="category-arrow">></span>
-            </div>
-            <div class="category-button disabled-button">การประกาศทั่วไป
+            </a>
+
+            <a href="{% url 'general_announcement' %}" class="category-button">การประกาศทั่วไป <!-- ปุ่มการประกาศทั่วไปคลิกได้ -->
                 <span class="category-arrow">></span>
-            </div>
+            </a>
         </div>
     </main>
 </body>

@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from . import views  # ใช้ views จากแอป accounts
 from .views import signup, login_view, home_user
 from .views import profile_edit
+from .views import CustomLogoutView
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),  # Login
@@ -16,4 +17,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),  # URL สำหรับล็อกอิน
     path('home_user/', home_user, name='home_user'),  # URL สำหรับหน้า home_user
     path('profile/edit/', profile_edit, name='profile_edit'),  
+    path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),
+    path('profile/', views.profile_view, name='profile'),
 ]

@@ -1,0 +1,9 @@
+{% block content %}
+<h2>ยืนยันการลบโพสต์</h2>
+<p>คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์ <strong>{{ object.title }}</strong>?</p>
+
+<form method="post">{% csrf_token %}
+    <button type="submit" class="bg-red-500 text-white px-4 py-2">ยืนยัน</button>
+    <a href="{% url 'sell_item_details' object.id %}" class="bg-gray-500 text-white px-4 py-2">ยกเลิก</a>
+</form>
+{% endblock %}

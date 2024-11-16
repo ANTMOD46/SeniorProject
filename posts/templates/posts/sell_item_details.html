@@ -13,7 +13,6 @@
             font-family: "Kanit", serif;
         }
 
-        /* Menu styles */
         .menu {
             display: none;
             position: absolute;
@@ -43,7 +42,6 @@
             background-color: #f0f0f0;
         }
 
-        /* Toggle button styles */
         #menuToggle {
             background: transparent;
             border: none;
@@ -56,10 +54,6 @@
             align-items: center;
         }
 
-        #menuToggle:hover {
-            color: #4a4a4a;
-        }
-
         .action-menu-container {
             position: absolute;
             top: 10px;
@@ -67,7 +61,6 @@
             z-index: 100;
         }
 
-        /* Transition for menu */
         .menu.show {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
@@ -84,7 +77,6 @@
             }
         }
 
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -114,7 +106,6 @@
 </head>
 
 <body class="bg-pink-50">
-    <!-- รวม header_logged_in.html -->
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="max-w-lg mx-auto p-4 mt-10 bg-white shadow-lg rounded-lg relative">
@@ -126,7 +117,14 @@
             {% endif %}
         </div>
 
-        <!-- เพิ่มส่วนแสดงวันที่โพสต์ -->
+        <p class="text-sm font-semibold">
+            {% if is_seller %}
+                <span class="text-green-500">คุณเป็นผู้ขาย</span>
+            {% else %}
+                <span class="text-blue-500">คุณเป็นผู้รับซื้อ</span>
+            {% endif %}
+        </p>
+
         <p class="text-gray-500 mb-2">
             <i class="fas fa-calendar-alt"></i>
             {{ post_ad.created_at|date:"d F Y, H:i a" }}
@@ -135,53 +133,34 @@
         <h1 class="text-3xl font-bold text-pink-600 mb-2">{{ post_ad.title }}</h1>
         <p class="text-red-500 text-2xl font-bold mb-4">฿ {{ post_ad.price }}</p>
 
-        <div class="flex justify-center items-center mb-2 space-x-4">
-            <p class="text-gray-800">โพสต์โดย <span class="text-blue-600 font-semibold">{{ post_ad.user.username }}</span></p>
+        <div class="flex justify-center items-center mb-4 space-x-4">
+            <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ post_ad.user.username }}</span></p>
             <div class="flex items-center space-x-2">
                 <i class="fas fa-store"></i>
-                <span class="non-clickable-button">ดูประกาศทั้งหมด</span>
+                <a href="{% url 'user_store' post_ad.user.username %}" class="text-blue-500 hover:underline">ดูประกาศทั้งหมด</a>
             </div>
         </div>
+        
 
-        <!-- เพิ่มปุ่มแชทและโทรที่นี่ -->
-        <div class="flex justify-center space-x-8 mt-2">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
-                แชท
-            </button>
-            <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
-                โทร
-            </button>
+        <div class="flex justify-center space-x-8 mt-2 mb-4">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">แชท</button>
+            <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">โทร</button>
         </div>
 
-        <p class="text-gray-600 mb-4">รายละเอียด: {{ post_ad.description }}</p>
-        <p class="text-gray-600 mb-4">สถานที่: {{ post_ad.location }}</p>
-        <p class="text-gray-600 mb-4">เบอร์โทร: {{ post_ad.phone }}</p>
+        <p class="text-gray-600 mb-4"><strong>รายละเอียด:</strong> {{ post_ad.description }}</p>
+        <p class="text-gray-600 mb-4"><strong>สถานที่:</strong> {{ post_ad.location }}</p>
+        <p class="text-gray-600 mb-4"><strong>เบอร์โทร:</strong> {{ post_ad.phone }}</p>
 
-        <!-- ปุ่มเปิดป็อปอัปสำหรับลบโพสต์ -->
         {% if can_edit %}
         <div class="action-menu-container">
-            <button id="menuToggle" class="hover:text-gray-600">
-                ⋮
-            </button>
+            <button id="menuToggle" class="hover:text-gray-600">⋮</button>
             <div id="actionMenu" class="menu z-10">
-                <a href="{% url 'edit_item' post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
-                <a href="{% url 'delete_item' post_ad.id %}" class="menu-item text-red-500">ลบโพสต์</a>
-
+                <a href="{% url 'update_item' item_id=post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
+                <button class="menu-item text-red-500" id="deletePostButton">ลบโพสต์</button>
+                <button class="menu-item text-green-500" id="closeSaleButton">ปิดการขาย</button>
             </div>
         </div>
         {% endif %}
-
-        <!-- ป็อปอัปยืนยันการลบโพสต์ -->
-        <div id="deletePostModal" class="modal">
-            <div class="modal-content">
-                <p class="text-lg font-bold mb-4">คุณต้องการลบโพสต์นี้หรือไม่?</p>
-                <a href="{% url 'edit_item' post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
-            <form action="{% url 'delete_item' post_ad.id %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="bg-red-500 text-white">ลบโพสต์</button>
-            </form>
-            </div>
-        </div>
 
         <h2 class="text-xl font-bold text-pink-600 mt-6">ความคิดเห็น</h2>
         <div class="mb-4">
@@ -189,51 +168,54 @@
                 <div class="border-b py-2">
                     <p class="font-semibold">{{ comment.user.username }}</p>
                     <p class="text-gray-600">{{ comment.content }}</p>
-                    <p class="text-gray-400 text-sm">{{ comment.created_at }}</p>
+                    <p class="text-gray-400 text-sm">{{ comment.created_at|date:"d F Y, H:i a" }}</p>
                 </div>
             {% empty %}
                 <p class="text-gray-500">ยังไม่มีความคิดเห็น</p>
             {% endfor %}
         </div>
-
-        <form action="{% url 'sell_item_details' post_ad.id %}" method="POST" class="mb-6">
-            {% csrf_token %}
-            <textarea name="content" rows="3" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="เพิ่มความคิดเห็นของคุณที่นี่" required></textarea>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mt-2"> แสดงความคิดเห็น </button>
-        </form>
     </main>
 
     <script>
-        // JavaScript to toggle the action menu visibility
         const menuToggle = document.getElementById('menuToggle');
         const actionMenu = document.getElementById('actionMenu');
         const deletePostButton = document.getElementById('deletePostButton');
         const deletePostModal = document.getElementById('deletePostModal');
         const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+        const closeSaleButton = document.getElementById('closeSaleButton');
+        const closeSaleModal = document.getElementById('closeSaleModal');
+        const cancelCloseSaleButton = document.getElementById('cancelCloseSaleButton');
 
         if (menuToggle && actionMenu) {
             menuToggle.addEventListener('click', function(event) {
-                event.stopPropagation(); // ป้องกันการคลิกออกไปยังเอกสารหลัก
-                actionMenu.classList.toggle('show'); // Toggle the "show" class to display or hide the menu
+                event.stopPropagation();
+                actionMenu.classList.toggle('show');
             });
 
-            // Close the menu if clicked outside
             document.addEventListener('click', function(event) {
                 if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
-                    actionMenu.classList.remove('show'); // ซ่อนเมนูถ้าคลิกภายนอก
+                    actionMenu.classList.remove('show');
                 }
             });
         }
 
-        // เปิดป็อปอัปเมื่อคลิกปุ่ม "ลบโพสต์"
         if (deletePostButton && deletePostModal && cancelDeleteButton) {
             deletePostButton.addEventListener('click', function () {
-                deletePostModal.classList.add('show-modal'); // เพิ่มคลาสเพื่อแสดงป็อปอัป
+                deletePostModal.classList.add('show-modal');
             });
 
-            // ปิดป็อปอัปเมื่อคลิกปุ่ม "ยกเลิก"
             cancelDeleteButton.addEventListener('click', function () {
-                deletePostModal.classList.remove('show-modal'); // ลบคลาสเพื่อซ่อนป็อปอัป
+                deletePostModal.classList.remove('show-modal');
+            });
+        }
+
+        if (closeSaleButton && closeSaleModal && cancelCloseSaleButton) {
+            closeSaleButton.addEventListener('click', function () {
+                closeSaleModal.classList.add('show-modal');
+            });
+
+            cancelCloseSaleButton.addEventListener('click', function () {
+                closeSaleModal.classList.remove('show-modal');
             });
         }
     </script>

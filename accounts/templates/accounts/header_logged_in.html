@@ -73,15 +73,24 @@
                         </svg>
                     </button>
                     <!-- Dropdown Menu -->
-                    <div id="dropdownMenu" class="dropdown-menu absolute text-gray-700 pt-2 right-0 bg-white rounded-md shadow-lg w-48 z-50">
-                        <a href="{% url 'home_user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าแรก</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูการแยกขยะ</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">เพิ่มการแยกขยะ</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าร้านของฉัน</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a>
-                        <a href="{% url 'profile_edit' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูและแก้ไขข้อมูลส่วนตัว</a>
-                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ออกจากระบบ</a>
-                    </div>
+                   <!-- Dropdown Menu -->
+                <div id="dropdownMenu" class="dropdown-menu absolute text-gray-700 pt-2 right-0 bg-white rounded-md shadow-lg w-48 z-50">
+                    <a href="{% url 'home_user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าแรก</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูการแยกขยะ</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">เพิ่มการแยกขยะ</a>
+                    <a href="{% url 'user_store' request.user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าร้านของฉัน</a>
+
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a>
+                    <a href="{% url 'profile_edit' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูและแก้ไขข้อมูลส่วนตัว</a>
+                    
+                    <!-- ใช้ฟอร์มสำหรับ logout -->
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">
+                            ออกจากระบบ
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>
