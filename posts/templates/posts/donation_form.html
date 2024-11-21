@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,71 +11,96 @@
         * {
             font-family: "Kanit", serif;
         }
-        .category-button {
-            background-color: #edf7d6;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.2rem;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .form-container {
+            background-color: #ffffff; /* พื้นหลังสีขาว */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .category-button:hover {
-            background-color: #d7f3a9;
+
+        .form-label {
+            color: #1e40af; /* สีฟ้าสำหรับข้อความ */
+        }
+
+        .form-input {
+            border: 1px solid #93c5fd; /* สีฟ้าสำหรับเส้นขอบ */
+            background-color: #f0f9ff; /* สีฟ้าจาง */
+            transition: all 0.3s ease-in-out;
+        }
+
+        .form-input:focus {
+            border-color: #2563eb; /* ขอบสีฟ้าเข้มเมื่อโฟกัส */
+            outline: none;
+            box-shadow: 0 0 4px rgba(37, 99, 235, 0.5);
+        }
+
+        .submit-button {
+            background-color: #2563eb; /* ปุ่มสีฟ้าเข้ม */
+            color: white;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .submit-button:hover {
+            background-color: #1d4ed8; /* สีฟ้าเข้มขึ้นเมื่อ hover */
         }
     </style>
     <title>ลงประกาศการบริจาค</title>
 </head>
-<body class="bg-pink-50">
+
+<body class="bg-gray-100">
     {% include 'accounts/header_logged_in.html' %}
-    <main class="p-6">
-        <h1 class="text-4xl font-bold text-center text-pink-600 mb-6">ลงประกาศการบริจาค</h1>
-        <form action="{% url 'donation_form' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
-            {% csrf_token %}
 
-            <!-- ฟิลด์ตัวเลือกประเภทผู้บริจาคหรือผู้รับบริจาค -->
-            <div>
-                <label for="role" class="block text-lg font-semibold text-pink-600 mb-1">ประเภทผู้ใช้*</label>
-                <select id="role" name="role" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" required>
-                    <option value="" disabled selected>เลือก...</option>
-                    <option value="donor">ผู้บริจาค</option>
-                    <option value="recipient">ผู้รับบริจาค</option>
-                </select>
-            </div>
+    <main class="max-w-4xl mx-auto p-6 mt-10">
+        <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">ลงประกาศการบริจาค</h1>
 
-            <div>
-                <label for="title" class="block text-lg font-semibold text-pink-600 mb-1">หัวข้อการบริจาค*</label>
-                <input type="text" id="title" name="title" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="ชื่อการบริจาค เช่น เสื้อผ้า หนังสือ" required>
-            </div>
+        <div class="form-container">
+            <form action="{% url 'donation_form' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <div>
-                <label for="description" class="block text-lg font-semibold text-pink-600 mb-1">รายละเอียดการบริจาค*</label>
-                <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="รายละเอียดเพิ่มเติม" required></textarea>
-            </div>
+                <!-- ฟิลด์ตัวเลือกประเภทผู้บริจาคหรือผู้รับบริจาค -->
+                <div>
+                    <label for="role" class="form-label block text-lg font-semibold mb-1">ประเภทผู้ใช้*</label>
+                    <select id="role" name="role" class="form-input w-full px-4 py-2 rounded-md" required>
+                        <option value="" disabled selected>เลือก...</option>
+                        <option value="donor">ผู้บริจาค</option>
+                        <option value="recipient">ผู้รับบริจาค</option>
+                    </select>
+                </div>
 
-            <div>
-                <label for="location" class="block text-lg font-semibold text-pink-600 mb-1">สถานที่*</label>
-                <input type="text" id="location" name="location" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="ที่อยู่ จังหวัด อำเภอ" required>
-            </div>
+                <div>
+                    <label for="title" class="form-label block text-lg font-semibold mb-1">หัวข้อการบริจาค*</label>
+                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-2 rounded-md" placeholder="ชื่อการบริจาค เช่น เสื้อผ้า หนังสือ" required>
+                </div>
 
-            <div>
-                <label for="phone" class="block text-lg font-semibold text-pink-600 mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
-                <input type="text" id="phone" name="phone" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="เช่น 09xxxxxxxx" required>
-            </div>
+                <div>
+                    <label for="description" class="form-label block text-lg font-semibold mb-1">รายละเอียดการบริจาค*</label>
+                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-2 rounded-md" placeholder="รายละเอียดเพิ่มเติม" required></textarea>
+                </div>
 
-            <div>
-                <label for="image" class="block text-lg font-semibold text-pink-600 mb-1">รูปภาพ*</label>
-                <input type="file" id="image" name="image" class="w-full px-4 py-2 border border-pink-300 rounded-md bg-pink-50" required>
-                <p class="text-sm text-gray-500 mt-1">รองรับไฟล์ภาพ เช่น JPG, PNG</p>
-            </div>
+                <div>
+                    <label for="location" class="form-label block text-lg font-semibold mb-1">สถานที่*</label>
+                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-2 rounded-md" placeholder="ที่อยู่ จังหวัด อำเภอ" required>
+                </div>
 
-            <div class="text-center">
-                <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-md">ลงประกาศ</button>
-            </div>
-        </form>
+                <div>
+                    <label for="phone" class="form-label block text-lg font-semibold mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
+                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-2 rounded-md" placeholder="เช่น 09xxxxxxxx" required>
+                </div>
+
+                <div>
+                    <label for="image" class="form-label block text-lg font-semibold mb-1">รูปภาพ*</label>
+                    <input type="file" id="image" name="image" class="form-input w-full px-4 py-2 rounded-md" required>
+                    <p class="text-sm text-gray-500 mt-1">เพิ่มรูปภาพ</p>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="submit-button font-bold py-2 px-8 rounded-md">ลงประกาศ</button>
+                    <a href="{% url 'post_ad' %}" class="cancel-link ml-4">ยกเลิก</a>
+                </div>
+            </form>
+        </div>
     </main>
 </body>
+
 </html>

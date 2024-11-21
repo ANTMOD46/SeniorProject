@@ -37,7 +37,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import DeleteView
 from .models import GeneralAnnouncement
 
-from .models import GeneralAnnouncement
+from .models import GeneralAnnouncement,Comment
 from django.views.generic.edit import DeleteView
 from .models import GeneralAnnouncement
 from django.views.generic import ListView
@@ -207,11 +207,11 @@ class DonationDetailView(LoginRequiredMixin, DetailView):
     model = Donation
     template_name = 'posts/donation_details.html'
 
+    # ไม่จำเป็นต้องปรับ context หากไม่ต้องเพิ่มข้อมูลเพิ่มเติม
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user  # เพิ่ม context ให้ HTML
+        context['donation'] = self.object  # ส่ง object เป็น 'donation'
         return context
-    
 class DonationUpdateView(UpdateView):
     model = Donation
     fields = ['title', 'description', 'location', 'phone', 'image']
@@ -348,3 +348,29 @@ class UserStoreView(ListView):
         context = super().get_context_data(**kwargs)
         context['user_profile'] = get_object_or_404(User, username=self.kwargs['username'])
         return context
+
+
+@login_required
+def add_comment(request, pk):
+    post = get_object_or_404(GeneralAnnouncement, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user  # กำหนดเจ้าของความคิดเห็น
+            comment.save()
+            return redirect('general_announcement_detail', pk=pk)
+    else:
+        form = CommentForm()
+    return redirect('general_announcement_detail', pk=pk)
+
+
+
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user == comment.user or request.user == comment.post.user:  # เจ้าของความคิดเห็นหรือเจ้าของโพสต์
+        comment.delete()
+    return redirect('general_announcement_detail', pk=comment.post.pk)

@@ -14,6 +14,7 @@ from .views import GeneralAnnouncementUpdateView
 from .views import GeneralAnnouncementDeleteView
 from .views import GeneralAnnouncementListView
 from .views import UserStoreView
+from .views import add_comment, delete_comment
 
 urlpatterns = [
     path('', views.home, name='posts-home'),  # หรือชื่อ view ที่มีอยู่
@@ -50,6 +51,8 @@ urlpatterns = [
     path('user/<str:username>/', views.UserStoreView.as_view(), name='user_store'),  # เพิ่มเส้นทางสำหรับหน้าร้านของ user
      path('user/<str:username>/', UserStoreView.as_view(), name='user_store'),
    
+    path('comment/add/<int:pk>/', add_comment, name='add_comment'),
+    path('comment/delete/<int:pk>/', delete_comment, name='delete_comment'),
     
 ]
 

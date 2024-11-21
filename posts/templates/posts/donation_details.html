@@ -139,6 +139,24 @@
             background-color: #e53935;
         }
 
+        .modal {
+            display: none; /* ซ่อน Modal โดยค่าเริ่มต้น */
+        }
+        
+        .modal.show-modal {
+            display: flex; /* แสดง Modal เมื่อมีคลาส show-modal */
+        }
+        .modal {
+            display: none; /* ซ่อน Modal โดยค่าเริ่มต้น */
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show-modal {
+            display: flex; /* แสดง Modal เมื่อมีคลาส show-modal */
+        }
+        
+
     </style>
     <title>รายละเอียดการบริจาค</title>
 </head>
@@ -187,8 +205,23 @@
         
 
         <div class="flex justify-center space-x-8 mt-4 mb-4">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">แชท</button>
-            <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">โทร</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
+                แชท
+            </button>
+            <button id="showPhoneButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
+                โทร
+            </button>
+        </div>
+
+        <!-- Modal สำหรับแสดงเบอร์โทร -->
+        <div id="phoneModal" class="modal">
+            <div class="modal-content">
+                <h2 class="text-xl font-bold text-gray-700 mb-4">เบอร์โทรศัพท์</h2>
+                <p class="text-lg text-gray-600">{{ donation.phone }}</p>
+                <button id="closePhoneModal" class="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-md">
+                    ปิด
+                </button>
+            </div>
         </div>
 
         <p class="text-gray-600 mb-4 donation-details">รายละเอียด: {{ donation.description }}</p>
@@ -233,30 +266,55 @@
 
     <script>
         const menuToggle = document.getElementById('menuToggle');
+        const showPhoneButton = document.getElementById('showPhoneButton');
+        const phoneModal = document.getElementById('phoneModal');
+        const closePhoneModal = document.getElementById('closePhoneModal');
         const actionMenu = document.getElementById('actionMenu');
         const deleteButton = document.getElementById('deleteButton');
         const deleteModal = document.getElementById('deleteModal');
         const cancelDelete = document.getElementById('cancelDelete');
-
+    
+        // Toggle action menu
         menuToggle.addEventListener('click', function(event) {
             event.stopPropagation();
             actionMenu.style.display = actionMenu.style.display === 'block' ? 'none' : 'block';
         });
-
+    
+        // Show delete modal
         deleteButton.addEventListener('click', function() {
             deleteModal.classList.add('show-modal');
         });
-
+    
+        // Cancel delete modal
         cancelDelete.addEventListener('click', function() {
             deleteModal.classList.remove('show-modal');
         });
-
+    
+        // Close action menu when clicking outside
         document.addEventListener('click', function(event) {
             if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
                 actionMenu.style.display = 'none';
             }
         });
+    
+        // Show phone modal
+        showPhoneButton.addEventListener('click', function() {
+            phoneModal.classList.add('show-modal');
+        });
+    
+        // Close phone modal
+        closePhoneModal.addEventListener('click', function() {
+            phoneModal.classList.remove('show-modal');
+        });
+    
+        // Close phone modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === phoneModal) {
+                phoneModal.classList.remove('show-modal');
+            }
+        });
     </script>
+    
 </body>
 
 </html>

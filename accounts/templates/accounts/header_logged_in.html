@@ -1,4 +1,4 @@
-{% load static %} 
+{% load static %}
 <!DOCTYPE html>
 <html lang="th">
 
@@ -18,10 +18,10 @@
         }
 
         .profile-img {
-            width: 40px;  /* ขนาดของภาพโปรไฟล์ */
+            width: 40px;
             height: 40px;
-            border-radius: 50%; /* ทำให้ภาพกลม */
-            object-fit: cover; /* ปรับภาพให้พอดีกับขนาด */
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .dropdown-menu {
@@ -31,9 +31,10 @@
             background-color: white;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            z-index: 1000;
         }
 
-        .show {
+        .dropdown-menu.show {
             display: block;
         }
     </style>
@@ -52,7 +53,6 @@
             <div class="flex items-center space-x-6 ml-auto">
                 <!-- Profile Image -->
                 <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'css/dist/Seniorproject/img/default-profile.png' %}{% endif %}" alt="Profile Image" class="profile-img">
-  <!-- เพิ่มภาพโปรไฟล์ที่นี่ -->
 
                 <!-- User Name -->
                 <div class="flex items-center space-x-4">
@@ -73,27 +73,45 @@
                         </svg>
                     </button>
                     <!-- Dropdown Menu -->
-                   <!-- Dropdown Menu -->
-                <div id="dropdownMenu" class="dropdown-menu absolute text-gray-700 pt-2 right-0 bg-white rounded-md shadow-lg w-48 z-50">
-                    <a href="{% url 'home_user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าแรก</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูการแยกขยะ</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">เพิ่มการแยกขยะ</a>
-                    <a href="{% url 'user_store' request.user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าร้านของฉัน</a>
-
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a>
-                    <a href="{% url 'profile_edit' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูและแก้ไขข้อมูลส่วนตัว</a>
-                    
-                    <!-- ใช้ฟอร์มสำหรับ logout -->
-                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">
-                            ออกจากระบบ
-                        </button>
-                    </form>
-
+                    <div id="dropdownMenu" class="dropdown-menu absolute text-gray-700 pt-2 right-0 bg-white rounded-md shadow-lg w-48">
+                        <a href="{% url 'home_user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าแรก</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูการแยกขยะ</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">เพิ่มการแยกขยะ</a>
+                        <a href="{% url 'user_store' request.user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าร้านของฉัน</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a>
+                        <a href="{% url 'profile_edit' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูและแก้ไขข้อมูลส่วนตัว</a>
+                        <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">
+                                ออกจากระบบ
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
+
+    <script>
+        // Toggle Dropdown Menu
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        hamburgerButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Close the menu when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInsideMenu = dropdownMenu.contains(event.target);
+            const isClickHamburgerButton = event.target === hamburgerButton || hamburgerButton.contains(event.target);
+
+            if (!isClickInsideMenu && !isClickHamburgerButton) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    </script>
 </body>
+
 </html>

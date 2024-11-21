@@ -12,10 +12,10 @@
             font-family: "Kanit", sans-serif;
         }
         .profile-img {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
-            border-radius: 50%;
+            border-radius: 100%;
             margin: 0 auto;
         }
         .filter-button {
@@ -35,10 +35,12 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100">
+    {% include 'accounts/header_logged_in.html' %}
     <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
         <div class="text-center">
-            <h1 class="text-3xl font-bold text-pink-600">หน้าร้านของ {{ user_profile.username }}</h1>
+            <h1 class="text-3xl font-bold text-blue-600">หน้าร้านของ {{ user_profile.username }}</h1>
             <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url }}{% else %}{% static 'css/dist/Seniorproject/img/default-profile.png' %}{% endif %}" alt="Profile Image" class="profile-img">
             <p class="mt-2 text-gray-600">ชื่อผู้ใช้: {{ user_profile.username }}</p>
         </div>
@@ -46,7 +48,7 @@
         <!-- Filter Buttons -->
         <div class="flex justify-center mt-6">
             <button class="filter-button active" data-filter="all">ทั้งหมด</button>
-            <button class="filter-button" data-filter="GeneralAnnouncement">การประกาศทั่วไป</button>
+            <button class="filter-button" data-filter="GeneralAnnouncement">กระทู้สอบถามทั่วไป</button>
             <button class="filter-button" data-filter="SellItem">การซื้อขาย</button>
             <button class="filter-button" data-filter="Donation">การบริจาค</button>
         </div>
