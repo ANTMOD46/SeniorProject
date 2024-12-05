@@ -29,6 +29,8 @@ urlpatterns = [
     path('comments/', include('comments.urls')),  # ตัวอย่าง comments
     path('accounts/', include('accounts.urls')),
     path('waste/', include('waste_separation.urls')),
+    path('rooms/', include('rooms.urls')),
+    
     
     
     path('recycle/', views.recycle_view, name='recycle'),  # เส้นทางสำหรับขยะรีไซเคิล

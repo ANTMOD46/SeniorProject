@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     "comments",
     "accounts",
     "waste_separation",
+    "rooms",
+    "channels"
 ]
 
 MIDDLEWARE = [

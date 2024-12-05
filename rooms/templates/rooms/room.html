@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% comment %} <title>{{ room.name }} | Chat</title> {% endcomment %}
+</head>
+<body class="bg-gray-50">
+
+    {% include 'accounts/header_logged_in.html' %}
+
+    {% comment %} {% block title %}{{ room.name }} | {% endblock %} {% endcomment %}
+
+    {% block content %}
+    <!-- ส่วนหัว -->
+    <div class="p-4 lg:p-8 text-center bg-white rounded-lg shadow-sm mb-10">
+        <h1 class="text-2xl lg:text-3xl text-blue-900 font-semibold">{{ room.name }}</h1>
+    </div>
+
+    <div class="lg:w-2/4 mx-4 lg:mx-auto p-4 bg-white rounded-xl shadow-md">
+        <!-- รายการแชท -->
+        <div class="chat messages space-y-4" id="chat-messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <!-- ข้อความจากผู้ใช้ตัวเอง (ทางขวา) -->
+                    {% if message.sender == user %}
+                    <div class="flex justify-end p-4">
+                        <div class="p-4 bg-blue-100 rounded-xl max-w-xs">
+                            <p class="font-semibold text-blue-700">{{ message.sender.username }}</p>
+                            <p>{{ message.content }}</p>
+                        </div>
+                    </div>
+                    <!-- ข้อความจากผู้ใช้อื่น (ทางซ้าย) -->
+                    {% else %}
+                    <div class="flex justify-start p-4">
+                        <div class="p-4 bg-gray-100 rounded-xl max-w-xs">
+                            <p class="font-semibold text-blue-700">{{ message.sender.username }}</p>
+                            <p>{{ message.content }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-gray-500">ยังไม่มีข้อความในห้องนี้</p>
+            {% endif %}
+        </div>
+
+        <!-- ฟอร์มส่งข้อความ -->
+        <form method="POST" action="{% url 'send_message' room.slug %}" class="mt-6">
+            {% csrf_token %}
+            <div class="flex space-x-2">
+                <input type="text" name="message" class="w-full p-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="พิมพ์ข้อความ..." required>
+                <button type="submit" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">ส่งข้อความ</button>
+            </div>
+        </form>
+    </div>
+    {% endblock %}
+
+</body>
+</html>
