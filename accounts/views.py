@@ -12,7 +12,7 @@ from .forms import ProfileUpdateForm  # ฟอร์มสำหรับอั�
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ProfileUpdateForm
-from .models import UserProfile
+
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)  # อย่าลืมเพิ่ม request.FILES สำหรับไฟล์รูป
@@ -76,3 +76,6 @@ def profile_edit(request):
 @login_required
 def profile_view(request):
     return render(request, 'accounts/profile.html', {'user': request.user})
+
+
+

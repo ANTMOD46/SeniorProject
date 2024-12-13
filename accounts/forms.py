@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User  # ใช้ User Model
-from .models import CustomUser, UserProfile  # โมเดล CustomUser และ UserProfile
+from .models import CustomUser
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:

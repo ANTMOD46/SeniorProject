@@ -143,10 +143,9 @@
         
 
         <div class="flex justify-center space-x-8 mt-4 mb-4">
-            <!-- ปุ่มแชท -->
-            <a href="{% url 'rooms' %}?chat_type=donation" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
+           <a  class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
                 แชท
-            </a>
+            </a> 
             <button id="showPhoneButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
                 โทร
             </button>
@@ -176,19 +175,36 @@
             </div>
         </div>
         {% endif %}
-
         <h2 class="text-xl font-bold text-pink-600 mt-6">ความคิดเห็น</h2>
         <div class="mb-4">
             {% for comment in post_ad.comments.all %}
-                <div class="border-b py-2">
-                    <p class="font-semibold">{{ comment.user.username }}</p>
-                    <p class="text-gray-600">{{ comment.content }}</p>
-                    <p class="text-gray-400 text-sm">{{ comment.created_at|date:"d F Y, H:i a" }}</p>
+                <div class="border-b py-2 flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold">{{ comment.user.username }}</p>
+                        <p class="text-gray-600">{{ comment.content }}</p>
+                        <p class="text-gray-400 text-sm">{{ comment.created_at|date:"d F Y, H:i a" }}</p>
+                    </div>
+                    {% if request.user == comment.user or request.user == post_ad.user or request.user.is_staff %}
+                        <form method="POST" action="{% url 'delete_comment' post_ad.id comment.id %}" class="inline-block">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:underline">ลบ</button>
+                        </form>
+                    {% endif %}
                 </div>
             {% empty %}
                 <p class="text-gray-500">ยังไม่มีความคิดเห็น</p>
             {% endfor %}
         </div>
+        
+        
+
+        
+        <!-- ฟอร์มเพิ่มความคิดเห็น -->
+        <form method="POST" action="{% url 'add_comment' post_ad.id %}" class="mt-6">
+            {% csrf_token %}
+            <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
+            <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-md mt-2">ส่งความคิดเห็น</button>
+        </form>
     </main>
 
     <script>

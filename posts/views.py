@@ -37,10 +37,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import DeleteView
 from .models import GeneralAnnouncement
 
-from .models import GeneralAnnouncement,Comment
+from .models import GeneralAnnouncement
 from django.views.generic.edit import DeleteView
 from .models import GeneralAnnouncement
 from django.views.generic import ListView
+from .models import *
 
 
 
@@ -100,18 +101,35 @@ class SellItemView(View):
             messages.error(request, 'เกิดข้อผิดพลาดในการลงประกาศ')
         return render(request, 'posts/sell_item.html', {'form': form})
 
+from django.http import HttpResponse
+
+from django.http import HttpResponse
+
 class SellItemDetailView(View):
     def get(self, request, item_id):
         post_ad = get_object_or_404(SellItem, id=item_id)
-        
-        # กำหนดว่า can_edit เป็น True ถ้าผู้ใช้ปัจจุบันเป็นเจ้าของโพสต์หรือแอดมิน
-        can_edit = request.user == post_ad.user or request.user.is_staff
+        print(f"Post ID: {post_ad.id}, Template Path: posts/sell_item_details.html")
         
         context = {
             'post_ad': post_ad,
-            'can_edit': can_edit,
+            'can_edit': request.user == post_ad.user or request.user.is_staff,
+            'is_owner': request.user == post_ad.user,  # ตรวจสอบว่าเป็นเจ้าของโพสต์หรือไม่
         }
         return render(request, 'posts/sell_item_details.html', context)
+
+    def post(self, request, item_id):
+        """จัดการคำขอ POST สำหรับลบความคิดเห็น"""
+        comment_id = request.POST.get('comment_id')
+        if comment_id:
+            comment = get_object_or_404(SellItemComment, id=comment_id)
+            # อนุญาตให้ลบถ้าเป็นเจ้าของโพสต์, เจ้าของความคิดเห็น หรือแอดมิน
+            if request.user == comment.user or request.user.is_staff or request.user == comment.sell_item.user:
+                comment.delete()
+        return redirect('sell_item_details', item_id=item_id)
+
+
+
+
 
 
 class SellItemDeleteView(DeleteView):
@@ -200,18 +218,36 @@ class DonationFormView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('donation_details', kwargs={'pk': self.object.pk})
         
-from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.detail import DetailView
 from .models import Donation
+
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from .models import DonationComment
 
 class DonationDetailView(LoginRequiredMixin, DetailView):
     model = Donation
     template_name = 'posts/donation_details.html'
 
-    # ไม่จำเป็นต้องปรับ context หากไม่ต้องเพิ่มข้อมูลเพิ่มเติม
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['donation'] = self.object  # ส่ง object เป็น 'donation'
+        context['post_id'] = self.object.id  # ส่ง ID ของโพสต์
+        context['post_type'] = 'donation'  # ระบุประเภทโพสต์
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content = request.POST.get('content')
+        if content:
+            DonationComment.objects.create(
+                donation=self.object,
+                user=request.user,
+                content=content
+            )
+        return HttpResponseRedirect(reverse('donation_details', args=[self.object.id]))
+
 class DonationUpdateView(UpdateView):
     model = Donation
     fields = ['title', 'description', 'location', 'phone', 'image']
@@ -262,16 +298,33 @@ class GeneralAnnouncementView(View):
             messages.error(request, 'เกิดข้อผิดพลาดในการลงประกาศ')
         return render(request, 'posts/general_announcement.html', {'form': form})
 
-class GeneralAnnouncementDetailView(DetailView):
-    model = GeneralAnnouncement
-    template_name = 'posts/general_announcement_detail.html'
-    context_object_name = 'announcement'
+from django.views.generic import DetailView
+from django.shortcuts import redirect
+from .models import GeneralAnnouncement, GeneralAnnouncementComment
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['request'] = self.request  # ส่ง request ไปยังเทมเพลต
-        return context
-    
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import GeneralAnnouncement, GeneralAnnouncementComment
+
+@login_required
+def general_announcement_details(request, announcement_id):
+    announcement = get_object_or_404(GeneralAnnouncement, id=announcement_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        GeneralAnnouncementComment.objects.create(
+            general_announcement=announcement,
+            user=request.user,
+            content=content
+        )
+        return redirect('general_announcement_details', announcement_id=announcement_id)
+
+    context = {
+        'announcement': announcement,
+    }
+    return render(request, 'posts/general_announcement_detail.html', context)
+
 class GeneralAnnouncementUpdateView(UpdateView):
     model = GeneralAnnouncement
     fields = ['title', 'content', 'location', 'image']
@@ -285,13 +338,10 @@ class GeneralAnnouncementUpdateView(UpdateView):
     
 
     
-from django.urls import reverse_lazy
-from django.views.generic.edit import DeleteView
-from .models import GeneralAnnouncement
+
 
 from django.urls import reverse_lazy
 from django.views.generic.edit import DeleteView
-from .models import GeneralAnnouncement
 from django.shortcuts import get_object_or_404, redirect
 
 class GeneralAnnouncementDeleteView(DeleteView):
@@ -350,27 +400,43 @@ class UserStoreView(ListView):
         return context
 
 
-@login_required
-def add_comment(request, pk):
-    post = get_object_or_404(GeneralAnnouncement, pk=pk)
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import SellItem, SellItemComment
+from django.http import HttpResponseBadRequest
+
+from django.shortcuts import get_object_or_404, redirect
+
+def add_comment(request, post_id):
     if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.user = request.user  # กำหนดเจ้าของความคิดเห็น
-            comment.save()
-            return redirect('general_announcement_detail', pk=pk)
-    else:
-        form = CommentForm()
-    return redirect('general_announcement_detail', pk=pk)
+        content = request.POST.get('content')
+        sell_item = get_object_or_404(SellItem, id=post_id)
+        SellItemComment.objects.create(
+            sell_item=sell_item,
+            user=request.user,  # request.user ต้องอิง CustomUser
+            content=content
+        )
+        return redirect('sell_item_details', item_id=post_id)
+    return redirect('sell_item_details', item_id=post_id)
 
 
 
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 @login_required
-def delete_comment(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    if request.user == comment.user or request.user == comment.post.user:  # เจ้าของความคิดเห็นหรือเจ้าของโพสต์
+def delete_comment(request, post_id, comment_id):
+    comment = get_object_or_404(SellItemComment, id=comment_id, sell_item_id=post_id)
+    
+    # ตรวจสอบสิทธิ์การลบ: เจ้าของโพสต์, เจ้าของความคิดเห็น, หรือแอดมิน
+    if request.user == comment.user or request.user == comment.sell_item.user or request.user.is_staff:
         comment.delete()
-    return redirect('general_announcement_detail', pk=comment.post.pk)
+        return redirect('sell_item_details', item_id=post_id)
+    
+    return HttpResponseForbidden("คุณไม่มีสิทธิ์ในการลบความคิดเห็นนี้")
+
+
+

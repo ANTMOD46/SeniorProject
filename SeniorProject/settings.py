@@ -57,8 +57,7 @@ INSTALLED_APPS = [
     "comments",
     "accounts",
     "waste_separation",
-    "rooms",
-    "channels"
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -154,5 +153,7 @@ STATICFILES_DIRS = [BASE_DIR / "theme/static"]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = 'accounts.CustomUser'  # เปลี่ยนตามที่คุณสร้างโมเดล CustomUser
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+
 

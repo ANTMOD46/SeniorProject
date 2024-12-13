@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from .models import *
+
+
 
 
 class SellItem(models.Model):
@@ -23,9 +26,14 @@ class SellItem(models.Model):
         return self.title
 
 
+    
+class SellItemComment(models.Model):
+    sell_item = models.ForeignKey(SellItem, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
 
-    
-    
 
 class Donation(models.Model):
     ROLE_CHOICES = [
@@ -40,14 +48,20 @@ class Donation(models.Model):
     phone = models.CharField(max_length=15)  # เบอร์โทรศัพท์
     image = models.ImageField(upload_to='donations/')  # รูปภาพการบริจาค
     created_at = models.DateTimeField(auto_now_add=True)  # วันที่สร้างการบริจาค
+    updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ผู้ใช้ที่ทำการบริจาค
     is_closed = models.BooleanField(default=False)  # สถานะการปิดการบริจาค
 
     def __str__(self):
         return self.title
+    
 
 
-
+class DonationComment(models.Model):
+    donation = models.ForeignKey(Donation, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class GeneralAnnouncement(models.Model):
@@ -56,22 +70,16 @@ class GeneralAnnouncement(models.Model):
     location = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='announcements/', blank=True, null=True)  # เพิ่มฟิลด์นี้
-    phone = models.CharField(max_length=15, default='0000000000')  # ค่า default
+    
 
     def __str__(self):
         return self.title
 
 
-
-from django.db import models
-from django.conf import settings
-
-class Comment(models.Model):
-    post = models.ForeignKey(GeneralAnnouncement, on_delete=models.CASCADE, related_name='comments')  # ความสัมพันธ์กับโพสต์
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ผู้เขียนความคิดเห็น
-    content = models.TextField()  # เนื้อหาของความคิดเห็น
-    created_at = models.DateTimeField(auto_now_add=True)  # เวลาที่สร้างความคิดเห็น
-
-    def __str__(self):
-        return f"{self.user.username}: {self.content[:30]}"  # แสดงข้อความ 30 ตัวแรกใน Admin
+class GeneralAnnouncementComment(models.Model):
+    general_announcement = models.ForeignKey(GeneralAnnouncement, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

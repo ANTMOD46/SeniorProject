@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, UserProfile
+from .models import CustomUser
+
 
 
 # สำหรับการแสดงผลใน Django Admin ของ CustomUser
@@ -25,13 +26,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-# สำหรับการแสดงผลใน Django Admin ของ UserProfile
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone_number', 'address')
-    search_fields = ('user__username', 'phone_number')
-    list_filter = ('user__is_staff',)
-
 
 # ลงทะเบียนโมเดลกับ Django Admin
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(UserProfile, UserProfileAdmin)
+

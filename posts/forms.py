@@ -1,6 +1,6 @@
 from django import forms
 from .models import SellItem, Donation, GeneralAnnouncement
-from .models import Comment
+
 class SellItemForm(forms.ModelForm):
     class Meta:
         model = SellItem
@@ -16,17 +16,30 @@ class DonationForm(forms.ModelForm):
 class GeneralAnnouncementForm(forms.ModelForm):
     class Meta:
         model = GeneralAnnouncement
-        fields = ['title', 'content', 'location', 'image', "phone"]
+        fields = ['title', 'content', 'location', 'image']
         
 
-class CommentForm(forms.ModelForm):
+
+from django import forms
+from .models import SellItemComment
+
+class SellItemCommentForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        model = SellItemComment
         fields = ['content']
-        widgets = {
-            'content': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500',
-                'placeholder': 'เพิ่มความคิดเห็นของคุณ...',
-                'rows': 3,
-            }),
-        }
+
+from django import forms
+from .models import DonationComment
+
+class DonationCommentForm(forms.ModelForm):
+    class Meta:
+        model = DonationComment
+        fields = ['content']
+
+from django import forms
+from .models import GeneralAnnouncementComment
+
+class GeneralAnnouncementCommentForm(forms.ModelForm):
+    class Meta:
+        model = GeneralAnnouncementComment
+        fields = ['content']
