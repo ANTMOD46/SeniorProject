@@ -253,15 +253,25 @@
         <h2 class="text-xl font-bold text-pink-600 mt-6">ความคิดเห็น</h2>
         <div class="mb-4">
             {% for comment in donation.comments.all %}
-                <div class="border-b py-2">
-                    <p class="font-semibold">{{ comment.user.username }}</p>
-                    <p class="text-gray-600">{{ comment.content }}</p>
-                    <p class="text-gray-400 text-sm">{{ comment.created_at }}</p>
+                <div class="border-b py-2 flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold">{{ comment.user.username }}</p>
+                        <p class="text-gray-600">{{ comment.content }}</p>
+                        <p class="text-gray-400 text-sm">{{ comment.created_at|date:"d F Y, H:i a" }}</p>
+                    </div>
+                    <!-- ตรวจสอบสิทธิ์ -->
+                    {% if request.user == comment.user or request.user == donation.user or request.user.is_staff %}
+                        <form method="POST" action="{% url 'delete_donation_comment' donation.id comment.id %}" class="inline-block">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:underline">ลบ</button>
+                        </form>
+                    {% endif %}
                 </div>
             {% empty %}
                 <p class="text-gray-500">ยังไม่มีความคิดเห็น</p>
             {% endfor %}
         </div>
+        
 
         <form action="{% url 'donation_details' donation.id %}" method="POST" class="mb-6">
             {% csrf_token %}

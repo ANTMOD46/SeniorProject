@@ -15,6 +15,7 @@ from .views import UserStoreView
 from .views import SellItemDetailView, add_comment
 from .views import general_announcement_details
 from .views import delete_comment
+from .views import delete_donation_comment
 
 
 
@@ -53,7 +54,7 @@ urlpatterns = [
     path('general-announcements/', GeneralAnnouncementListView.as_view(), name='general_announcement_all'),
     path('user/<str:username>/', views.UserStoreView.as_view(), name='user_store'),  # เพิ่มเส้นทางสำหรับหน้าร้านของ user
     path('user/<str:username>/', UserStoreView.as_view(), name='user_store'),
-    
+    path('general-announcement/', views.general_announcement, name='general_announcement'),
     
     path('post/<int:post_id>/comment/', views.add_comment, name='add_comment'),
     path('sell-item/<int:item_id>/', SellItemDetailView.as_view(), name='sell_item_details'),
@@ -64,6 +65,12 @@ urlpatterns = [
     path('general-announcement/<int:announcement_id>/', general_announcement_details, name='general_announcement_detail'),
     # path('comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
     path('post/<int:post_id>/comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
+    path('donation/<int:donation_id>/', DonationDetailView.as_view(), name='donation_details'),
+    path('donation/<int:donation_id>/comment/<int:comment_id>/delete/', delete_donation_comment, name='delete_donation_comment'),
+    path('general-announcement/<int:announcement_id>/comment/<int:comment_id>/delete/', views.delete_announcement_comment, name='delete_announcement_comment'),
+
+
+
     
 
 

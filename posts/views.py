@@ -278,6 +278,11 @@ def announcement_all(request):
     announcements = GeneralAnnouncement.objects.all()  # หรือใช้ .filter() ถ้าต้องการกรองข้อมูล
     return render(request, 'posts/general_announcement_all.html', {'announcements': announcements})
 
+from django.shortcuts import render
+
+def general_announcement(request):
+    # Logic สำหรับกระทู้สอบถามทั่วไป
+    return render(request, 'posts/general_announcement.html')
 
 
 class GeneralAnnouncementView(View):
@@ -400,23 +405,27 @@ class UserStoreView(ListView):
         return context
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import SellItem, SellItemComment
-from django.http import HttpResponseBadRequest
-
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def add_comment(request, post_id):
     if request.method == 'POST':
         content = request.POST.get('content')
         sell_item = get_object_or_404(SellItem, id=post_id)
+
+        print("User ID:", request.user.id)  # ตรวจสอบ User ID
+        print("Sell Item:", sell_item)
+
         SellItemComment.objects.create(
             sell_item=sell_item,
-            user=request.user,  # request.user ต้องอิง CustomUser
+            user=request.user,
             content=content
         )
         return redirect('sell_item_details', item_id=post_id)
+
     return redirect('sell_item_details', item_id=post_id)
+
 
 
 
@@ -440,3 +449,41 @@ def delete_comment(request, post_id, comment_id):
 
 
 
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import DonationComment
+
+@login_required
+def delete_donation_comment(request, donation_id, comment_id):
+    # ค้นหาความคิดเห็นที่ต้องการลบ
+    comment = get_object_or_404(DonationComment, id=comment_id, donation_id=donation_id)
+
+    # ตรวจสอบสิทธิ์การลบ: เจ้าของโพสต์, เจ้าของความคิดเห็น, หรือแอดมิน
+    if request.user == comment.user or request.user == comment.donation.user or request.user.is_staff:
+        comment.delete()
+        messages.success(request, "ความคิดเห็นถูกลบเรียบร้อยแล้ว")
+        return redirect('donation_details', donation_id=donation_id)
+    
+    return HttpResponseForbidden("คุณไม่มีสิทธิ์ในการลบความคิดเห็นนี้")
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+from .models import GeneralAnnouncementComment
+
+@login_required
+def delete_announcement_comment(request, announcement_id, comment_id):
+    # ดึงความคิดเห็นที่ต้องการลบ
+    comment = get_object_or_404(GeneralAnnouncementComment, id=comment_id, general_announcement_id=announcement_id)
+    
+    # ตรวจสอบสิทธิ์การลบ
+    if request.user == comment.user or request.user == comment.general_announcement.user or request.user.is_staff:
+        comment.delete()
+        return redirect('general_announcement_details', announcement_id=announcement_id)
+    
+    # หากไม่มีสิทธิ์
+    return HttpResponseForbidden("คุณไม่มีสิทธิ์ในการลบความคิดเห็นนี้")
