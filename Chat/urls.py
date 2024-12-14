@@ -9,5 +9,6 @@ urlpatterns = [
     path('list/', views.chat_list, name='rooms'),  # กำหนดชื่อ URL name เป็น 'rooms'
      path('start/<int:post_id>/<str:post_type>/', views.start_chat, name='start_chat'),
      
+     
     
 ]

@@ -12,25 +12,24 @@ from django.http import HttpResponseBadRequest
 from posts.models import SellItem, Donation  # นำเข้าโมเดลที่เกี่ยวข้องกับโพสต์
 
 @login_required
-def start_chat(request, post_id=None, post_type=None):
+def start_chat(request, user_id=None, post_id=None, post_type=None):
     user1 = request.user
 
-    # ตรวจสอบว่า post_id และ post_type ถูกส่งมาหรือไม่
-    if post_id and post_type:
+    # ตรวจสอบว่า `user_id` มีค่าหรือไม่
+    if user_id:
+        user2 = get_object_or_404(User, id=user_id)
+    elif post_id and post_type:
         if post_type == 'sell_item':
             post = get_object_or_404(SellItem, id=post_id)
         elif post_type == 'donation':
             post = get_object_or_404(Donation, id=post_id)
-        elif post_type == 'general_announcement':  # เพิ่มการรองรับ general_announcement
+        elif post_type == 'general_announcement':
             post = get_object_or_404(GeneralAnnouncement, id=post_id)
         else:
             return HttpResponseBadRequest("Invalid post type")
-
-        # กำหนดผู้ใช้ที่เกี่ยวข้องกับโพสต์
         user2 = post.user
     else:
-        # หากไม่มี post_id และ post_type ให้ใช้ user_id แบบเดิม
-        user2 = get_object_or_404(User, id=request.GET.get('user_id'))
+        return HttpResponseBadRequest("Invalid request")
 
     # ตรวจสอบว่าห้องแชทมีอยู่แล้วหรือไม่
     chatroom, created = ChatRoom.objects.get_or_create(
