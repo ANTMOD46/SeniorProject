@@ -1,0 +1,102 @@
+{% extends 'Seniorproject/base.html' %}
+{% load static %}
+
+{% block main %}
+<!-- Main Section -->
+<div class="flex flex-col items-center justify-center mt-36 text-center">
+    <!-- Image Section -->
+    <div class="shadow-2xl rounded-lg p-6 bg-white">
+        <img src="{% static 'css/dist/Seniorproject/img/Haza.png' %}" 
+             class="w-120 h-auto rounded-lg object-cover" 
+             alt="Haza Bin">
+    </div>
+
+    <!-- Title and Description Section -->
+    <div class="mt-6">
+        <h2 class="text-red-700 text-5xl font-bold">ขยะอันตราย</h2>
+        <p class="text-gray-700 mt-4 text-xl max-w-2xl leading-relaxed">
+            ขยะอันตรายคือขยะที่มีสารเคมีหรือสารพิษที่อาจเป็นอันตรายต่อสุขภาพและสิ่งแวดล้อม
+            เช่น ถ่านไฟฉายที่หมดอายุ หลอดไฟเก่าที่ไม่สามารถนำไปรีไซเคิล หรือเศษสารเคมีที่ตกค้าง
+            ซึ่งขยะเหล่านี้ต้องได้รับการจัดการอย่างระมัดระวังเพื่อป้องกันการปนเปื้อนและอันตราย
+            ต่อสุขภาพมนุษย์และสิ่งแวดล้อม
+        </p>
+        <p class="text-gray-700 mt-4 text-xl max-w-2xl leading-relaxed">
+            การทิ้งขยะอันตรายอย่างถูกวิธีจะช่วยลดการรั่วไหลของสารพิษที่อาจจะทำลายทรัพยากรธรรมชาติและสิ่งแวดล้อม
+            โดยการกำจัดขยะอันตรายผ่านจุดรับขยะที่เฉพาะเจาะจงและไม่ทิ้งไว้ในถังขยะทั่วไป
+        </p>
+    </div>
+
+    <!-- Description Section -->
+    <div class="mt-10 px-8 max-w-5xl">
+        <h3 class="text-red-600 text-3xl font-semibold mb-6">ตัวอย่างขยะอันตราย</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <!-- Batteries -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://lh3.googleusercontent.com/proxy/FL8rYxjuluqRY3J-jf9-RVcXNoAoMfIERo2pD3wzSKxUK7Hayh73zkOjV_rE7H3pYyu0wUoO9jD9xEPauobAseK769HO2qfglZbqdPEh4Fykcx6ZyG8CskVU" 
+                     alt="ถ่านไฟฉาย" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ถ่านไฟฉาย</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ถ่านเก่า, แบตเตอรี่โทรศัพท์</p>
+            </div>
+            <!-- Light Bulbs -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://lh5.googleusercontent.com/pbT5LExzGmuNbK2lyPDduN45u1ikkWJ0DD1TTboncUKlS_DHU5uiLI7QWt1tGB-PNBCxHsmSvYTwpp3ztzGSRQFfNAGRIA1OgkMgtgOPt7HrQKXo1LHvadm_4-PsYeb9PA=s0" 
+                     alt="หลอดไฟ" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">หลอดไฟ</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น หลอดฟลูออเรสเซนต์, หลอด LED</p>
+            </div>
+            <!-- Paints -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.homeandfac.com/images/content/original-1540279439118.png" 
+                     alt="สีและสารเคมี" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">สีและสารเคมี</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น สีทาบ้าน, ตัวทำละลาย</p>
+            </div>
+            <!-- Electronic Waste -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.tcijthai.com/office-tcij/headpicture/a101ea6a0c09f73c5b4436fbdcbb37b4.jpg" 
+                     alt="ขยะอิเล็กทรอนิกส์" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ขยะอิเล็กทรอนิกส์</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น อุปกรณ์ไฟฟ้า, โทรศัพท์เก่า</p>
+            </div>
+            <!-- Medical Waste -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.lopinion.ma/photo/art/grande/64394776-46169203.jpg?v=1651999957" 
+                     alt="ขยะทางการแพทย์" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ขยะทางการแพทย์</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น เข็มฉีดยา, ยาหมดอายุ</p>
+            </div>
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://static.thairath.co.th/media/dFQROr7oWzulq5Fa5KwLMpRT2xqQ5VN3TFwUX0uVYobsJnCVI7JWztqvg7qv0zNZNtU.jpg" 
+                     alt="ขยะจากยานยนต์" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ขยะจากยานยนต์</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น น้ำมันเครื่องที่ใช้แล้ว, ยางรถยนต์ที่หมดสภาพ</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recycling Tips Section -->
+    <div class="mt-10 px-8 max-w-4xl">
+        <h3 class="text-red-600 text-3xl font-semibold mb-6">วิธีการจัดการขยะอันตราย</h3>
+        <ul class="list-disc list-inside text-gray-800 text-lg text-left space-y-4">
+            <li>รวบรวมขยะอันตรายไว้ในภาชนะที่ปลอดภัยและปิดสนิท</li>
+            <li>อย่าทิ้งขยะอันตรายในถังขยะทั่วไปหรือถังรีไซเคิล</li>
+            <li>นำขยะอันตรายไปยังจุดรับขยะอันตรายที่กำหนด</li>
+            <li>หลีกเลี่ยงการสัมผัสขยะอันตรายโดยตรง เพื่อป้องกันอันตรายต่อสุขภาพ</li>
+        </ul>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="mt-10 max-w-full mx-auto px-6">
+        <p class="text-gray-800 text-xl font-medium text-center">
+            มาร่วมกันจัดการขยะอันตรายอย่างถูกวิธี เพื่อปกป้องสุขภาพและสิ่งแวดล้อม 🌍
+        </p>
+    </div>
+    
+</div>
+{% endblock main %}

@@ -1,0 +1,102 @@
+{% extends 'Seniorproject/base.html' %}
+{% load static %}
+
+{% block main %}
+<!-- Main Section -->
+<div class="flex flex-col items-center justify-center mt-28 text-center">
+    <!-- Image Section -->
+    <div class="shadow-2xl rounded-lg p-6 bg-white">
+        <img src="{% static 'css/dist/Seniorproject/img/organic1.png' %}" 
+             class="w-96 h-auto rounded-lg object-cover" 
+             alt="Organic Bin">
+    </div>
+
+    <!-- Title and Description Section -->
+    <div class="mt-6">
+        <h2 class="text-green-700 text-5xl font-bold">ขยะอินทรีย์</h2>
+        <p class="text-gray-700 mt-4 text-xl max-w-2xl leading-relaxed">
+            ขยะอินทรีย์คือขยะที่สามารถย่อยสลายได้ตามธรรมชาติ เช่น เศษอาหาร เปลือกผลไม้ ใบไม้ และเศษวัสดุที่มาจากสิ่งมีชีวิต 
+            ซึ่งขยะเหล่านี้สามารถนำไปสร้างประโยชน์ได้ เช่น การทำปุ๋ยหมักที่ช่วยเพิ่มความอุดมสมบูรณ์ให้กับดิน
+        </p>
+        <p class="text-gray-700 mt-4 text-xl max-w-2xl leading-relaxed">
+            การจัดการขยะอินทรีย์อย่างเหมาะสมช่วยลดการเกิดก๊าซมีเทนจากการย่อยสลายในหลุมฝังกลบ 
+            ซึ่งเป็นสาเหตุหนึ่งของภาวะโลกร้อน นอกจากนี้ยังช่วยลดปริมาณขยะที่ต้องกำจัดและเพิ่มการใช้ทรัพยากรอย่างคุ้มค่า
+        </p>
+    </div>
+
+    <!-- Description Section -->
+    <div class="mt-10 px-8 max-w-5xl">
+        <h3 class="text-green-600 text-3xl font-semibold mb-6">ตัวอย่างขยะอินทรีย์</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <!-- Food Scraps -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://f.ptcdn.info/674/042/000/o76h5nj9wUph2nndlQZ-o.jpg" 
+                     alt="เศษอาหาร" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">เศษอาหาร</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น เศษผัก, เศษผลไม้, เศษข้าว</p>
+            </div>
+            <!-- Fruit Peels -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.apthai.com/images/production/RBbmWeGb2p3yyT9vOiouWUuYTs3tc0-metaQVAtRGVjMTctbWV0YS5qcGcuanBn-.jpg" 
+                     alt="เปลือกผลไม้" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">เปลือกผลไม้</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น เปลือกกล้วย, เปลือกส้ม</p>
+            </div>
+            <!-- Leaves -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://down-th.img.susercontent.com/file/th-11134207-7r990-lv45aq6db1gd23" 
+                     alt="ใบไม้" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ใบไม้</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ใบไม้แห้ง, เศษหญ้า</p>
+            </div>
+            <!-- Animal Waste -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://thelibrary.mju.ac.th/wp-content/uploads/2022/05/messageImage_1651807721132.jpg" 
+                     alt="มูลสัตว์" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">มูลสัตว์</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น มูลวัว, มูลไก่</p>
+            </div>
+            <!-- Garden Waste -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://fe.lnwfile.com/_/fe/_raw/k8/1d/nd.jpg" 
+                     alt="เศษพืช" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">เศษพืช</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น กิ่งไม้เล็ก, เศษต้นไม้</p>
+            </div>
+            <!-- Organic Waste -->
+        <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+            <img src="https://upic.me/i/kh/87s20.jpg" 
+                alt="แกลบ" 
+                class="w-40 h-40 rounded-md object-cover">
+            <p class="text-gray-800 text-lg font-bold mt-4">แกลบ</p>
+            <p class="text-gray-600 text-sm mt-2">เช่น แกลบข้าว, เปลือกถั่ว, เปลือกข้าวโพด</p>
+        </div>
+
+        </div>
+    </div>
+
+    <!-- Recycling Tips Section -->
+    <div class="mt-10 px-8 max-w-4xl">
+        <h3 class="text-green-600 text-3xl font-semibold mb-6">วิธีการจัดการขยะอินทรีย์</h3>
+        <ul class="list-disc list-inside text-gray-800 text-xl text-left space-y-4 leading-relaxed">
+            <li>รวบรวมเศษอาหารและขยะอินทรีย์แยกจากขยะประเภทอื่น</li>
+            <li>นำไปทำปุ๋ยหมักเพื่อใช้ในสวนหรือเกษตรกรรม</li>
+            <li>ใช้ถังขยะอินทรีย์ที่ปิดสนิทเพื่อป้องกันกลิ่น</li>
+            <li>หลีกเลี่ยงการทิ้งขยะอินทรีย์ในถุงพลาสติก</li>
+        </ul>
+    </div>
+
+    <div class="mt-10 max-w-full mx-auto px-6">
+        <p class="text-gray-800 text-xl font-medium text-center">
+            มาร่วมกันจัดการขยะอินทรีย์ เพื่อสร้างสิ่งแวดล้อมที่สะอาดและยั่งยืน 🌱
+        </p>
+    </div>
+    
+</div>
+{% endblock main %}
+

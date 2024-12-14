@@ -1,0 +1,103 @@
+{% extends 'Seniorproject/base.html' %}
+{% load static %}
+
+{% block main %}
+<!-- Main Section -->
+<div class="flex flex-col items-center justify-center mt-28 text-center">
+    <!-- Image Section -->
+    <div class="shadow-2xl rounded-lg p-8 bg-white">
+        <img src="{% static 'css/dist/Seniorproject/img/recycle1.png' %}" 
+             class="w-96 h-auto rounded-lg object-cover" 
+             alt="Recycle Bin">
+    </div>
+
+    <!-- Title and Description Section -->
+    <!-- Title and Description Section -->
+<div class="mt-6">
+    <h2 class="text-yellow-700 text-5xl font-bold tracking-wide">ขยะรีไซเคิล</h2>
+    <p class="text-gray-600 mt-4 text-xl max-w-2xl leading-relaxed">
+        ขยะรีไซเคิลคือขยะที่สามารถนำไปผ่านกระบวนการเพื่อแปรรูปให้กลับมาใช้งานใหม่ได้ โดยลดการสิ้นเปลืองทรัพยากรธรรมชาติ 
+        และช่วยลดปริมาณขยะในสิ่งแวดล้อม เพียงแค่แยกขยะให้ถูกประเภท เช่น กระดาษ ขวดพลาสติก หรือโลหะ แล้วทิ้งในถังที่เหมาะสม 
+        เราก็สามารถมีส่วนช่วยสร้างวงจรการใช้ทรัพยากรอย่างยั่งยืน
+    </p>
+    <p class="text-gray-600 mt-4 text-xl max-w-2xl leading-relaxed">
+        การรีไซเคิลไม่ได้เป็นเพียงการลดขยะ แต่ยังช่วยลดการปล่อยก๊าซเรือนกระจกจากการผลิตวัตถุดิบใหม่ 
+        รวมถึงประหยัดพลังงานและทรัพยากรในระยะยาว นอกจากนี้ ยังส่งเสริมการใช้ชีวิตที่คำนึงถึงสิ่งแวดล้อมและช่วยป้องกันปัญหามลพิษในชุมชน
+    </p>
+</div>
+
+
+    <!-- Description Section -->
+    <div class="mt-12 px-8 max-w-5xl">
+        <h3 class="text-yellow-600 text-3xl font-semibold mb-6">ตัวอย่างขยะรีไซเคิล</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-10">
+            <!-- Paper -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://gridmag.safesavethai.com/wp-content/uploads/2021/06/Recycle-the-box_Grid_Regular1-1024x640.jpg" 
+                     alt="กระดาษ" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">กระดาษ</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น กระดาษ A4, หนังสือพิมพ์</p>
+            </div>
+            <!-- Plastic Bottles -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://matl.co/wp-content/uploads/2021/06/recycle-symbol-plastic-bottles-grey-backgound.jpg" 
+                     alt="ขวดพลาสติก" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ขวดพลาสติก</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ขวดน้ำดื่ม, ขวดน้ำมันพืช</p>
+            </div>
+            <!-- Aluminum Cans -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.jeab.com/wp-content/uploads/2013/11/can-city-aluminum-cans-600x337.jpg" 
+                     alt="กระป๋องอะลูมิเนียม" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">กระป๋องอะลูมิเนียม</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น กระป๋องเครื่องดื่ม</p>
+            </div>
+            <!-- Glass -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCf58A3Qhgaq_M3gSUFekt6jndiZN9fwUstA&s" 
+                     alt="ขวดแก้ว" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ขวดแก้ว</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ขวดเครื่องดื่มแก้ว</p>
+            </div>
+            <!-- Metal -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://png.pngtree.com/thumb_back/fw800/background/20230904/pngtree-recycling-tin-cans-full-of-items-and-a-metal-sign-image_13223234.jpg" 
+                     alt="โลหะ" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">โลหะ</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น เศษเหล็ก, อะไหล่โลหะ</p>
+            </div>
+            <!-- Cardboard Boxes -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.balancepacking.co.th/wp-content/uploads/2023/10/blog-18.jpg" 
+                    alt="กล่องกระดาษ" 
+                    class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">กล่องกระดาษ</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น กล่องพัสดุ, กล่องอาหาร</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recycling Tips Section -->
+    <div class="mt-12 px-8 max-w-4xl">
+        <h3 class="text-yellow-600 text-3xl font-semibold mb-6">วิธีการทิ้งขยะรีไซเคิล</h3>
+        <ul class="list-disc list-inside text-gray-800 text-xl text-left space-y-6 leading-relaxed">
+            <li>ทำความสะอาดขยะรีไซเคิลก่อนทิ้ง เช่น ล้างขวดพลาสติกหรือกระป๋อง</li>
+            <li>บีบหรือย่อขยะ เช่น บีบขวดพลาสติกให้แบนเพื่อประหยัดพื้นที่</li>
+            <li>ทิ้งขยะรีไซเคิลในถังสีน้ำเงินหรือถังที่ระบุว่า "ขยะรีไซเคิล"</li>
+            <li>ตรวจสอบประเภทขยะก่อนทิ้ง เพื่อป้องกันการปนเปื้อน</li>
+        </ul>
+    </div>
+
+    <div class="mt-10 max-w-full mx-auto px-6">
+        <p class="text-gray-800 text-xl font-medium text-center">
+            มาร่วมกันแยกขยะรีไซเคิลเพื่อสิ่งแวดล้อมที่ยั่งยืน 🌍
+        </p>
+    </div>
+</div>
+{% endblock main %}
+

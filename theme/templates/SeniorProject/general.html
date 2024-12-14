@@ -1,0 +1,100 @@
+{% extends 'Seniorproject/base.html' %}
+{% load static %}
+
+{% block main %}
+<!-- Main Section -->
+<div class="flex flex-col items-center justify-center mt-32 text-center">
+    <!-- Image Section -->
+    <div class="shadow-2xl rounded-lg p-6 bg-white">
+        <img src="{% static 'css/dist/Seniorproject/img/gen1.png' %}" 
+             class="w-96 h-auto rounded-lg object-cover" 
+             alt="General Bin">
+    </div>
+
+    <!-- Title and Description Section -->
+    <div class="mt-6">
+        <h2 class="text-blue-700 text-5xl font-bold">ขยะทั่วไป</h2>
+        <p class="text-gray-700 mt-4 text-xl max-w-2xl leading-relaxed">
+            ขยะที่ไม่สามารถนำไปรีไซเคิลหรือย่อยสลายได้ หมายถึงขยะที่ไม่สามารถนำกลับมาใช้ใหม่ได้อีก 
+            ซึ่งรวมถึงเศษพลาสติก ถุงขนม เศษผ้า หรือวัสดุที่ไม่สามารถแยกออกไปเพื่อการรีไซเคิลหรือย่อยสลายได้ 
+            และมักจะต้องกำจัดโดยวิธีการเผาหรือฝังกลบ
+        </p>
+        <p class="text-gray-700 mt-4 text-xl max-w-2xl leading-relaxed">
+            การจัดการขยะทั่วไปที่เหมาะสมช่วยลดปัญหาขยะสะสมและมลพิษในสิ่งแวดล้อม 
+            อีกทั้งยังช่วยส่งเสริมให้ชุมชนมีพื้นที่ที่สะอาดและปลอดภัย
+        </p>
+    </div>
+
+    <!-- Description Section -->
+    <div class="mt-10 px-8 max-w-5xl">
+        <h3 class="text-blue-600 text-3xl font-semibold mb-6">ตัวอย่างขยะทั่วไป</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <!-- Plastic Bags -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://home.maefahluang.org/images/editor/%E0%B8%9E%E0%B8%A5%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%B4%E0%B8%81-36-%E0%B9%84%E0%B8%A1%E0%B8%84%E0%B8%A3%E0%B8%AD%E0%B8%99.jpg" 
+                     alt="ถุงพลาสติก" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ถุงพลาสติก</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ถุงหูหิ้ว, ถุงใส่อาหาร</p>
+            </div>
+            <!-- Snack Wrappers -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.greenpeace.org/static/planet4-thailand-stateless/2020/06/b4a86162-gp0sttya8.jpg" 
+                     alt="ซองขนม" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ซองขนม</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ซองขนมปัง, ซองขนมขบเคี้ยว</p>
+            </div>
+            <!-- Styrofoam -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://s359.kapook.com/pagebuilder/6a7d4fdf-4f6a-4433-8500-8d80b03ca5bf.jpg" 
+                     alt="กล่องโฟม" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">กล่องโฟม</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น กล่องโฟมใส่อาหาร</p>
+            </div>
+            <!-- Dirty Paper -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://media.istockphoto.com/id/1461615462/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B9%80%E0%B8%9B%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%94%E0%B8%9A%E0%B8%99%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%94%E0%B8%B2%E0%B8%A9%E0%B8%97%E0%B8%B4%E0%B8%8A%E0%B8%8A%E0%B8%B9%E0%B9%88%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2%E0%B8%A1%E0%B8%B5%E0%B8%94%E0%B8%84%E0%B8%B1%E0%B8%95%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%81%E0%B8%A2%E0%B8%81%E0%B9%84%E0%B8%94%E0%B9%89%E0%B8%9A%E0%B8%99%E0%B8%9E%E0%B8%B7%E0%B9%89%E0%B8%99%E0%B8%AB%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B5%E0%B8%99%E0%B9%89%E0%B9%8D%E0%B8%B2%E0%B8%95%E0%B8%B2%E0%B8%A5-%E0%B8%A1%E0%B8%B5%E0%B8%94%E0%B8%95%E0%B8%81%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%94.jpg?s=170667a&w=0&k=20&c=CUz-zsPpviZwufWUQKc5qcOhQSwpyGVKt1v8qY0ORkA=" 
+                     alt="กระดาษเปื้อน" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">กระดาษเปื้อน</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น กระดาษชำระ, กระดาษห่ออาหาร</p>
+            </div>
+            <!-- Fabric Waste -->
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://www.mymarket.in.th/shop_user/homemart/image/%E0%B8%AA/%E0%B9%80%E0%B8%A8%E0%B8%A9%E0%B8%9C%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%8A%E0%B9%87%E0%B8%94%E0%B9%80%E0%B8%84%E0%B8%A3%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%9A(1).jpg" 
+                     alt="เศษผ้า" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">เศษผ้า</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ผ้าเก่า, ผ้าเช็ดมือ</p>
+            </div>
+            <div class="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+                <img src="https://kiasumart.com/wp-content/uploads/2021/02/Cotton-Buds-2.jpeg" 
+                     alt="ขยะจากสุขอนามัย" 
+                     class="w-40 h-40 rounded-md object-cover">
+                <p class="text-gray-800 text-lg font-bold mt-4">ขยะจากสุขอนามัย</p>
+                <p class="text-gray-600 text-sm mt-2">เช่น ผ้าอนามัย, ผ้าอ้อมเด็ก,สำลี, ก้านสำลี</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recycling Tips Section -->
+    <div class="mt-10 px-8 max-w-4xl">
+        <h3 class="text-blue-600 text-3xl font-semibold mb-6">วิธีการจัดการขยะทั่วไป</h3>
+        <ul class="list-disc list-inside text-gray-800 text-xl text-left space-y-4 leading-relaxed">
+            <li>รวบรวมขยะทั่วไปไว้ในถุงหรือภาชนะที่ปิดมิดชิด</li>
+            <li>แยกขยะทั่วไปออกจากขยะรีไซเคิลและขยะอันตราย</li>
+            <li>ทิ้งขยะทั่วไปในถังขยะสีดำหรือสีเทาหรือสีน้ำเงินที่กำหนด</li>
+            <li>หลีกเลี่ยงการทิ้งขยะทั่วไปในสถานที่ที่ไม่ได้รับอนุญาต</li>
+        </ul>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="mt-10 max-w-xl mx-auto">
+        <p class="text-gray-800 text-lg font-medium">
+            มาร่วมกันจัดการขยะทั่วไปอย่างถูกวิธี เพื่อรักษาสิ่งแวดล้อมให้สะอาด 🌏
+        </p>
+    </div>
+</div>
+{% endblock main %}
