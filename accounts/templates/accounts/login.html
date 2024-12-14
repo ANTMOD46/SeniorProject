@@ -1,14 +1,14 @@
 {% extends 'Seniorproject/base.html' %}
 
 {% block main %}
-<section class="flex w-full h-screen items-center justify-center bg-pink-40">
+<section class="flex w-full h-screen items-center justify-center bg-blue-50">
     <div class="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
         <!-- SIGN IN Header -->
         <div class="text-center mb-8">
-            <p class="text-5xl font-semibold text-pink-500 mb-6">เข้าสู่ระบบ</p> 
-            <span class="block text-2xl font-light text-pink-400">Welcome Keep the world clean and share</span>
-            <span class="block text-lg font-light text-pink-400">ยังไม่ได้เป็นสมาชิก? 
-                <a href="{% url 'signup' %}" class="underline text-pink-500 hover:text-pink-600">สมัครสมาชิก</a>
+            <p class="text-5xl font-semibold text-blue-500 mb-6">เข้าสู่ระบบ</p> 
+            <span class="block text-2xl font-light text-blue-400">Welcome Keep the world clean and share</span>
+            <span class="block text-lg font-light text-blue-400">ยังไม่ได้เป็นสมาชิก? 
+                <a href="{% url 'signup' %}" class="underline text-blue-500 hover:text-blue-600">สมัครสมาชิก</a>
             </span>
         </div>
 
@@ -22,17 +22,17 @@
             {% endif %}
 
             <div>
-                <label class="block text-sm text-pink-600">ชื่อผู้ใช้</label>
-                <input type="text" name="username" class="w-full h-14 p-2 mt-1 border border-pink-300 rounded-lg shadow-sm focus:ring focus:ring-pink-200" required>
+                <label class="block text-sm text-blue-600">ชื่อผู้ใช้</label>
+                <input type="text" name="username" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
             </div>
 
             <div>
-                <label class="block text-sm text-pink-600">รหัสผ่าน</label>
-                <input type="password" name="password" class="w-full h-14 p-2 mt-1 border border-pink-300 rounded-lg shadow-sm focus:ring focus:ring-pink-200" required>
+                <label class="block text-sm text-blue-600">รหัสผ่าน</label>
+                <input type="password" name="password" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
             </div>
 
             <div class="flex justify-center">
-                <button class="w-full h-14 bg-pink-500 text-white font-medium rounded-lg shadow-lg hover:bg-pink-600 transition-all duration-300">เข้าสู่ระบบ</button>
+                <button class="w-full h-14 bg-blue-500 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300">เข้าสู่ระบบ</button>
             </div>
         </form>
 
@@ -43,4 +43,3 @@
     </div>
 </section>
 {% endblock main %}
-

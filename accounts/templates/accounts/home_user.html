@@ -11,6 +11,23 @@
     <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet">
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
+
+    <style>
+        /* เพิ่มขนาดเต็มหน้าจอให้กับ Swiper */
+        .swiper-container {
+            width: 100%;
+            height: 100vh; /* ให้ Swiper ใช้ความสูงเต็มจอ */
+            margin: auto;
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ให้ภาพเต็มพื้นที่แต่ไม่เสียอัตราส่วน */
+        }
+    </style>
 </head>
 
 <body class="bg-pink-50">
@@ -19,44 +36,46 @@
     {% include 'accounts/header_logged_in.html' %}
 
     <!-- Main Image responsive with Swiper -->
-    <div class="swiper-container mySwiper">
+    <div class="swiper-container mySwiper shadow-lg">
         <div class="swiper-wrapper">
             <!-- Slide 1 -->
             <div class="swiper-slide">
-                <img src="https://s359.kapook.com/pagebuilder/54ddd684-5b71-43c4-b093-51c7d128e93e.jpg" 
-                     class="rounded-lg w-full object-contain" alt="Image 1">
+                <img src="https://s359.kapook.com/pagebuilder/54ddd684-5b71-43c4-b093-51c7d128e93e.jpg" alt="Image 1">
             </div>
             <!-- Slide 2 -->
             <div class="swiper-slide">
-                <img src="https://s3.ap-southeast-1.amazonaws.com/members.project.cover/ee8604c4-5d22-475f-af67-61dcfab023df/eacbd98c-11f1-4775-b184-19cff7bab344.jpg" 
-                     class="rounded-lg w-full object-contain" alt="Image 2">
+                <img src="https://s3.ap-southeast-1.amazonaws.com/members.project.cover/ee8604c4-5d22-475f-af67-61dcfab023df/eacbd98c-11f1-4775-b184-19cff7bab344.jpg" alt="Image 2">
             </div>
             <!-- Slide 3 -->
             <div class="swiper-slide">
-                <img src="https://png.pngtree.com/background/20210710/original/pngtree-garbage-classification-green-travel-minimalist-background-picture-image_1062842.jpg" 
-                     class="rounded-lg w-full object-contain" alt="Image 3">
+                <img src="https://png.pngtree.com/background/20210710/original/pngtree-garbage-classification-green-travel-minimalist-background-picture-image_1062842.jpg" alt="Image 3">
             </div>
         </div>
         <!-- Swiper Pagination -->
         <div class="swiper-pagination"></div>
+        <!-- Swiper Navigation -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
     </div>
 
     <!-- Main Content -->
     <main class="bg-pink-50 p-6">
-        <h1 class="text-3xl font-bold text-center text-pink-600 mt-4">Keep the world clean and share</h1>
-        <p class="text-center text-lg text-pink-500 mt-2">รักษาโลกให้สะอาดและแบ่งปัน</p>
-        <!-- ปุ่มต่าง ๆ อยู่ตรงกลางและขนาดใหญ่ขึ้น -->
-        <div class="text-center">
+        <!-- ชื่อเว็บไซต์ -->
+        <h1 class="text-4xl font-bold text-center text-blue-700 mt-4">Keep the world clean and share</h1>
+        <p class="text-center text-xl text-gray-600 mt-2">รักษาโลกให้สะอาดและแบ่งปัน</p>
+
+        <!-- ปุ่มอยู่ใต้ข้อความนี้ -->
+        <div class="text-center mt-6">
             <a href="{% url 'separate_waste' %}">
-                <button class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded mx-2">การแยกขยะ</button>
+                <button class="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-6 rounded mx-2 transition duration-300">การแยกขยะ</button>
             </a>
             <a href="{% url 'sell_item_all' %}">
-                <button class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mx-2">การซื้อ-ขาย</button>
+                <button class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-6 rounded mx-2 transition duration-300">การซื้อ-ขาย</button>
             </a>
-            <a href="{% url 'donation_all' %}" class="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded mx-2">
+            <a href="{% url 'donation_all' %}" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-6 rounded mx-2 transition duration-300">
                 การบริจาค
             </a>
-            <a href="{% url 'announcement_all' %}" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded mx-2">
+            <a href="{% url 'announcement_all' %}" class="bg-purple-400 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded mx-2 transition duration-300">
                 กระทู้สอบถามทั่วไป
             </a>
         </div>
@@ -98,28 +117,26 @@
                 <strong>สิ่งที่บริจาคได้:</strong> เสื้อผ้า, หนังสือ, เครื่องครัว, อุปกรณ์การเรียน, และอุปกรณ์อิเล็กทรอนิกส์เก่า
             </p>
         </div>
-
     </main>
 
-    <!-- JavaScript for Hamburger Dropdown and Swiper -->
+    <!-- JavaScript for Swiper -->
     <script>
-        const hamburgerButton = document.getElementById('hamburgerButton');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-
-        hamburgerButton.addEventListener('click', () => {
-            dropdownMenu.classList.toggle('show');
-        });
-
-        var swiper = new Swiper('.swiper-container', {
-            loop: true,
-            autoplay: {
-                delay: 3000, 
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
+        document.addEventListener('DOMContentLoaded', function () {
+            var swiper = new Swiper('.swiper-container', {
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
         });
     </script>
 

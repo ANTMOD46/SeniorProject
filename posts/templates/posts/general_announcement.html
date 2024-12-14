@@ -13,103 +13,113 @@
         }
 
         .form-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+            max-width: 900px;
+            margin: auto;
         }
 
         .form-label {
-            color: #1e40af;
+            color: #2563eb;
+            font-weight: 600;
         }
 
         .form-input {
-            border: 1px solid #93c5fd;
-            background-color: #f0f9ff;
+            border: 2px solid #93c5fd; /* สีขอบ */
+            background-color: #f0f9ff; /* สีพื้นหลัง */
             transition: all 0.3s ease-in-out;
+            box-shadow: none; /* ลบเงาที่ไม่ต้องการ */
         }
-
+    
         .form-input:focus {
-            border-color: #2563eb;
-            outline: none;
-            box-shadow: 0 0 4px rgba(37, 99, 235, 0.5);
+            border-color: #2563eb; /* สีขอบเมื่อโฟกัส */
+            box-shadow: none; /* ลบเงาออกเมื่อโฟกัส */
+            outline: none; /* ลบเส้นขอบโครงนอก */
         }
 
         .submit-button {
             background-color: #2563eb;
             color: white;
-            transition: background-color 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            padding: 12px 32px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
         }
 
         .submit-button:hover {
             background-color: #1d4ed8;
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5);
+            transform: scale(1.05);
         }
 
         .cancel-link {
-            color: #4b5563;
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: underline;
             transition: color 0.3s ease-in-out;
         }
 
         .cancel-link:hover {
             color: #1d4ed8;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
     <title>สร้างกระทู้ใหม่</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-blue-50"> <!-- พื้นหลังสีฟ้าอ่อน -->
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-lg mx-auto mt-10 p-6">
-        <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">สร้างกระทู้ใหม่</h1>
-        <p class="text-center text-gray-600 mb-4">แสดงความคิดเห็นหรือสอบถามเรื่องราวที่คุณสนใจ</p>
+    <main class="mt-10 p-6">
+        <h1 class="text-5xl font-bold text-center text-blue-600 mb-6">สร้างกระทู้ใหม่</h1>
+        <p class="text-center text-gray-600 mb-6">แสดงความคิดเห็นหรือสอบถามเรื่องราวที่คุณสนใจ</p>
 
         <div class="form-container">
             <form method="post" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
-                <div class="mb-6">
-                    <label for="title" class="form-label block text-lg font-semibold mb-2">หัวข้อการประกาศ*</label>
+                <div>
+                    <label for="title" class="form-label block text-lg mb-2">หัวข้อการประกาศ*</label>
                     <input type="text" name="title" id="title" class="form-input w-full px-4 py-3 rounded-md" placeholder="เช่น: อยากขายขวดพลาสติก" required>
                 </div>
 
-                <div class="mb-6">
-                    <label for="description" class="form-label block text-lg font-semibold mb-2">รายละเอียด*</label>
-                    <textarea name="content" id="description" rows="4" class="form-input w-full px-4 py-3 rounded-md" placeholder="ระบุรายละเอียดเกี่ยวกับสิ่งที่คุณต้องการประกาศ" required></textarea>
+                <div>
+                    <label for="description" class="form-label block text-lg mb-2">รายละเอียด*</label>
+                    <textarea name="content" id="description" rows="6" class="form-input w-full px-4 py-3 rounded-md" placeholder="ระบุรายละเอียดเกี่ยวกับสิ่งที่คุณต้องการประกาศ" required style="resize: none;"></textarea>
                 </div>
+                
 
-                <div class="mb-6">
-                    <label for="location" class="form-label block text-lg font-semibold mb-2">ระบุพื้นที่*</label>
+                <div>
+                    <label for="location" class="form-label block text-lg mb-2">ระบุพื้นที่*</label>
                     <input type="text" name="location" id="location" class="form-input w-full px-4 py-3 rounded-md" placeholder="เช่น: กรุงเทพมหานคร" required>
                 </div>
 
-                <div class="mb-6">
-                    <label for="images" class="form-label block text-lg font-semibold mb-2">เพิ่มรูปภาพ*</label>
+                <div>
+                    <label for="images" class="form-label block text-lg mb-2">เพิ่มรูปภาพ*</label>
                     <input type="file" id="images" name="image" class="form-input w-full px-4 py-3 rounded-md" required>
-                    <p class="text-sm text-gray-500 mt-1">เพิ่มรูปภาพ</p>
+                    <p class="text-sm text-gray-500 mt-1">อัปโหลดรูปภาพที่เกี่ยวข้อง</p>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="submit-button font-bold py-2 px-8 rounded-md">ลงประกาศกระทู้</button>
+                    <button type="submit" class="submit-button">ลงประกาศกระทู้</button>
                     <a href="{% url 'post_ad' %}" class="cancel-link ml-4">ยกเลิก</a>
                 </div>
             </form>
         </div>
     </main>
-
-    <script>
-        const hamburgerButton = document.getElementById('hamburgerButton');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-
-        hamburgerButton.addEventListener('click', () => {
-            dropdownMenu.classList.toggle('show');
-        });
-
-        window.addEventListener('click', (event) => {
-            if (!hamburgerButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                dropdownMenu.classList.remove('show');
-            }
-        });
-    </script>
 </body>
 
 </html>

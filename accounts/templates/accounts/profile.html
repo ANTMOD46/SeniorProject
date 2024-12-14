@@ -52,7 +52,7 @@
         }
 
         .form-button {
-            background-color: #4CAF50; /* ปรับสีปุ่ม */
+            background-color: #3498db; /* สีฟ้าสำหรับปุ่ม */
             color: white;
             padding: 12px 20px;
             border-radius: 6px;
@@ -63,32 +63,54 @@
         }
 
         .form-button:hover {
-            background-color: #45a049; /* สีเมื่อชี้ที่ปุ่ม */
+            background-color: #2980b9; /* สีฟ้าคล้ำเมื่อชี้ที่ปุ่ม */
         }
 
         h1 {
             color: #333;
         }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .profile-info h2 {
+            color: #3498db;
+        }
+
+        .edit-link {
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .edit-link:hover {
+            color: #2980b9;
+        }
+
     </style>
     <title>ดูข้อมูลส่วนตัว</title>
 </head>
 
-<body class="bg-gray-100"> <!-- เปลี่ยนสีพื้นหลังเป็นสีเทาอ่อน -->
+<body class="bg-blue-50"> <!-- ใช้สีฟ้าอ่อนเป็นพื้นหลัง -->
 
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="p-6">
-        <h1 class="text-3xl text-center font-bold mb-4">ข้อมูลส่วนตัว</h1>
-        <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
-            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="w-24 h-24 rounded-full mx-auto mb-4">
-            <h2 class="text-xl font-semibold">{{ user.first_name }} {{ user.last_name }}</h2>
-            <p class="text-gray-600">Username: {{ user.username }}</p>
-            <p class="text-gray-600">Email: {{ user.email }}</p>
-            <p class="text-gray-600">เบอร์โทรศัพท์: {{ user.phone_number }}</p>
-            <p class="text-gray-600">ที่อยู่: {{ user.address }}</p>
-            <a href="{% url 'profile_edit' %}" class="text-blue-500 underline">แก้ไขข้อมูลส่วนตัว</a>
+        <h1 class="text-3xl text-center font-bold mb-6 text-blue-600">ข้อมูลส่วนตัว</h1>
+        <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-xl">
+            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="w-24 h-24 rounded-full mx-auto mb-4 shadow-lg">
+            <div class="profile-info text-center">
+                <h2 class="text-xl font-semibold">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p class="text-gray-600">Username: {{ user.username }}</p>
+                <p class="text-gray-600">Email: {{ user.email }}</p>
+                <p class="text-gray-600">เบอร์โทรศัพท์: {{ user.phone_number }}</p>
+                <p class="text-gray-600">ที่อยู่: {{ user.address }}</p>
+                <a href="{% url 'profile_edit' %}" class="edit-link underline">แก้ไขข้อมูลส่วนตัว</a>
+            </div>
         </div>
     </main>
+
     <!-- JavaScript for Hamburger Menu -->
     <script>
         const hamburgerButton = document.getElementById('hamburgerButton');

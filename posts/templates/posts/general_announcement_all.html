@@ -15,15 +15,16 @@
     </style>
 </head>
 
-<body class="bg-pink-50">
+<body class="bg-blue-50">
+
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
-        <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">รายการกระทู้ทั้งหมด</h1>
+        <h1 class="text-4xl font-semibold text-blue-600 mb-8 text-center">รายการกระทู้ทั้งหมด</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for announcement in announcements %}
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                     <div class="relative">
                         {% if announcement.image %}
                             <img src="{{ announcement.image.url }}" alt="{{ announcement.title }}" class="w-full h-48 object-cover">
@@ -31,25 +32,26 @@
                             <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="w-full h-48 object-cover">
                         {% endif %}
                     </div>
-                    <div class="p-4">
-                        <h2 class="text-xl font-bold text-blue-600">{{ announcement.title }}</h2>
-                        <p class="text-gray-600 mt-2 text-sm">{{ announcement.content|truncatewords:15 }}</p>
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold text-blue-600 hover:text-blue-500 transition-colors duration-200">{{ announcement.title }}</h2>
+                        <p class="text-gray-600 mt-3 text-sm">{{ announcement.content|truncatewords:15 }}</p>
                         
                         <div class="mt-4 text-gray-500 text-sm">
                             <p>📍 {{ announcement.location }}</p>
                             <p>📅 {{ announcement.created_at|date:"d F Y, H:i" }}</p>
                         </div>
                         <a href="{% url 'general_announcement_detail' announcement.id %}" 
-                           class="block mt-4 bg-blue-500 text-white py-2 px-4 rounded text-center font-bold hover:bg-blue-600 transition">
+                           class="block mt-6 bg-blue-500 text-white py-2 px-4 rounded-lg text-center font-semibold hover:bg-blue-600 transition duration-300">
                             ดูรายละเอียด
                         </a>
                     </div>
                 </div>
             {% empty %}
-                <p class="col-span-full text-center text-gray-500">ยังไม่มีประกาศทั่วไปในขณะนี้</p>
+                <p class="col-span-full text-center text-gray-500 text-lg">ยังไม่มีประกาศทั่วไปในขณะนี้</p>
             {% endfor %}
         </div>
     </main>
+
 </body>
 
 </html>

@@ -13,42 +13,72 @@
         }
 
         .form-container {
-            background-color: #ffffff; /* พื้นหลังสีขาว */
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #ebf8ff, #dbeafe); /* ไล่สีฟ้าอ่อน */
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2); /* เพิ่มเงาสีน้ำเงิน */
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         .form-label {
-            color: #1e40af; /* สีฟ้าสำหรับข้อความ */
+            color: #2563eb; /* สีฟ้าสำหรับข้อความ */
+            font-weight: 600;
         }
 
         .form-input {
-            border: 1px solid #93c5fd; /* สีฟ้าสำหรับเส้นขอบ */
-            background-color: #f0f9ff; /* สีฟ้าจาง */
+            border: 2px solid #bfdbfe; /* ขอบสีฟ้า */
+            background-color: #eff6ff; /* สีพื้นจาง */
             transition: all 0.3s ease-in-out;
         }
 
         .form-input:focus {
             border-color: #2563eb; /* ขอบสีฟ้าเข้มเมื่อโฟกัส */
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4); /* เพิ่มเงา */
             outline: none;
-            box-shadow: 0 0 4px rgba(37, 99, 235, 0.5);
         }
 
         .submit-button {
-            background-color: #2563eb; /* ปุ่มสีฟ้าเข้ม */
+            background-color: #2563eb; /* สีฟ้า */
             color: white;
-            transition: background-color 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
         }
 
         .submit-button:hover {
-            background-color: #1d4ed8; /* สีฟ้าเข้มขึ้นเมื่อ hover */
+            background-color: #1d4ed8; /* สีฟ้าเข้มขึ้น */
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5);
+            transform: scale(1.05);
+        }
+
+        .cancel-link {
+            color: #2563eb; /* สีฟ้าสำหรับลิงก์ */
+            font-weight: 600;
+            text-decoration: underline;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .cancel-link:hover {
+            color: #1d4ed8; /* สีฟ้าเข้มขึ้นเมื่อ hover */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
     <title>ลงประกาศขายสินค้า</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-blue-50"> <!-- พื้นหลังสีฟ้าอ่อน -->
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="max-w-4xl mx-auto p-6 mt-10">
@@ -60,8 +90,8 @@
 
                 <!-- ฟิลด์ตัวเลือกว่าผู้ใช้เป็นผู้ซื้อหรือผู้ขาย -->
                 <div>
-                    <label for="user_role" class="form-label block text-lg font-semibold mb-1">คุณเป็นผู้ซื้อหรือผู้ขาย*</label>
-                    <select id="user_role" name="user_role" class="form-input w-full px-4 py-2 rounded-md" required>
+                    <label for="user_role" class="form-label block text-lg mb-1">คุณเป็นผู้ซื้อหรือผู้ขาย*</label>
+                    <select id="user_role" name="user_role" class="form-input w-full px-4 py-3 rounded-md" required>
                         <option value="" disabled selected>เลือก...</option>
                         <option value="buyer">ผู้ซื้อ</option>
                         <option value="seller">ผู้ขาย</option>
@@ -69,39 +99,39 @@
                 </div>
 
                 <div>
-                    <label for="title" class="form-label block text-lg font-semibold mb-1">หัวข้อที่คุณต้องการซื้อ-ขาย*</label>
-                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-2 rounded-md" placeholder="ชื่อสินค้าเช่น ขวดพลาสติก เหล็ก" required>
+                    <label for="title" class="form-label block text-lg mb-1">หัวข้อที่คุณต้องการซื้อ-ขาย*</label>
+                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-3 rounded-md" placeholder="ชื่อสินค้าเช่น ขวดพลาสติก เหล็ก" required>
                 </div>
 
                 <div>
-                    <label for="price" class="form-label block text-lg font-semibold mb-1">ระบุราคาที่เหมาะสม*</label>
-                    <input type="text" id="price" name="price" class="form-input w-full px-4 py-2 rounded-md" placeholder="ระบุราคาเป็นตัวเลขเช่น 100" required>
+                    <label for="price" class="form-label block text-lg mb-1">ระบุราคาที่เหมาะสม*</label>
+                    <input type="text" id="price" name="price" class="form-input w-full px-4 py-3 rounded-md" placeholder="ระบุราคาเป็นตัวเลขเช่น 100" required>
                 </div>
 
                 <!-- รูปภาพสินค้า -->
                 <div>
-                    <label for="image" class="form-label block text-lg font-semibold mb-1">รูปภาพสินค้า*</label>
-                    <input type="file" id="image" name="image" class="form-input w-full px-4 py-2 rounded-md" required>
+                    <label for="image" class="form-label block text-lg mb-1">รูปภาพสินค้า*</label>
+                    <input type="file" id="image" name="image" class="form-input w-full px-4 py-3 rounded-md" required>
                     <p class="text-sm text-gray-500 mt-1">เพิ่มรูปภาพ</p>
                 </div>
 
                 <div>
-                    <label for="description" class="form-label block text-lg font-semibold mb-1">รายละเอียดสินค้า*</label>
-                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-2 rounded-md" placeholder="ข้อมูลเพิ่มเติมที่ทำให้สินค้าของคุณได้แสดงรายละเอียด" required></textarea>
+                    <label for="description" class="form-label block text-lg mb-1">รายละเอียดสินค้า*</label>
+                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-3 rounded-md" placeholder="ข้อมูลเพิ่มเติมที่ทำให้สินค้าของคุณได้แสดงรายละเอียด" required></textarea>
                 </div>
 
                 <div>
-                    <label for="location" class="form-label block text-lg font-semibold mb-1">ระบุพื้นที่ของสินค้า*</label>
-                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-2 rounded-md" placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
+                    <label for="location" class="form-label block text-lg mb-1">ระบุพื้นที่ของสินค้า*</label>
+                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-3 rounded-md" placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
                 </div>
 
                 <div>
-                    <label for="phone" class="form-label block text-lg font-semibold mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
-                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-2 rounded-md" placeholder="เช่น 09xxxxxxxx" required>
+                    <label for="phone" class="form-label block text-lg mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
+                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-3 rounded-md" placeholder="เช่น 09xxxxxxxx" required>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="submit-button font-bold py-2 px-8 rounded-md">ลงประกาศ</button>
+                    <button type="submit" class="submit-button">ลงประกาศ</button>
                     <a href="{% url 'post_ad' %}" class="cancel-link ml-4">ยกเลิก</a>
                 </div>
             </form>
