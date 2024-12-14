@@ -136,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"  # หรือเปลี่ยนเป็น "th" ถ้าต้องการใช้ภาษาไทย
+LANGUAGE_CODE = "en-us" 
 TIME_ZONE = "Asia/Bangkok"
 
 USE_I18N = True
@@ -156,7 +156,7 @@ STATICFILES_DIRS = [BASE_DIR / "theme/static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'accounts.CustomUser'
-AUTH_USER_MODEL = 'accounts.CustomUser'
+
 
 
 

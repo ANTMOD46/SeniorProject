@@ -12,19 +12,30 @@
         * {
             font-family: "Kanit", serif;
         }
+
+        /* เพิ่มเงาจางๆ สำหรับขอบโพสต์ */
+        .post-shadow {
+            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.8); /* เงาสีขาวจางๆ */
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .post-shadow:hover {
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.9); /* เพิ่มเงาเมื่อ hover */
+        }
     </style>
 </head>
 
-<body class="bg-blue-50">
+<body class="bg-white">
 
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
+    <main class="max-w-7xl mx-auto p-6 bg-white rounded-lg mt-10">
         <h1 class="text-4xl font-semibold text-blue-600 mb-8 text-center">รายการกระทู้ทั้งหมด</h1>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for announcement in announcements %}
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <!-- เพิ่มเงาให้โพสต์ -->
+                <div class="bg-white rounded-lg overflow-hidden post-shadow transition duration-300">
                     <div class="relative">
                         {% if announcement.image %}
                             <img src="{{ announcement.image.url }}" alt="{{ announcement.title }}" class="w-full h-48 object-cover">

@@ -98,14 +98,16 @@
         }
 
         .modal-content {
-            background-color: white;
+            background-color: #fef9e7; /* เปลี่ยนเป็นสีเหลืองอ่อน */
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            width: 90%;
-            max-width: 400px;
+            width: 95%;
+            max-width: 600px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        
+        
 
         .show-modal {
             display: flex;
@@ -126,7 +128,7 @@
         }
 
         .btn-cancel {
-            background-color: #f44336;
+            background-color: #FFFFFF;
             color: white;
             font-weight: bold;
             padding: 10px 20px;
@@ -192,7 +194,8 @@
             <span>{{ donation.created_at|date:"d F Y, h:i a" }}</span>
         </div>
 
-        <h1 class="text-2xl font-bold text-pink-600 mb-2">{{ donation.title }}</h1>
+        <h1 class="text-2xl font-bold text-black mb-2">{{ donation.title }}</h1>
+
         <p class="text-gray-600 mb-4">{{ donation.recipient }}</p>
 
         <div class="flex justify-center items-center mb-4 space-x-4">
@@ -209,7 +212,7 @@
             <a href="{% url 'start_chat' post_id post_type %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
                 แชท
             </a>
-        </div>
+        
         
             
             <!-- ปุ่มโทร -->
@@ -250,7 +253,8 @@
             </div>
         </div>
 
-        <h2 class="text-xl font-bold text-pink-600 mt-6">ความคิดเห็น</h2>
+        <h2 class="text-xl font-bold text-blue-600 mt-6">ความคิดเห็น</h2>
+
         <div class="mb-4">
             {% for comment in donation.comments.all %}
                 <div class="border-b py-2 flex justify-between items-center">
@@ -275,8 +279,10 @@
 
         <form action="{% url 'donation_details' donation.id %}" method="POST" class="mb-6">
             {% csrf_token %}
-            <textarea name="content" rows="3" class="w-full px-4 py-2 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 bg-pink-50" placeholder="เพิ่มความคิดเห็นของคุณที่นี่" required></textarea>
+            <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mt-2">แสดงความคิดเห็น</button>
+            
+
         </form>
         
     </main>

@@ -25,7 +25,8 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
     <div class="auth-container bg-white">
-        <h1 class="text-2xl font-bold text-center text-pink-500">{% block title %}</h1>
+        <!-- ใช้ block.super เพื่อดึงค่าจากบล็อก title -->
+        <h1 class="text-2xl font-bold text-center text-pink-500">{{ block.super }}</h1>
         <div class="mt-4">
             {% block content %}
             <!-- Authentication content goes here -->

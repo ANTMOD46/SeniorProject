@@ -3,16 +3,18 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             font-family: "Kanit", serif;
         }
-
+    
+        body {
+            background: linear-gradient(to bottom, #e0f7fa, #ffffff); /* สีฟ้าอ่อน ไล่ระดับ */
+            min-height: 100vh; /* ให้เต็มหน้าจอ */
+            margin: 0;
+            padding: 0;
+        }
+    
         .menu {
             display: none;
             position: absolute;
@@ -26,7 +28,7 @@
             padding: 10px 0;
             transition: all 0.3s ease;
         }
-
+    
         .menu-item {
             padding: 12px 16px;
             cursor: pointer;
@@ -37,11 +39,11 @@
             width: 100%;
             color: #333;
         }
-
+    
         .menu-item:hover {
             background-color: #f0f0f0;
         }
-
+    
         #menuToggle {
             background: transparent;
             border: none;
@@ -53,19 +55,19 @@
             justify-content: center;
             align-items: center;
         }
-
+    
         .action-menu-container {
             position: absolute;
             top: 10px;
             right: 10px;
             z-index: 100;
         }
-
+    
         .menu.show {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
         }
-
+    
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -76,7 +78,7 @@
                 transform: translateY(0);
             }
         }
-
+    
         .modal {
             display: none;
             position: fixed;
@@ -88,7 +90,7 @@
             justify-content: center;
             align-items: center;
         }
-
+    
         .modal-content {
             background-color: white;
             padding: 20px;
@@ -97,11 +99,12 @@
             width: 90%;
             max-width: 400px;
         }
-
+    
         .show-modal {
             display: flex;
         }
     </style>
+    
     <title>รายละเอียดการประกาศ</title>
 </head>
 
@@ -130,7 +133,8 @@
             {{ post_ad.created_at|date:"d F Y, H:i a" }}
         </p>
 
-        <h1 class="text-3xl font-bold text-pink-600 mb-2">{{ post_ad.title }}</h1>
+        <h1 class="text-3xl font-bold text-black mb-2">{{ post_ad.title }}</h1>
+
         <p class="text-red-500 text-2xl font-bold mb-4">฿ {{ post_ad.price }}</p>
 
         <div class="flex justify-center items-center mb-4 space-x-4">
@@ -178,7 +182,8 @@
             </div>
         </div>
         {% endif %}
-        <h2 class="text-xl font-bold text-pink-600 mt-6">ความคิดเห็น</h2>
+        <h2 class="text-xl font-bold text-blue-600 mt-6">ความคิดเห็น</h2>
+
         <div class="mb-4">
             {% for comment in post_ad.comments.all %}
                 <div class="border-b py-2 flex justify-between items-center">
@@ -205,8 +210,9 @@
         <!-- ฟอร์มเพิ่มความคิดเห็น -->
         <form method="POST" action="{% url 'add_comment' post_ad.id %}" class="mt-6">
             {% csrf_token %}
-            <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
-            <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-md mt-2">ส่งความคิดเห็น</button>
+            <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md mt-2">ส่งความคิดเห็น</button>
+            
         </form>
     </main>
 
