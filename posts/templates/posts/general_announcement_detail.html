@@ -196,9 +196,12 @@
 
         <div class="flex justify-center space-x-8 mt-4 mb-4">
             <!-- ปุ่มแชท -->
-            {% comment %} <a href="{% url 'rooms' %}?chat_type=donation" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
-                แชท
-            </a> {% endcomment %}
+            <a href="{% url 'start_chat' post_id=announcement.id post_type='general_announcement' %}" 
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
+            แชท
+         </a>
+         
+
             <button id="showPhoneButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
                 โทร
             </button>

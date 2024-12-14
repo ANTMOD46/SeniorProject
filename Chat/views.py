@@ -3,22 +3,44 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseForbidden
 from .models import ChatRoom, Message
 from django.contrib.auth import get_user_model
+from posts.models import GeneralAnnouncement, SellItem, Donation  # เพิ่ม GeneralAnnouncement
+
 
 User = get_user_model()
 
+from django.http import HttpResponseBadRequest
+from posts.models import SellItem, Donation  # นำเข้าโมเดลที่เกี่ยวข้องกับโพสต์
+
 @login_required
-def start_chat(request, user_id):
+def start_chat(request, post_id=None, post_type=None):
     user1 = request.user
-    user2 = get_object_or_404(User, id=user_id)
+
+    # ตรวจสอบว่า post_id และ post_type ถูกส่งมาหรือไม่
+    if post_id and post_type:
+        if post_type == 'sell_item':
+            post = get_object_or_404(SellItem, id=post_id)
+        elif post_type == 'donation':
+            post = get_object_or_404(Donation, id=post_id)
+        elif post_type == 'general_announcement':  # เพิ่มการรองรับ general_announcement
+            post = get_object_or_404(GeneralAnnouncement, id=post_id)
+        else:
+            return HttpResponseBadRequest("Invalid post type")
+
+        # กำหนดผู้ใช้ที่เกี่ยวข้องกับโพสต์
+        user2 = post.user
+    else:
+        # หากไม่มี post_id และ post_type ให้ใช้ user_id แบบเดิม
+        user2 = get_object_or_404(User, id=request.GET.get('user_id'))
 
     # ตรวจสอบว่าห้องแชทมีอยู่แล้วหรือไม่
     chatroom, created = ChatRoom.objects.get_or_create(
-        user1=min(user1, user2, key=lambda u: u.id),  # จัดเรียงให้ user1 เป็น id ต่ำกว่าเสมอ
+        user1=min(user1, user2, key=lambda u: u.id),  # จัดเรียง user1 เป็น id ต่ำกว่าเสมอ
         user2=max(user1, user2, key=lambda u: u.id)
     )
 
     # Redirect ไปยังหน้าห้องแชท
     return redirect('chat_room', chatroom_id=chatroom.id)
+
 
 from django.utils.timezone import make_aware
 from datetime import datetime

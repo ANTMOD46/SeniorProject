@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Barcode</title>
+</head>
+<body>
+    <h1>Scan Barcode</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="barcode_image">Upload Barcode Image:</label><br>
+        <input required type="file" id="barcode_image" name="barcode_image" accept="image/*"><br><br>
+        <input type="submit" value="Scan Barcode">
+    </form>
+</body>
+</html>

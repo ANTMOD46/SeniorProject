@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     "waste_separation",
     "channels",
     "Chat",
+    "barcode_generator",
+    "barcode_scanner",
 ]
 
 MIDDLEWARE = [
