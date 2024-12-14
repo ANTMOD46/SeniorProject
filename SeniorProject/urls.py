@@ -29,6 +29,7 @@ urlpatterns = [
     path('comments/', include('comments.urls')),  # ตัวอย่าง comments
     path('accounts/', include('accounts.urls')),
     path('waste/', include('waste_separation.urls')),
+    path('Chat/', include('Chat.urls')),
    
     
     

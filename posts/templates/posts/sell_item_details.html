@@ -143,9 +143,12 @@
         
 
         <div class="flex justify-center space-x-8 mt-4 mb-4">
-           <a  class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
-                แชท
-            </a> 
+            <a href="{% url 'start_chat' user_id=post_ad.user.id %}" 
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
+            แชท
+            </a>
+
+         
             <button id="showPhoneButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
                 โทร
             </button>

@@ -78,7 +78,7 @@
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูการแยกขยะ</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">เพิ่มการแยกขยะ</a>
                         <a href="{% url 'user_store' request.user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าร้านของฉัน</a>
-                        {% comment %} <a href="{% url 'rooms' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a> {% endcomment %}
+                        <a href="{% url 'rooms' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a> 
                         
                         {% if user.is_superuser %}
                         <a href="{% url 'admin_member_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าสมาชิกทั้งหมด</a>

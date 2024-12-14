@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>รายการโพสต์ทั้งหมด</title>
+</head>
+<body class="bg-gray-100">
+    {% include 'accounts/header_logged_in.html' %}
+    <title>Chat Room</title>
+    <style>
+        * {
+            font-family: 'Kanit', sans-serif;
+        }
+        body { background-color: #e3f2fd; }
+        .chat-room { height: 100vh; display: flex; flex-direction: column; }
+        .chat-header { 
+            {% comment %} background-color: #0288d1;  {% endcomment %}
+            color: white; 
+            padding: 10px 20px; 
+            display: flex; 
+            align-items: center; 
+            {% comment %} border-bottom: 2px solid #0277bd; {% endcomment %}
+        }
+        .chat-header img { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            margin-right: 10px; 
+        }
+        .messages { flex-grow: 1; overflow-y: auto; padding: 10px; }
+        .message-container { display: flex; margin-bottom: 10px; }
+        .message-container.right { justify-content: flex-end; }
+        .message-content { 
+            background-color: white; 
+            padding: 10px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            max-width: 60%; 
+        }
+        .message-content.right { background-color: #b3e5fc; }
+        .message-avatar { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            margin-right: 10px; 
+        }
+        .message-avatar.right { margin-left: 10px; margin-right: 0; }
+        .chat-input { 
+            border-top: 1px solid #ddd; 
+            display: flex; 
+            padding: 10px; 
+            background-color: #fff; 
+        }
+        .chat-input textarea { 
+            flex: 1; 
+            border: 1px solid #bbb; 
+            resize: none; 
+            padding: 10px; 
+            border-radius: 8px; 
+        }
+        .chat-input button { 
+            {% comment %} background-color: #0288d1;  {% endcomment %}
+            color: white; 
+            padding: 10px 20px; 
+            margin-left: 10px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
+        .chat-input button:hover { background-color: #0277bd; }
+    </style>
+</head>
+<body>
+    <div class="chat-room">
+        <!-- Chat Header -->
+        <div class="chat-header bg-blue-100 p-4 flex items-center rounded shadow-md mb-4">
+            <!-- รูปโปรไฟล์ -->
+            <img src="{{ other_user.profile_picture.url }}" alt="Profile Picture" class="chat-header-avatar">
+            
+            <!-- ชื่อผู้ใช้ -->
+            <h1 class="text-xl font-bold text-black ml-4">{{ other_user.username }}</h1>
+        </div>
+        
+        
+        
+        <!-- Messages -->
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message-container {% if message.sender == request.user %}right{% endif %}">
+                {% if message.sender != request.user %}
+                <img src="{{ message.sender.profile_picture.url }}" alt="Avatar" class="message-avatar">
+                {% endif %}
+                <div class="message-content {% if message.sender == request.user %}right{% endif %}">
+                    <p>{{ message.content }}</p>
+                    <span class="text-gray-400 text-xs">{{ message.timestamp|date:"H:i" }}</span>
+                </div>
+                {% if message.sender == request.user %}
+                <img src="{{ message.sender.profile_picture.url }}" alt="Avatar" class="message-avatar right">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input">
+            <textarea id="message-input" placeholder="Aa" rows="1"></textarea>
+            <button id="send-button">ส่ง</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById("send-button").addEventListener("click", function () {
+            const content = document.getElementById("message-input").value;
+            const csrfToken = "{{ csrf_token }}";
+
+            if (content.trim() !== "") {
+                fetch("", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: `content=${encodeURIComponent(content)}`,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        const chatBox = document.querySelector(".messages");
+                        const messageDiv = document.createElement("div");
+
+                        messageDiv.classList.add("message-container", "right");
+                        messageDiv.innerHTML = `
+                            <img src="{{ request.user.profile_picture.url }}" alt="Avatar" class="message-avatar right">
+                            <div class="message-content right">
+                                <p>${data.content}</p>
+                                <span class="text-gray-400 text-xs">${data.timestamp}</span>
+                            </div>
+                        `;
+
+                        chatBox.appendChild(messageDiv);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        document.getElementById("message-input").value = "";
+                    }
+                });
+            }
+        });
+
+        // Fetch new messages every 3 seconds
+        function fetchNewMessages() {
+            const lastMessageTimestamp = document.querySelector('.messages').lastElementChild?.getAttribute('data-timestamp') || "";
+
+            fetch(`?last_timestamp=${encodeURIComponent(lastMessageTimestamp)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.messages) {
+                        const chatBox = document.querySelector('.messages');
+
+                        data.messages.forEach(message => {
+                            const messageDiv = document.createElement('div');
+                            const isSender = message.sender_id === {{ request.user.id }};
+
+                            messageDiv.classList.add("message-container", isSender ? "right" : "");
+                            messageDiv.innerHTML = `
+                                ${isSender ? "" : `<img src="{{ message.sender.profile_picture.url }}" alt="Avatar" class="message-avatar">`}
+                                <div class="message-content ${isSender ? "right" : ""}">
+                                    <p>${message.content}</p>
+                                    <span class="text-gray-400 text-xs">${message.timestamp}</span>
+                                </div>
+                                ${isSender ? `<img src="{{ request.user.profile_picture.url }}" alt="Avatar" class="message-avatar right">` : ""}
+                            `;
+
+                            chatBox.appendChild(messageDiv);
+                        });
+
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                });
+        }
+
+        setInterval(fetchNewMessages, 3000);
+    </script>
+</body>
+</html>

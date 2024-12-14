@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "accounts",
     "waste_separation",
     "channels",
+    "Chat",
 ]
 
 MIDDLEWARE = [
@@ -133,13 +134,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = "en-us"  # หรือเปลี่ยนเป็น "th" ถ้าต้องการใช้ภาษาไทย
+TIME_ZONE = "Asia/Bangkok"
 
 USE_I18N = True
-
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
