@@ -7,43 +7,41 @@
         * {
             font-family: "Kanit", serif;
         }
-    
+
         body {
             background: linear-gradient(to bottom, #e0f7fa, #ffffff); /* สีฟ้าอ่อน ไล่ระดับ */
             min-height: 100vh; /* ให้เต็มหน้าจอ */
             margin: 0;
             padding: 0;
         }
-    
+
         .menu {
             display: none;
             position: absolute;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             right: 10px;
             top: 40px;
             z-index: 1000;
             width: 160px;
             padding: 10px 0;
-            transition: all 0.3s ease;
         }
-    
+
         .menu-item {
-            padding: 12px 16px;
+            padding: 10px 15px;
             cursor: pointer;
             font-size: 16px;
             text-align: left;
             transition: background-color 0.3s;
+            border-radius: 4px;
             display: block;
-            width: 100%;
-            color: #333;
         }
-    
+
         .menu-item:hover {
             background-color: #f0f0f0;
         }
-    
+
         #menuToggle {
             background: transparent;
             border: none;
@@ -55,19 +53,19 @@
             justify-content: center;
             align-items: center;
         }
-    
+
         .action-menu-container {
             position: absolute;
             top: 10px;
             right: 10px;
             z-index: 100;
         }
-    
+
         .menu.show {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
         }
-    
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -78,7 +76,8 @@
                 transform: translateY(0);
             }
         }
-    
+
+        /* Modal สำหรับแสดงข้อมูล */
         .modal {
             display: none;
             position: fixed;
@@ -90,7 +89,7 @@
             justify-content: center;
             align-items: center;
         }
-    
+
         .modal-content {
             background-color: white;
             padding: 20px;
@@ -99,12 +98,12 @@
             width: 90%;
             max-width: 400px;
         }
-    
+
         .show-modal {
             display: flex;
         }
     </style>
-    
+
     <title>รายละเอียดการประกาศ</title>
 </head>
 
@@ -144,7 +143,6 @@
                 <a href="{% url 'user_store' post_ad.user.username %}" class="text-blue-500 hover:underline">ดูประกาศทั้งหมด</a>
             </div>
         </div>
-        
 
         <div class="flex justify-center space-x-8 mt-4 mb-4">
             <a href="{% url 'start_chat' user_id=post_ad.user.id %}" 
@@ -152,11 +150,11 @@
             แชท
             </a>
 
-         
             <button id="showPhoneButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
                 โทร
             </button>
         </div>
+
         <!-- Modal สำหรับแสดงเบอร์โทร -->
         <div id="phoneModal" class="modal">
             <div class="modal-content">
@@ -177,11 +175,12 @@
             <button id="menuToggle" class="hover:text-gray-600">⋮</button>
             <div id="actionMenu" class="menu z-10">
                 <a href="{% url 'update_item' item_id=post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
-                <button class="menu-item text-red-500" id="deletePostButton">ลบโพสต์</button>
+                <a href="#" class="menu-item text-red-500" id="deletePostButton">ลบโพสต์</a>
                 <button class="menu-item text-green-500" id="closeSaleButton">ปิดการขาย</button>
             </div>
         </div>
         {% endif %}
+
         <h2 class="text-xl font-bold text-blue-600 mt-6">ความคิดเห็น</h2>
 
         <div class="mb-4">
@@ -203,18 +202,39 @@
                 <p class="text-gray-500">ยังไม่มีความคิดเห็น</p>
             {% endfor %}
         </div>
-        
-        
 
-        
         <!-- ฟอร์มเพิ่มความคิดเห็น -->
         <form method="POST" action="{% url 'add_comment' post_ad.id %}" class="mt-6">
             {% csrf_token %}
             <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md mt-2">ส่งความคิดเห็น</button>
-            
         </form>
     </main>
+
+        <!-- Modal สำหรับการลบโพสต์ -->
+<div id="deletePostModal" class="modal">
+    <div class="modal-content">
+        <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าจะลบโพสต์?</h2>
+        {% comment %} <p class="text-lg text-gray-600 mb-4">การลบโพสต์จะไม่สามารถกู้คืนได้</p> {% endcomment %}
+        <form method="post" action="{% url 'delete_item' post_ad.id %}">
+            {% csrf_token %}
+            
+            <!-- ใช้ flex เพื่อให้ปุ่มอยู่ข้างกัน -->
+            <div class="flex justify-center space-x-4">
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md">
+                    ยืนยัน
+                </button>
+                <button id="cancelDeleteButton" type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md">
+                    ยกเลิก
+                </button>
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+
+
 
     <script>
         const showPhoneButton = document.getElementById('showPhoneButton');
@@ -228,53 +248,42 @@
         const closeSaleButton = document.getElementById('closeSaleButton');
         const closeSaleModal = document.getElementById('closeSaleModal');
         const cancelCloseSaleButton = document.getElementById('cancelCloseSaleButton');
-    
+
         // Toggle menu
         if (menuToggle && actionMenu) {
             menuToggle.addEventListener('click', function(event) {
                 event.stopPropagation();
                 actionMenu.classList.toggle('show');
             });
-    
+
             document.addEventListener('click', function(event) {
                 if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
                     actionMenu.classList.remove('show');
                 }
             });
         }
-    
-        // Delete post modal
-        if (deletePostButton && deletePostModal && cancelDeleteButton) {
+
+        // Show delete post modal
+        if (deletePostButton && deletePostModal) {
             deletePostButton.addEventListener('click', function() {
                 deletePostModal.classList.add('show-modal');
             });
-    
+
             cancelDeleteButton.addEventListener('click', function() {
                 deletePostModal.classList.remove('show-modal');
             });
         }
-    
-        // Close sale modal
-        if (closeSaleButton && closeSaleModal && cancelCloseSaleButton) {
-            closeSaleButton.addEventListener('click', function() {
-                closeSaleModal.classList.add('show-modal');
-            });
-    
-            cancelCloseSaleButton.addEventListener('click', function() {
-                closeSaleModal.classList.remove('show-modal');
-            });
-        }
-    
+
         // Show phone modal
         if (showPhoneButton && phoneModal && closePhoneModal) {
             showPhoneButton.addEventListener('click', function() {
                 phoneModal.classList.add('show-modal');
             });
-    
+
             closePhoneModal.addEventListener('click', function() {
                 phoneModal.classList.remove('show-modal');
             });
-    
+
             window.addEventListener('click', function(event) {
                 if (event.target === phoneModal) {
                     phoneModal.classList.remove('show-modal');
@@ -282,7 +291,5 @@
             });
         }
     </script>
-    
-    
 </body>
 </html>

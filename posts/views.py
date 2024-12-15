@@ -132,10 +132,15 @@ class SellItemDetailView(View):
 
 
 
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
+from .models import SellItem
+
 class SellItemDeleteView(DeleteView):
     model = SellItem
-    template_name = 'posts/sell_item_confirm_delete.html'  # หรือชื่อไฟล์ที่เหมาะสม
-    success_url = reverse_lazy('sell_item_all')  # หรือ URL ที่คุณต้องการหลังการลบ
+    template_name = 'posts/sell_item_confirm_delete.html'  # ชื่อไฟล์ที่ใช้ในการยืนยันการลบ
+    success_url = reverse_lazy('sell_item_all')  # URL ที่จะนำไปหลังจากลบเสร็จ
+
     
     
 class EditItemView(UserPassesTestMixin, UpdateView):

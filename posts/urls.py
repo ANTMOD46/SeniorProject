@@ -33,7 +33,9 @@ urlpatterns = [
     path('sell-item/<int:item_id>/', SellItemDetailView.as_view(), name='sell_item_details'),
     path('sell-item/<int:item_id>/edit/', EditItemView.as_view(), name='edit_item'),
     path('sell-item/<int:item_id>/edit/', EditItemView.as_view(), name='update_item'),
-    path('sell-item/<int:pk>/delete/', DeleteItemView.as_view(), name='delete_item'),
+    path('posts/sell-item/<int:pk>/delete/', SellItemDeleteView.as_view(), name='delete_item'),
+
+
     path('sell-item/<int:pk>/delete/', SellItemDeleteView.as_view(), name='delete_item'),
     path('sell-item/<int:item_id>/close-sale/', CloseSaleView.as_view(), name='close_sale'),
     
