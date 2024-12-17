@@ -89,12 +89,13 @@
         <p class="text-center text-gray-600 mb-6">แสดงความคิดเห็นหรือสอบถามเรื่องราวที่คุณสนใจ</p>
 
         <div class="form-container">
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
+            <form action="{% url 'general_announcement' %}" method="post" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
                 <div>
-                    <label for="title" class="form-label block text-lg mb-2">หัวข้อการประกาศ*</label>
-                    <input type="text" name="title" id="title" class="form-input w-full px-4 py-3 rounded-md" placeholder="เช่น: อยากขายขวดพลาสติก" required>
+                    <label for="title" class="form-label block text-sm mb-2">หัวข้อการประกาศ*</label>
+                    <input type="text" name="title" id="title" class="form-input w-full px-4 py-2 rounded-md" placeholder="เช่น: อยากขายขวดพลาสติก" required>
                 </div>
+                
 
                 <div>
                     <label for="description" class="form-label block text-lg mb-2">รายละเอียด*</label>

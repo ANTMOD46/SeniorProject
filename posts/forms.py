@@ -16,7 +16,7 @@ class DonationForm(forms.ModelForm):
 class GeneralAnnouncementForm(forms.ModelForm):
     class Meta:
         model = GeneralAnnouncement
-        fields = ['title', 'content', 'location', 'image']
+        fields = ['title', 'content', 'location', 'image',]
         
 
 

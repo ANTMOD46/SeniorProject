@@ -302,7 +302,9 @@ class GeneralAnnouncementView(View):
             general_announcement.user = request.user
             general_announcement.save()
             messages.success(request, 'ลงประกาศทั่วไปสำเร็จ')
-            return redirect('general_announcement_detail', pk=general_announcement.id)
+            
+            # เปลี่ยนเส้นทางไปยังหน้ารายละเอียดประกาศที่เพิ่งสร้าง
+            return redirect('general_announcement_detail', announcement_id=general_announcement.id)
         else:
             print(form.errors)  # พิมพ์ข้อผิดพลาดในกรณีที่ฟอร์มไม่ผ่าน
             messages.error(request, 'เกิดข้อผิดพลาดในการลงประกาศ')
@@ -343,7 +345,7 @@ class GeneralAnnouncementUpdateView(UpdateView):
 
     # หรือใช้ dynamic success URL
     def get_success_url(self):
-        return reverse_lazy('general_announcement_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('general_announcement_detail', kwargs={'announcement_id': self.object.pk})
     
     
 
@@ -409,7 +411,7 @@ class UserStoreView(ListView):
         context['user_profile'] = get_object_or_404(User, username=self.kwargs['username'])
         return context
 
-
+from accounts.models import CustomUser  # ใช้ CustomUser โดยตรง
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -422,15 +424,17 @@ def add_comment(request, post_id):
         print("User ID:", request.user.id)  # ตรวจสอบ User ID
         print("Sell Item:", sell_item)
 
+        # ตรวจสอบว่าผู้ใช้งานที่ล็อกอินอยู่เป็น CustomUser
+        user = get_object_or_404(CustomUser, id=request.user.id)
+
         SellItemComment.objects.create(
             sell_item=sell_item,
-            user=request.user,
+            user=user,  # ใช้ CustomUser ที่กำหนด
             content=content
         )
         return redirect('sell_item_details', item_id=post_id)
 
     return redirect('sell_item_details', item_id=post_id)
-
 
 
 
