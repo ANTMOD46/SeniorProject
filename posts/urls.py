@@ -37,8 +37,9 @@ urlpatterns = [
 
 
     path('sell-item/<int:pk>/delete/', SellItemDeleteView.as_view(), name='delete_item'),
-    path('sell-item/<int:item_id>/close-sale/', CloseSaleView.as_view(), name='close_sale'),
-    
+    # path('sell-item/<int:item_id>/close-sale/', CloseSaleView.as_view(), name='close_sale'),
+    path('close-sale/<int:item_id>/', CloseSaleView.as_view(), name='close_sale'),
+
     
     path('donation-form/', views.DonationFormView.as_view(), name='donation_form'),
     path('donation/<int:pk>/', DonationDetailView.as_view(), name='donation_details'),

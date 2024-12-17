@@ -114,6 +114,7 @@ class SellItemDetailView(View):
             'post_ad': post_ad,
             'can_edit': request.user == post_ad.user or request.user.is_staff,
             'is_owner': request.user == post_ad.user,  # ตรวจสอบว่าเป็นเจ้าของโพสต์หรือไม่
+            
         }
         return render(request, 'posts/sell_item_details.html', context)
 
@@ -179,13 +180,18 @@ class EditItemView(UpdateView):
         return reverse('sell_item_details', kwargs={'item_id': self.object.id})
 
 
+from django.http import JsonResponse
+from django.views import View
+
 class CloseSaleView(View):
     def post(self, request, item_id):
         post_ad = get_object_or_404(SellItem, id=item_id)
         if request.user == post_ad.user or request.user.is_staff:
-            post_ad.is_sold = True
+            post_ad.is_closed = True
             post_ad.save()
-        return redirect('sell_item_details', item_id=item_id)
+            return JsonResponse({"success": True, "message": "ปิดการขายสำเร็จ"})
+        return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการขายนี้"})
+
     
     
 
