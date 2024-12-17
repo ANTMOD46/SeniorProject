@@ -17,7 +17,7 @@ from .views import general_announcement_details
 from .views import delete_comment
 from .views import delete_donation_comment
 from .views import GeneralAnnouncementView, general_announcement_details
-
+from .views import CloseDonationView
 
 
 urlpatterns = [
@@ -47,6 +47,7 @@ urlpatterns = [
     path('donation/<int:donation_id>/edit/', DonationUpdateView.as_view(), name='edit_donation'),
     path('donation/<int:donation_id>/edit/', DonationUpdateView.as_view(), name='update_donation'),
     path('donation/<int:pk>/', DonationDetailView.as_view(), name='donation_details'),
+    path('close_donation/<int:donation_id>/', CloseDonationView.as_view(), name='close_donation'),
     
     
     

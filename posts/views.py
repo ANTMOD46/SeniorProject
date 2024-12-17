@@ -282,7 +282,23 @@ class DonationDeleteView(DeleteView):
     model = Donation
     template_name = 'posts/donation_confirm_delete.html'  # ไฟล์เทมเพลตที่ใช้ยืนยันการลบ
     success_url = reverse_lazy('donation_all')  # เปลี่ยนตาม URL หลังลบเสร็จ
-    
+
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
+from .models import Donation
+
+class CloseDonationView(View):
+    def post(self, request, donation_id):
+        donation = get_object_or_404(Donation, id=donation_id)
+        if request.user == donation.user or request.user.is_staff:
+            donation.is_closed = True
+            donation.save()
+            return JsonResponse({"success": True, "message": "ปิดการบริจาคสำเร็จ"})
+        return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการบริจาคนี้"})
+
+
     
 def announcement_all(request):
     # ดึงข้อมูลการประกาศทั้งหมดจากฐานข้อมูล
