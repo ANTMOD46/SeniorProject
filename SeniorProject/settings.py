@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 LOGIN_URL = '/accounts/login/'  # URL สำหรับหน้า login
 LOGIN_REDIRECT_URL = 'home_user'  # URL ที่จะเปลี่ยนไปหลังจากล็อกอินสำเร็จ
-LOGOUT_REDIRECT_URL = 'login'  # URL ที่จะเปลี่ยนไปหลังจากออกจากระบบ
+LOGOUT_REDIRECT_URL = ''  # URL ที่จะเปลี่ยนไปหลังจากออกจากระบบ
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

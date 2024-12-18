@@ -19,7 +19,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # ล็อกอินอัตโนมัติหลังจากสมัครสมาชิก
-            return redirect('home_user')  # เปลี่ยนเส้นทางไปยังหน้า Home
+            return redirect('login')  # เปลี่ยนเส้นทางไปยังหน้า Home
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -53,11 +53,11 @@ def profile_edit(request):
 class CustomLogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect('home_user')  # เปลี่ยน 'home' เป็น URL ที่คุณต้องการ
+        return redirect('home')  # เปลี่ยน 'home' เป็น URL ที่คุณต้องการ
 
     def post(self, request, *args, **kwargs):
         logout(request)
-        return redirect('home_user')
+        return redirect('home')
     
     
 @login_required
