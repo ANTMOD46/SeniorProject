@@ -48,13 +48,19 @@ from django.utils.timezone import now
 
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse, HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now, make_aware
 from datetime import datetime
 from .models import ChatRoom, Message
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def chat_room(request, chatroom_id):
+    """
+    ห้องแชทหลัก:
+    - โหลดข้อความจากฐานข้อมูล (GET ปกติ)
+    - ดึงข้อความใหม่เมื่อมีการร้องขอด้วย AJAX
+    - เพิ่มข้อความใหม่ลงในฐานข้อมูลเมื่อ POST
+    """
     # ดึงข้อมูลห้องแชท
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
 
@@ -75,17 +81,17 @@ def chat_room(request, chatroom_id):
             return JsonResponse({
                 "status": "success",
                 "sender_id": message.sender.id,
+                "username": message.sender.username,
                 "content": message.content,
                 "timestamp": message.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
             })
         return JsonResponse({"status": "error", "message": "Empty content"}, status=400)
 
-    # เมื่อมีการร้องขอดึงข้อความใหม่ผ่าน GET
-    if request.method == "GET" and request.GET.get("last_timestamp"):
+    # เมื่อมีการร้องขอดึงข้อความใหม่ผ่าน AJAX/GET (โหลดข้อความหลัง last_timestamp)
+    if request.GET.get("last_timestamp"):
         last_timestamp = request.GET.get("last_timestamp")
         try:
-            # แปลง `last_timestamp` เป็น datetime-aware
-            last_timestamp = make_aware(datetime.strptime(last_timestamp, "%Y-%m-%d %H:%M:%S.%f"))
+            last_timestamp = make_aware(datetime.strptime(last_timestamp, "%Y-%m-%d %H:%M:%S"))
         except (ValueError, TypeError):
             return JsonResponse({"error": "Invalid timestamp format"}, status=400)
 
@@ -94,6 +100,7 @@ def chat_room(request, chatroom_id):
             "messages": [
                 {
                     "sender_id": message.sender.id,
+                    "username": message.sender.username,
                     "content": message.content,
                     "timestamp": message.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
                 }
@@ -101,21 +108,17 @@ def chat_room(request, chatroom_id):
             ]
         })
 
-    # เมื่อเป็น GET request ปกติ (โหลดหน้าแชท)
+    # เมื่อเป็น GET request ปกติ (โหลดหน้าเว็บ)
     messages = chatroom.messages.order_by('timestamp')
 
-    # ดึงข้อมูลผู้ใช้อีกคนในห้องแชท (นอกเหนือจากผู้ใช้ที่ล็อกอิน)
+    # ดึงข้อมูลคู่สนทนา
     other_user = chatroom.user1 if chatroom.user2 == request.user else chatroom.user2
 
-    # Render ข้อมูลไปยัง Template
     return render(request, 'chat/chat_room.html', {
         'chatroom': chatroom,
         'messages': messages,
-        'other_user': other_user,  # ส่งข้อมูลผู้ใช้อีกคนไปยัง Template
+        'other_user': other_user,  # คู่สนทนา
     })
-
-    
-
 
 
 

@@ -7,9 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>ห้องแชท</title>
     <style>
-        * {
-            font-family: 'Kanit', sans-serif;
-        }
+        * { font-family: 'Kanit', sans-serif; }
         .chat-room {
             height: 100vh;
             display: flex;
@@ -42,14 +40,16 @@
     </style>
 </head>
 <body>
+    <!-- Chat Room Container -->
     <div class="chat-room">
         <!-- Header -->
         <div class="p-4 bg-blue-500 text-white flex items-center">
+            <!-- แสดงชื่อและรูปคู่สนทนา -->
             <img src="{{ other_user.profile_picture.url }}" alt="Profile Picture" class="w-12 h-12 rounded-full mr-4">
-            <h1 class="text-xl font-bold">{{ other_user.username }}</h1>
+            <h1 class="text-xl font-bold">{{ other_user.username }}</h1> <!-- คู่สนทนา -->
         </div>
-
-        <!-- Messages -->
+        
+        <!-- Messages Section -->
         <div id="chat-messages" class="messages">
             {% for message in messages %}
                 <div class="message-container {% if message.sender == request.user %}right{% endif %}">
@@ -61,25 +61,27 @@
             {% endfor %}
         </div>
 
-        <!-- Input -->
+        <!-- Input Section -->
         <div class="p-4 bg-white flex">
             <textarea id="message-input" class="flex-1 border rounded p-2" rows="2" placeholder="พิมพ์ข้อความ..."></textarea>
             <button id="send-button" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">ส่ง</button>
         </div>
     </div>
 
+    <!-- JavaScript Section -->
     <script>
         const chatroomId = "{{ chatroom.id }}";
         const username = "{{ request.user.username }}";
+        const chatMessages = document.getElementById("chat-messages");
 
-        // เชื่อมต่อกับ WebSocket
+        // WebSocket Connection
         const chatSocket = new WebSocket(
             'ws://' + window.location.host + '/ws/chat/' + chatroomId + '/'
         );
 
+        // รับข้อความจาก WebSocket
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            const chatMessages = document.getElementById("chat-messages");
             const messageDiv = document.createElement("div");
             messageDiv.classList.add("message-container");
 
@@ -90,29 +92,32 @@
             messageDiv.innerHTML = `
                 <div class="message-content ${data.username === username ? 'right' : ''}">
                     <p><strong>${data.username}:</strong> ${data.message}</p>
+                    <span class="text-gray-400 text-xs">${data.timestamp}</span>
                 </div>
             `;
             chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            chatMessages.scrollTop = chatMessages.scrollHeight;  // เลื่อนลงไปที่ข้อความล่าสุด
         };
 
+        // แสดงข้อผิดพลาดเมื่อ WebSocket ปิด
         chatSocket.onclose = function(e) {
             console.error('WebSocket closed unexpectedly');
         };
 
+        // ส่งข้อความเมื่อคลิกปุ่ม
         document.getElementById("send-button").onclick = function() {
             const messageInput = document.getElementById("message-input");
             const message = messageInput.value.trim();
 
             if (message) {
                 chatSocket.send(JSON.stringify({
-                    'message': message,
-                    'username': username
+                    'message': message
                 }));
-                messageInput.value = '';
+                messageInput.value = '';  // เคลียร์ช่องข้อความ
             }
         };
 
+        // ส่งข้อความเมื่อกด Enter
         document.getElementById("message-input").addEventListener("keypress", function(e) {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
