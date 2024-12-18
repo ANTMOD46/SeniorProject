@@ -119,13 +119,13 @@
             {% endif %}
         </div>
 
-        <p class="text-sm font-semibold">
+        {% comment %} <p class="text-sm font-semibold">
             {% if is_seller %}
-                <span class="text-green-500">คุณเป็นผู้ขาย</span>
+                <span class="text-green-500">ขาย</span>
             {% else %}
-                <span class="text-blue-500">คุณเป็นผู้รับซื้อ</span>
+                <span class="text-blue-500">รับซื้อ</span>
             {% endif %}
-        </p>
+        </p> {% endcomment %}
 
         <p class="text-gray-500 mb-2">
             <i class="fas fa-calendar-alt"></i>
