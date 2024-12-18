@@ -1,0 +1,151 @@
+Table logentry {
+  id integer
+  action_time timestamp
+  user_id integer [note: 'foreign key to customuser']
+  content_type_id integer [note: 'foreign key to contenttype']
+  object_id text
+  object_repr varchar
+  action_flag integer
+  change_message text
+}
+
+Table permission {
+  id integer
+  name varchar
+  content_type_id integer [note: 'foreign key to contenttype']
+  codename varchar
+}
+
+Table group {
+  id integer
+  name varchar
+}
+
+Table contenttype {
+  id integer
+  app_label varchar
+  model varchar
+}
+
+Table session {
+  session_key varchar
+  session_data text
+  expire_date timestamp
+}
+
+Table sellitem {
+  id integer
+  user_role varchar
+  title varchar
+  description text
+  location varchar
+  phone varchar
+  created_at timestamp
+  updated_at timestamp
+  user_id integer [note: 'foreign key to customuser']
+}
+
+Table sellitemcomment {
+  id integer
+  sell_item_id integer [note: 'foreign key to sellitem']
+  user_id integer [note: 'foreign key to customuser']
+  content text
+  created_at timestamp
+}
+
+Table donation {
+  id integer
+  role varchar
+  title varchar
+  description text
+  location varchar
+  phone varchar
+  created_at timestamp
+  updated_at timestamp
+  user_id integer [note: 'foreign key to customuser']
+}
+
+Table donationcomment {
+  id integer
+  donation_id integer [note: 'foreign key to donation']
+  user_id integer [note: 'foreign key to customuser']
+  content text
+  created_at timestamp
+}
+
+Table generalannouncement {
+  id integer
+  title varchar
+  content text
+  location varchar
+  user_id integer [note: 'foreign key to customuser']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table generalannouncementcomment {
+  id integer
+  general_announcement_id integer [note: 'foreign key to generalannouncement']
+  user_id integer [note: 'foreign key to customuser']
+  content text
+  created_at timestamp
+}
+
+Table customuser {
+  id integer
+  password varchar
+  last_login timestamp
+  username varchar
+  date_joined timestamp
+  first_name varchar
+  last_name varchar
+  address text
+  phone_number varchar
+  email varchar
+}
+
+Table wasteitem {
+  id varchar
+  barcode varchar
+  name varchar
+  waste_type varchar
+  disposal_method text
+  created_at timestamp
+}
+
+Table chatroom {
+  id integer
+  user1_id integer [note: 'foreign key to customuser']
+  user2_id integer [note: 'foreign key to customuser']
+  created_at timestamp
+}
+
+Table message {
+  id integer
+  chatroom_id integer [note: 'foreign key to chatroom']
+  sender_id integer [note: 'foreign key to customuser']
+  content text
+  timestamp timestamp
+}
+
+Table generatedbarcode {
+  id integer
+  code varchar
+}
+
+Ref: logentry.user_id > customuser.id // many-to-one
+Ref: logentry.content_type_id > contenttype.id // many-to-one
+Ref: permission.content_type_id > contenttype.id // many-to-one
+Ref: sellitem.user_id > customuser.id // many-to-one
+Ref: sellitemcomment.sell_item_id > sellitem.id // many-to-one
+Ref: sellitemcomment.user_id > customuser.id // many-to-one
+Ref: donation.user_id > customuser.id // many-to-one
+Ref: donationcomment.donation_id > donation.id // many-to-one
+Ref: donationcomment.user_id > customuser.id // many-to-one
+Ref: generalannouncement.user_id > customuser.id // many-to-one
+Ref: generalannouncementcomment.general_announcement_id > generalannouncement.id // many-to-one
+Ref: generalannouncementcomment.user_id > customuser.id // many-to-one
+Ref: chatroom.user1_id > customuser.id // many-to-one
+Ref: chatroom.user2_id > customuser.id // many-to-one
+Ref: message.chatroom_id > chatroom.id // many-to-one
+Ref: message.sender_id > customuser.id // many-to-one
