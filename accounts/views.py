@@ -79,3 +79,9 @@ def profile_view(request):
 
 
 
+def admin_member_list(request):
+    # ตัวอย่างโค้ดสำหรับแสดงสมาชิกทั้งหมด
+    return render(request, 'accounts/admin_member_list.html')
+
+
+
