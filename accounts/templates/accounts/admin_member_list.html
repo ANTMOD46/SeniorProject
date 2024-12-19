@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Member List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+      <!-- Header -->
+      {% include 'accounts/header_logged_in.html' %}
+      
+    <div class="container mx-auto mt-8">
+        <h1 class="text-2xl font-bold text-gray-700 mb-6">รายชื่อสมาชิก</h1>
+
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <table class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700">
+                        <th class="border border-gray-300 px-4 py-2">User ID</th>
+                        <th class="border border-gray-300 px-4 py-2">Username</th>
+                        <th class="border border-gray-300 px-4 py-2">Email</th>
+                        <th class="border border-gray-300 px-4 py-2">Status</th>
+                        <th class="border border-gray-300 px-4 py-2">Last Login</th>
+                        <th class="border border-gray-300 px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-center">{{ member.id }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ member.username }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ member.email }}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            {% if member.is_active %}
+                            <span class="text-green-600 font-bold">Active</span>
+                            {% else %}
+                            <span class="text-red-600 font-bold">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            {{ member.last_login|date:"d/m/Y H:i:s" }}
+                        </td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            <a href="{% url 'view_member_detail' member.id %}" 
+                               class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                               ดูรายละเอียด
+                            </a>
+                            <a href="{% url 'delete_member' member.id %}" 
+                               class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                               onclick="return confirm('คุณต้องการลบผู้ใช้นี้ใช่หรือไม่?');">
+                               ลบผู้ใช้
+                            </a>
+                        </td>
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray-500 py-4">ไม่มีสมาชิกในระบบ</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

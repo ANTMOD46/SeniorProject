@@ -32,3 +32,13 @@ class ProfileUpdateForm(forms.ModelForm):
             user.save()
             user_profile.save()
         return user
+
+
+
+from django import forms
+from .models import CustomUser
+
+class MemberForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'email', ]  # เพิ่มฟิลด์ตามต้องการ

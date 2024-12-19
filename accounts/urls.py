@@ -20,6 +20,9 @@ urlpatterns = [
     path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),
     path('profile/', views.profile_view, name='profile'),
     path('admin/members/', views.admin_member_list, name='admin_member_list'),
+     path('admin/members/<int:member_id>/', views.view_member_detail, name='view_member_detail'),
+    path('admin/members/<int:member_id>/delete/', views.delete_member, name='delete_member'),
+    
      path(
         'password_reset/',
         auth_views.PasswordResetView.as_view(template_name='accounts/password_reset_form.html'),

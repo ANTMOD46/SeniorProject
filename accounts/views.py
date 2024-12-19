@@ -79,9 +79,29 @@ def profile_view(request):
 
 
 
+from django.shortcuts import render
+from .models import CustomUser
+
 def admin_member_list(request):
-    # ตัวอย่างโค้ดสำหรับแสดงสมาชิกทั้งหมด
-    return render(request, 'accounts/admin_member_list.html')
+    # ดึงข้อมูลสมาชิกทั้งหมด
+    members = CustomUser.objects.all()
+    return render(request, 'accounts/admin_member_list.html', {'members': members})
 
 
 
+
+from django.shortcuts import get_object_or_404, render
+from .models import CustomUser
+
+def view_member_detail(request, member_id):
+    member = get_object_or_404(CustomUser, id=member_id)
+    return render(request, 'accounts/view_member_detail.html', {'member': member})
+
+
+from django.shortcuts import get_object_or_404, redirect
+from .models import CustomUser
+
+def delete_member(request, member_id):
+    member = get_object_or_404(CustomUser, id=member_id)
+    member.delete()
+    return redirect('accounts/admin_member_list')  # กลับไปยังหน้ารายชื่อสมาชิก

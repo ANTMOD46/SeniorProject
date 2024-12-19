@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header -->
+    {% include 'accounts/header_logged_in.html' %}
+
+    <!-- Main Content -->
+    <div class="container mx-auto mt-10">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-500 p-6 text-white">
+                <h1 class="text-4xl font-bold">รายละเอียดผู้ใช้</h1>
+                <p class="mt-2 text-lg">{{ member.first_name }} {{ member.last_name }}</p>
+            </div>
+            <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Profile Picture -->
+                <div class="flex justify-center md:justify-start">
+                    <img src="{{ member.profile_picture.url|default:'/static/default_profile.png' }}" 
+                         alt="Profile Picture" 
+                         class="w-32 h-32 rounded-full border-4 border-blue-500 shadow-lg">
+                </div>
+                <!-- User Information -->
+                <div class="md:col-span-2 space-y-4 text-gray-700">
+                    <p><span class="font-bold">Username:</span> {{ member.username }}</p>
+                    <p><span class="font-bold">Email:</span> {{ member.email }}</p>
+                    <p><span class="font-bold">ชื่อเต็ม:</span> {{ member.first_name }} {{ member.last_name }}</p>
+                    <p><span class="font-bold">ที่อยู่:</span> {{ member.address|default:"- ไม่ระบุ -" }}</p>
+                    <p><span class="font-bold">เบอร์โทรศัพท์:</span> {{ member.phone_number|default:"- ไม่ระบุ -" }}</p>
+                    <p><span class="font-bold">วันที่ลงทะเบียน:</span> {{ member.date_joined|date:"d/m/Y H:i:s" }}</p>
+                    <p><span class="font-bold">เข้าสู่ระบบล่าสุด:</span> 
+                        {{ member.last_login|default:"- ไม่เคยเข้าสู่ระบบ -"|date:"d/m/Y H:i:s" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Back Button -->
+        <div class="flex justify-center mt-8">
+            <a href="{% url 'admin_member_list' %}" 
+               class="bg-blue-500 text-white font-medium px-6 py-3 rounded-lg shadow-md hover:bg-blue-600">
+               กลับไปหน้ารายชื่อสมาชิก
+            </a>
+        </div>
+    </div>
+</body>
+</html>
