@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Barcode</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        #interactive { width: 100%; height: auto; position: relative; }
+        canvas.drawing, video { position: absolute; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+    <h1>Scan Barcode</h1>
+    <div id="interactive" class="viewport"></div>
+    <p id="barcode-result">Barcode Result: <span></span></p>
+
+    <script>
+        Quagga.init({
+            inputStream: {
+                type: "LiveStream",
+                constraints: {
+                    width: 640,
+                    height: 480,
+                    facingMode: "environment" // ใช้กล้องหลัง
+                }
+            },
+            decoder: {
+                readers: ["code_128_reader", "ean_reader", "upc_reader"] // ประเภทของบาร์โค้ดที่รองรับ
+            }
+        }, function(err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function(data) {
+            const result = data.codeResult.code;
+            document.querySelector("#barcode-result span").textContent = result;
+
+            // ส่งผลลัพธ์ไป Backend ผ่าน AJAX
+            fetch('/scanner/scan-result/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ barcode: result })
+            })
+            .then(response => response.text())
+            .then(data => console.log(data))
+            .catch(err => console.error(err));
+        });
+    </script>
+</body>
+</html>
