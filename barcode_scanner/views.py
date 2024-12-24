@@ -43,3 +43,12 @@ def scan_result(request):
             return JsonResponse({"success": True, "message": "Barcode found!", "code": barcode_obj.code})
         except GeneratedBarcode.DoesNotExist:
             return JsonResponse({"success": False, "message": "Barcode not found!"})
+
+
+def submit_form(request):
+    if request.method == "POST":
+        barcode = request.POST.get("barcode")
+        category = request.POST.get("category")
+        description = request.POST.get("description")
+        # Logic บันทึกข้อมูลในฐานข้อมูล
+        return JsonResponse({"success": True, "message": "บันทึกข้อมูลสำเร็จ"})

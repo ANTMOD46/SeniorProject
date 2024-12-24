@@ -1,19 +1,73 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scan Barcode</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <style>
-        #interactive { width: 100%; height: auto; position: relative; }
-        canvas.drawing, video { position: absolute; top: 0; left: 0; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>แสกนเพื่อดูการแยกขยะ</title>
 </head>
-<body>
-    <h1>Scan Barcode</h1>
-    <div id="interactive" class="viewport"></div>
-    <p id="barcode-result">Barcode Result: <span></span></p>
+<body class="bg-gray-50 font-sans h-screen">
+    {% include 'accounts/header_logged_in.html' %}
+    <div class="pt-20 h-full flex flex-col items-center justify-start">
+        <h1 class="text-4xl font-bold text-blue-600 text-center mb-6">แสกนเพื่อดูการแยกขยะ</h1>
+        <div id="interactive" class="viewport mb-6" style="max-width: 640px; width: 100%; height: auto;"></div>
+        <p id="barcode-result" class="text-xl text-gray-700 mb-6 hidden">บาร์โค้ดที่สแกน: <span id="barcode-value"></span></p>
+        
+        <form id="barcode-form" class="hidden mt-6 flex flex-col items-center w-full max-w-md bg-white rounded-lg p-6" method="post" action="/scanner/submit-form/" enctype="multipart/form-data" style="box-shadow: none; border: 2px solid #007BFF;">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="barcode" class="block text-blue-600 text-lg font-medium mb-2">รหัสบาร์โค้ด:</label>
+                <input type="text" id="barcode" name="barcode" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" readonly>
+            </div>
+            <div class="mb-4">
+                <label for="product_name" class="block text-blue-600 text-lg font-medium mb-2">ชื่อผลิตภัณฑ์:</label>
+                <input type="text" id="product_name" name="product_name" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="mb-4">
+                <label for="waste_type" class="block text-blue-600 text-lg font-medium mb-2">ประเภทขยะ:</label>
+                <select id="waste_type" name="waste_type" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="plastic">พลาสติก</option>
+                    <option value="glass">แก้ว</option>
+                    <option value="metal">โลหะ</option>
+                    <option value="paper">กระดาษ</option>
+                    <option value="fabric">ผ้า</option>
+                    <option value="electronics">อิเล็กทรอนิกส์</option>
+                    <option value="organic">ขยะอินทรีย์</option>
+                    <option value="hazardous">ขยะอันตราย</option>
+                    <option value="general">ขยะทั่วไป</option>
+                    <option value="other">อื่น ๆ</option>
+                </select>
+            </div>
+            <div id="subtype-container" class="mb-4 hidden">
+                <label for="subtype" class="block text-blue-600 text-lg font-medium mb-2">ประเภทย่อย:</label>
+                <select id="subtype" name="subtype" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <!-- ตัวเลือกย่อยจะแสดงตามประเภทหลัก -->
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="category" class="block text-blue-600 text-lg font-medium mb-2">หมวดหมู่ขยะ:</label>
+                <select id="category" name="category" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="recycle">รีไซเคิล</option>
+                    <option value="organic">ขยะอินทรีย์</option>
+                    <option value="hazardous">ขยะอันตราย</option>
+                    <option value="general">ขยะทั่วไป</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="waste_image" class="block text-blue-600 text-lg font-medium mb-2">เพิ่มภาพขยะ:</label>
+                <input type="file" id="waste_image" name="waste_image" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="mb-4">
+                <label for="separation_method" class="block text-blue-600 text-lg font-medium mb-2">วิธีการแยกขยะ:</label>
+                <textarea id="separation_method" name="separation_method" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" rows="4"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300">
+                บันทึกข้อมูล
+            </button>
+        </form>
+    </div>
 
     <script>
         Quagga.init({
@@ -22,11 +76,11 @@
                 constraints: {
                     width: 640,
                     height: 480,
-                    facingMode: "environment" // ใช้กล้องหลัง
+                    facingMode: "environment"
                 }
             },
             decoder: {
-                readers: ["code_128_reader", "ean_reader", "upc_reader"] // ประเภทของบาร์โค้ดที่รองรับ
+                readers: ["code_128_reader", "ean_reader", "upc_reader"]
             }
         }, function(err) {
             if (err) {
@@ -36,22 +90,82 @@
             Quagga.start();
         });
 
-        Quagga.onDetected(function(data) {
-            const result = data.codeResult.code;
-            document.querySelector("#barcode-result span").textContent = result;
+        const wasteType = document.getElementById("waste_type");
+        const subtypeContainer = document.getElementById("subtype-container");
+        const subtype = document.getElementById("subtype");
 
-            // ส่งผลลัพธ์ไป Backend ผ่าน AJAX
-            fetch('/scanner/scan-result/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ barcode: result })
-            })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(err => console.error(err));
+        const subtypes = {
+            plastic: [
+                { value: "pe", text: "พลาสติก PE (Polyethylene)" },
+                { value: "hdpe", text: "พลาสติก HDPE (High-Density Polyethylene)" },
+                { value: "ldpe", text: "พลาสติก LDPE (Low-Density Polyethylene)" },
+                { value: "pp", text: "พลาสติก PP (Polypropylene)" },
+                { value: "pet", text: "พลาสติก PET (Polyethylene Terephthalate)" },
+                { value: "ps", text: "พลาสติก PS (Polystyrene)" },
+                { value: "pvc", text: "พลาสติก PVC (Polyvinyl Chloride)" }
+            ],
+            glass: [
+                { value: "clear_glass", text: "แก้วใส" },
+                { value: "colored_glass", text: "แก้วสี" }
+            ],
+            metal: [
+                { value: "aluminum", text: "อลูมิเนียม" },
+                { value: "steel", text: "เหล็ก" },
+                { value: "copper", text: "ทองแดง" }
+            ],
+            organic: [
+                { value: "food_waste", text: "เศษอาหาร" },
+                { value: "garden_waste", text: "ขยะจากสวน" },
+                { value: "compostable", text: "วัสดุย่อยสลายได้" }
+            ],
+            hazardous: [
+                { value: "batteries", text: "แบตเตอรี่" },
+                { value: "chemicals", text: "สารเคมี" },
+                { value: "light_bulbs", text: "หลอดไฟ" },
+                { value: "medical_waste", text: "ขยะทางการแพทย์" },
+                { value: "spray_cans", text: "กระป๋องสเปรย์" },
+                { value: "cleaning_agents", text: "น้ำยาทำความสะอาด" },
+                { value: "pesticides", text: "ยาฆ่าแมลง" },
+                { value: "ink_cartridges", text: "หมึกพิมพ์" }
+            ],
+            general: [
+                { value: "plastic_bags", text: "ถุงพลาสติก" },
+                { value: "food_wrappers", text: "ซองบรรจุอาหาร" },
+                { value: "foam_boxes", text: "กล่องโฟม" },
+                { value: "mixed_waste", text: "ขยะผสม" }
+            ]
+        };
+
+        wasteType.addEventListener("change", function () {
+            const selectedType = this.value;
+
+            // ลบตัวเลือกเก่าทั้งหมด
+            subtype.innerHTML = "";
+
+            if (subtypes[selectedType]) {
+                subtypeContainer.classList.remove("hidden");
+
+                subtypes[selectedType].forEach((item) => {
+                    const option = document.createElement("option");
+                    option.value = item.value;
+                    option.textContent = item.text;
+                    subtype.appendChild(option);
+                });
+            } else {
+                subtypeContainer.classList.add("hidden");
+            }
+        });
+
+        Quagga.onDetected(function(data) {
+            const barcode = data.codeResult.code;
+            document.getElementById("barcode-value").textContent = barcode;
+            document.getElementById("barcode").value = barcode;
+            document.getElementById("barcode-result").classList.remove("hidden");
+            document.getElementById("barcode-form").classList.remove("hidden");
+
+            // ปิดกล้องหลังจากสแกนสำเร็จ
+            Quagga.stop();
+            document.getElementById("interactive").style.display = "none";
         });
     </script>
 </body>
