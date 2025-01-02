@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- QuaggaJS สำหรับการสแกนบาร์โค้ด -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <title>แสกนเพื่อดูการแยกขยะ</title>
 </head>
@@ -19,7 +21,13 @@
             {% csrf_token %}
             <div class="mb-4">
                 <label for="barcode" class="block text-blue-600 text-lg font-medium mb-2">รหัสบาร์โค้ด:</label>
-                <input type="text" id="barcode" name="barcode" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" readonly>
+                <input 
+                    type="text" 
+                    id="barcode" 
+                    name="barcode" 
+                    class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" 
+                    readonly
+                >
             </div>
             <div class="mb-4">
                 <label for="product_name" class="block text-blue-600 text-lg font-medium mb-2">ชื่อผลิตภัณฑ์:</label>
@@ -70,26 +78,74 @@
     </div>
 
     <script>
-        Quagga.init({
-            inputStream: {
-                type: "LiveStream",
-                constraints: {
-                    width: 640,
-                    height: 480,
-                    facingMode: "environment"
+        // ฟังก์ชันเริ่มต้น Quagga
+        function startQuagga() {
+            console.log("Initializing Quagga...");
+            Quagga.init({
+                inputStream: {
+                    type: "LiveStream",
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment"
+                    },
+                    area: { // ขนาดพื้นที่สแกน (optional)
+                        top: "0%",
+                        right: "0%",
+                        bottom: "0%",
+                        left: "0%"
+                    },
+                    singleChannel: false // กรณีต้องการภาพสี
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "upc_reader"]
+                },
+                locate: true // พยายามค้นหาบาร์โค้ดในภาพ
+            }, function(err) {
+                if (err) {
+                    console.error("Quagga initialization error:", err);
+                    alert("เกิดข้อผิดพลาดในการเริ่มต้นการสแกนบาร์โค้ด กรุณาลองใหม่อีกครั้ง");
+                    return;
                 }
-            },
-            decoder: {
-                readers: ["code_128_reader", "ean_reader", "upc_reader"]
-            }
-        }, function(err) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            Quagga.start();
+                console.log("Quagga initialized successfully.");
+                Quagga.start();
+            });
+
+            // ฟังเหตุการณ์เมื่อบาร์โค้ดถูกสแกน
+            Quagga.onDetected(function(data) {
+                console.log("Barcode detected:", data.codeResult.code);
+                const barcode = data.codeResult.code;
+                document.getElementById("barcode-value").textContent = barcode;
+                const barcodeInput = document.getElementById("barcode");
+                barcodeInput.value = barcode;
+                document.getElementById("barcode-result").classList.remove("hidden");
+                document.getElementById("barcode-form").classList.remove("hidden");
+
+                // ลบ readonly เพื่อให้สามารถแก้ไขได้
+                barcodeInput.readOnly = false;
+
+                // เพิ่มการโฟกัสที่ช่องกรอกบาร์โค้ด
+                barcodeInput.focus();
+
+                // ปิดกล้องหลังจากสแกนสำเร็จ
+                Quagga.stop();
+                document.getElementById("interactive").style.display = "none";
+                console.log("Quagga stopped after successful scan.");
+            });
+
+            // ฟังเหตุการณ์เมื่อ Quagga พบข้อผิดพลาด
+            Quagga.onProcessed(function(result) {
+                // สามารถเพิ่มการประมวลผลเพิ่มเติมได้ที่นี่
+                // เช่น การแสดงกรอบสี่เหลี่ยมบนบาร์โค้ดที่สแกน
+            });
+        }
+
+        // เรียกใช้ฟังก์ชันเริ่มต้น Quagga เมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener("DOMContentLoaded", function() {
+            startQuagga();
         });
 
+        // การจัดการประเภทขยะและประเภทย่อย
         const wasteType = document.getElementById("waste_type");
         const subtypeContainer = document.getElementById("subtype-container");
         const subtype = document.getElementById("subtype");
@@ -154,18 +210,6 @@
             } else {
                 subtypeContainer.classList.add("hidden");
             }
-        });
-
-        Quagga.onDetected(function(data) {
-            const barcode = data.codeResult.code;
-            document.getElementById("barcode-value").textContent = barcode;
-            document.getElementById("barcode").value = barcode;
-            document.getElementById("barcode-result").classList.remove("hidden");
-            document.getElementById("barcode-form").classList.remove("hidden");
-
-            // ปิดกล้องหลังจากสแกนสำเร็จ
-            Quagga.stop();
-            document.getElementById("interactive").style.display = "none";
         });
     </script>
 </body>
