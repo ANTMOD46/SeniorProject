@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>บันทึกข้อมูลขยะ</title>
+    <style>
+        .hidden { display: none; }
+        .waste-item { border: 1px solid #ddd; padding: 16px; margin-bottom: 16px; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans h-screen">
+    {% include 'accounts/header_logged_in.html' %}
+    <div class="pt-20 h-full flex flex-col items-center justify-start">
+        <h1 class="text-4xl font-bold text-orange-600 text-center mb-6">เพิ่มวิธีจัดการขยะ</h1>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
+            <form method="post" enctype="multipart/form-data" action="{% url 'barcode_scanner:add_waste_item' %}?barcode={{ barcode }}">
+                {% csrf_token %}
+
+                <!-- รหัสบาร์โค้ด -->
+                <div class="mb-6">
+                    <label for="barcode" class="block text-lg text-blue-600 font-medium mb-2">รหัสบาร์โค้ด:</label>
+                    <input type="text" id="barcode" name="barcode" value="{{ barcode }}" class="border border-gray-300 rounded-md w-full p-2">
+                </div>
+
+                <!-- ชื่อยี่ห้อ -->
+                <div class="mb-6">
+                    <label for="brand_name" class="block text-lg text-blue-600 font-medium mb-2">ชื่อยี่ห้อ:</label>
+                    <input type="text" id="brand_name" name="brand_name" value="{{ waste_item.brand_name|default_if_none:'' }}" class="border border-gray-300 rounded-md w-full p-2">
+                </div>
+
+                <!-- ภาพผลิตภัณฑ์ -->
+                <div class="mb-6">
+                    <label for="product_image" class="block text-lg text-blue-600 font-medium mb-2">ภาพผลิตภัณฑ์:</label>
+                    <input type="file" id="product_image" name="product_image" class="border border-gray-300 rounded-md w-full p-2">
+                </div>
+
+                <!-- ชื่อผลิตภัณฑ์ -->
+                <div class="mb-6">
+                    <label for="product_name" class="block text-lg text-blue-600 font-medium mb-2">ชื่อผลิตภัณฑ์:</label>
+                    <input type="text" id="product_name" name="product_name" value="{{ waste_item.product_name|default_if_none:'' }}" class="border border-gray-300 rounded-md w-full p-2">
+                </div>
+
+                <!-- ขยะชิ้นที่ 1 -->
+                <div id="waste-items-container">
+                    <div class="waste-item" id="waste-item-1">
+                        <h2 class="text-xl text-blue-600 font-semibold">ขยะชิ้นที่ 1</h2>
+                        <label for="images-1" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
+                        <input type="file" id="images-1" name="images-1[]" multiple class="border border-gray-300 rounded-md w-full p-2">
+
+                        <label for="waste_type-1" class="block text-lg text-blue-600 font-medium mt-4">ประเภทขยะ:</label>
+                        <select name="waste_type-1" id="waste_type-1" class="border border-gray-300 rounded-md w-full p-2">
+                            <option value="">-- เลือกประเภทขยะ --</option>
+                            <option value="plastic">พลาสติก</option>
+                            <option value="paper">กระดาษ</option>
+                            <option value="metal">โลหะ</option>
+                            <option value="glass">แก้ว</option>
+                            <option value="e_waste">e-waste</option>
+                            <option value="steel">เหล็ก</option>
+                            <option value="others">อื่นๆ</option>
+                        </select>
+
+                        <label for="subtype-1" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่ย่อย:</label>
+                        <input type="text" id="subtype-1" name="subtype-1" class="border border-gray-300 rounded-md w-full p-2" placeholder="เช่น พลาสติกแข็ง PET">
+
+                        <label for="category-1" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่ขยะ:</label>
+                        <select name="category-1" id="category-1" class="border border-gray-300 rounded-md w-full p-2">
+                            <option value="">-- เลือกหมวดหมู่ --</option>
+                            <option value="recyclable">สามารถรีไซเคิลได้</option>
+                            <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
+                            <option value="hazardous">ของเสียอันตราย</option>
+                            <option value="compostable">สามารถย่อยสลายได้</option>
+                        </select>
+
+                        <label for="separation_method-1" class="block text-lg text-blue-600 font-medium mt-4">วิธีการแยกขยะ:</label>
+                        <textarea id="separation_method-1" name="separation_method-1" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
+                    </div>
+                </div>
+
+                <!-- ปุ่มเพิ่มขยะ -->
+                <button type="button" id="add-waste-item-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg mt-4">
+                    + เพิ่มขยะชิ้นที่
+                </button>
+
+                <!-- ปุ่มบันทึกข้อมูล -->
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-400 mt-4">
+                    เผยแพร่
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const wasteTypeToSubtypes = {
+            plastic: ['พลาสติกแข็ง PET', 'พลาสติกฟิล์ม HDPE', 'พลาสติกโฟม'],
+            paper: ['กระดาษขาวดำ', 'กระดาษลัง', 'กระดาษหนังสือพิมพ์'],
+            metal: ['โลหะอลูมิเนียม', 'โลหะเหล็ก'],
+            glass: ['แก้วใส', 'แก้วสี'],
+            e_waste: ['อุปกรณ์อิเล็กทรอนิกส์', 'แบตเตอรี่'],
+            steel: ['เหล็กหนัก', 'เหล็กเบา'],
+            others: ['อื่นๆ'],
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("waste_type-1").addEventListener("change", function() {
+                const selectedWasteType = this.value;
+                const subtypeInput = document.getElementById("subtype-1");
+
+                // Clear existing options or reset to input field
+                subtypeInput.innerHTML = "";
+
+                // Generate new options based on selected waste_type
+                if (selectedWasteType && wasteTypeToSubtypes[selectedWasteType]) {
+                    // Convert input to dropdown
+                    const select = document.createElement("select");
+                    select.name = "subtype-1";
+                    select.id = "subtype-1";
+                    select.className = "border border-gray-300 rounded-md w-full p-2";
+
+                    wasteTypeToSubtypes[selectedWasteType].forEach(subtype => {
+                        const option = document.createElement("option");
+                        option.value = subtype;
+                        option.textContent = subtype;
+                        select.appendChild(option);
+                    });
+
+                    // Replace input field with select dropdown
+                    subtypeInput.parentNode.replaceChild(select, subtypeInput);
+                } else {
+                    // Reset to input field if no subtypes
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.id = "subtype-1";
+                    input.name = "subtype-1";
+                    input.className = "border border-gray-300 rounded-md w-full p-2";
+                    input.placeholder = "เช่น พลาสติกแข็ง PET";
+                    subtypeInput.parentNode.replaceChild(input, subtypeInput);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+ 

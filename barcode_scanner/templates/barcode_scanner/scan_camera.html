@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- QuaggaJS สำหรับการสแกนบาร์โค้ด -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <title>แสกนเพื่อดูการแยกขยะ</title>
 </head>
@@ -17,68 +15,12 @@
         <div id="interactive" class="viewport mb-6" style="max-width: 640px; width: 100%; height: auto;"></div>
         <p id="barcode-result" class="text-xl text-gray-700 mb-6 hidden">บาร์โค้ดที่สแกน: <span id="barcode-value"></span></p>
         
-        <form id="barcode-form" class="hidden mt-6 flex flex-col items-center w-full max-w-md bg-white rounded-lg p-6" method="post" action="/scanner/submit-form/" enctype="multipart/form-data" style="box-shadow: none; border: 2px solid #007BFF;">
-            {% csrf_token %}
-            <div class="mb-4">
-                <label for="barcode" class="block text-blue-600 text-lg font-medium mb-2">รหัสบาร์โค้ด:</label>
-                <input 
-                    type="text" 
-                    id="barcode" 
-                    name="barcode" 
-                    class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" 
-                    readonly
-                >
-            </div>
-            <div class="mb-4">
-                <label for="product_name" class="block text-blue-600 text-lg font-medium mb-2">ชื่อผลิตภัณฑ์:</label>
-                <input type="text" id="product_name" name="product_name" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-            </div>
-            <div class="mb-4">
-                <label for="waste_type" class="block text-blue-600 text-lg font-medium mb-2">ประเภทขยะ:</label>
-                <select id="waste_type" name="waste_type" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    <option value="plastic">พลาสติก</option>
-                    <option value="glass">แก้ว</option>
-                    <option value="metal">โลหะ</option>
-                    <option value="paper">กระดาษ</option>
-                    <option value="fabric">ผ้า</option>
-                    <option value="electronics">อิเล็กทรอนิกส์</option>
-                    <option value="organic">ขยะอินทรีย์</option>
-                    <option value="hazardous">ขยะอันตราย</option>
-                    <option value="general">ขยะทั่วไป</option>
-                    <option value="other">อื่น ๆ</option>
-                </select>
-            </div>
-            <div id="subtype-container" class="mb-4 hidden">
-                <label for="subtype" class="block text-blue-600 text-lg font-medium mb-2">ประเภทย่อย:</label>
-                <select id="subtype" name="subtype" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    <!-- ตัวเลือกย่อยจะแสดงตามประเภทหลัก -->
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="category" class="block text-blue-600 text-lg font-medium mb-2">หมวดหมู่ขยะ:</label>
-                <select id="category" name="category" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    <option value="recycle">รีไซเคิล</option>
-                    <option value="organic">ขยะอินทรีย์</option>
-                    <option value="hazardous">ขยะอันตราย</option>
-                    <option value="general">ขยะทั่วไป</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="waste_image" class="block text-blue-600 text-lg font-medium mb-2">เพิ่มภาพขยะ:</label>
-                <input type="file" id="waste_image" name="waste_image" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-            </div>
-            <div class="mb-4">
-                <label for="separation_method" class="block text-blue-600 text-lg font-medium mb-2">วิธีการแยกขยะ:</label>
-                <textarea id="separation_method" name="separation_method" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" rows="4"></textarea>
-            </div>
-            <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300">
-                บันทึกข้อมูล
-            </button>
-        </form>
+        <button id="start-scan" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300">
+            เริ่มสแกน
+        </button>
     </div>
 
     <script>
-        // ฟังก์ชันเริ่มต้น Quagga
         function startQuagga() {
             console.log("Initializing Quagga...");
             Quagga.init({
@@ -89,18 +31,18 @@
                         height: 480,
                         facingMode: "environment"
                     },
-                    area: { // ขนาดพื้นที่สแกน (optional)
+                    area: { 
                         top: "0%",
                         right: "0%",
-                        bottom: "0%",
+                        bottom: "50%",
                         left: "0%"
                     },
-                    singleChannel: false // กรณีต้องการภาพสี
+                    singleChannel: false
                 },
                 decoder: {
                     readers: ["code_128_reader", "ean_reader", "upc_reader"]
                 },
-                locate: true // พยายามค้นหาบาร์โค้ดในภาพ
+                locate: true
             }, function(err) {
                 if (err) {
                     console.error("Quagga initialization error:", err);
@@ -110,107 +52,19 @@
                 console.log("Quagga initialized successfully.");
                 Quagga.start();
             });
-
-            // ฟังเหตุการณ์เมื่อบาร์โค้ดถูกสแกน
             Quagga.onDetected(function(data) {
-                console.log("Barcode detected:", data.codeResult.code);
                 const barcode = data.codeResult.code;
-                document.getElementById("barcode-value").textContent = barcode;
-                const barcodeInput = document.getElementById("barcode");
-                barcodeInput.value = barcode;
-                document.getElementById("barcode-result").classList.remove("hidden");
-                document.getElementById("barcode-form").classList.remove("hidden");
-
-                // ลบ readonly เพื่อให้สามารถแก้ไขได้
-                barcodeInput.readOnly = false;
-
-                // เพิ่มการโฟกัสที่ช่องกรอกบาร์โค้ด
-                barcodeInput.focus();
-
-                // ปิดกล้องหลังจากสแกนสำเร็จ
+                window.location.href = '/scanner/scan/?barcode=' + barcode;
                 Quagga.stop();
-                document.getElementById("interactive").style.display = "none";
-                console.log("Quagga stopped after successful scan.");
             });
-
-            // ฟังเหตุการณ์เมื่อ Quagga พบข้อผิดพลาด
-            Quagga.onProcessed(function(result) {
-                // สามารถเพิ่มการประมวลผลเพิ่มเติมได้ที่นี่
-                // เช่น การแสดงกรอบสี่เหลี่ยมบนบาร์โค้ดที่สแกน
-            });
+            
+            
         }
-
-        // เรียกใช้ฟังก์ชันเริ่มต้น Quagga เมื่อหน้าเว็บโหลดเสร็จ
-        document.addEventListener("DOMContentLoaded", function() {
+        
+        document.getElementById("start-scan").addEventListener("click", function() {
             startQuagga();
         });
-
-        // การจัดการประเภทขยะและประเภทย่อย
-        const wasteType = document.getElementById("waste_type");
-        const subtypeContainer = document.getElementById("subtype-container");
-        const subtype = document.getElementById("subtype");
-
-        const subtypes = {
-            plastic: [
-                { value: "pe", text: "พลาสติก PE (Polyethylene)" },
-                { value: "hdpe", text: "พลาสติก HDPE (High-Density Polyethylene)" },
-                { value: "ldpe", text: "พลาสติก LDPE (Low-Density Polyethylene)" },
-                { value: "pp", text: "พลาสติก PP (Polypropylene)" },
-                { value: "pet", text: "พลาสติก PET (Polyethylene Terephthalate)" },
-                { value: "ps", text: "พลาสติก PS (Polystyrene)" },
-                { value: "pvc", text: "พลาสติก PVC (Polyvinyl Chloride)" }
-            ],
-            glass: [
-                { value: "clear_glass", text: "แก้วใส" },
-                { value: "colored_glass", text: "แก้วสี" }
-            ],
-            metal: [
-                { value: "aluminum", text: "อลูมิเนียม" },
-                { value: "steel", text: "เหล็ก" },
-                { value: "copper", text: "ทองแดง" }
-            ],
-            organic: [
-                { value: "food_waste", text: "เศษอาหาร" },
-                { value: "garden_waste", text: "ขยะจากสวน" },
-                { value: "compostable", text: "วัสดุย่อยสลายได้" }
-            ],
-            hazardous: [
-                { value: "batteries", text: "แบตเตอรี่" },
-                { value: "chemicals", text: "สารเคมี" },
-                { value: "light_bulbs", text: "หลอดไฟ" },
-                { value: "medical_waste", text: "ขยะทางการแพทย์" },
-                { value: "spray_cans", text: "กระป๋องสเปรย์" },
-                { value: "cleaning_agents", text: "น้ำยาทำความสะอาด" },
-                { value: "pesticides", text: "ยาฆ่าแมลง" },
-                { value: "ink_cartridges", text: "หมึกพิมพ์" }
-            ],
-            general: [
-                { value: "plastic_bags", text: "ถุงพลาสติก" },
-                { value: "food_wrappers", text: "ซองบรรจุอาหาร" },
-                { value: "foam_boxes", text: "กล่องโฟม" },
-                { value: "mixed_waste", text: "ขยะผสม" }
-            ]
-        };
-
-        wasteType.addEventListener("change", function () {
-            const selectedType = this.value;
-
-            // ลบตัวเลือกเก่าทั้งหมด
-            subtype.innerHTML = "";
-
-            if (subtypes[selectedType]) {
-                subtypeContainer.classList.remove("hidden");
-
-                subtypes[selectedType].forEach((item) => {
-                    const option = document.createElement("option");
-                    option.value = item.value;
-                    option.textContent = item.text;
-                    subtype.appendChild(option);
-                });
-            } else {
-                subtypeContainer.classList.add("hidden");
-            }
-        });
+        
     </script>
 </body>
 </html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>สำเร็จ</title>
+</head>
+<body class="bg-gray-50 font-sans h-screen flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-green-600">บันทึกข้อมูลสำเร็จ!</h1>
+        <a href="{% url 'barcode_scanner:add_waste_item' %}" class="text-blue-500 underline mt-4 inline-block">เพิ่มข้อมูลใหม่</a>
+    </div>
+</body>
+</html>

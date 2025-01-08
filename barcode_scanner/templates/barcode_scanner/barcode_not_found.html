@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>กรอกข้อมูลสินค้า</title>
+</head>
+<body class="bg-gray-50 font-sans h-screen">
+    {% include 'accounts/header_logged_in.html' %}
+    <div class="pt-20 h-full flex flex-col items-center justify-start">
+        <h1 class="text-4xl font-bold text-orange-600 text-center mb-6">ข้อมูลสินค้าไม่พบในระบบ</h1>
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
+            <h2 class="text-xl text-blue-600 mb-6">กรุณากรอกข้อมูลสินค้าใหม่</h2>
+            <form method="POST" action="/submit-product-info/"> <!-- ปรับให้เหมาะสมกับ URL ที่ใช้ในการส่งข้อมูล -->
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="barcode" class="block text-lg text-blue-600 font-medium mb-2">บาร์โค้ด:</label>
+                    <input type="text" id="barcode" name="barcode" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" value="{{ barcode }}" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="product_name" class="block text-lg text-blue-600 font-medium mb-2">ชื่อผลิตภัณฑ์:</label>
+                    <input type="text" id="product_name" name="product_name" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="กรอกชื่อผลิตภัณฑ์">
+                </div>
+                <div class="mb-4">
+                    <label for="product_category" class="block text-lg text-blue-600 font-medium mb-2">ประเภทสินค้า:</label>
+                    <input type="text" id="product_category" name="product_category" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="กรอกประเภทสินค้า">
+                </div>
+                <div class="mb-6">
+                    <label for="product_description" class="block text-lg text-blue-600 font-medium mb-2">รายละเอียดสินค้า:</label>
+                    <textarea id="product_description" name="product_description" class="border-2 border-blue-500 rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" rows="4" placeholder="กรอกรายละเอียดสินค้า"></textarea>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300">
+                    ส่งข้อมูล
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
