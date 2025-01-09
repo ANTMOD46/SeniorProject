@@ -15,12 +15,15 @@ class WasteItemForm(forms.ModelForm):
             'category',
             'separation_method',
             'product_image',
+            
         ]
         widgets = {
-            'waste_type': forms.Select(attrs={'id': 'waste_type'}),
-            'subtype': forms.Select(attrs={'id': 'subtype'}),
+            'waste_type': forms.Select(),
+            'subtype': forms.TextInput(attrs={'placeholder': 'เช่น พลาสติกแข็ง PET'}),
             'category': forms.Select(),
+            'separation_method': forms.Textarea(attrs={'rows': 4}),
         }
+
 
 
 WasteImageFormSet = inlineformset_factory(

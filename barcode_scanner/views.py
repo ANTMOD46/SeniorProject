@@ -109,36 +109,32 @@ from .forms import WasteItemForm
 from .models import WasteImage
 
 def add_waste_item(request):
-    barcode = request.GET.get('barcode', None)
     if request.method == 'POST':
         form = WasteItemForm(request.POST, request.FILES)
         if form.is_valid():
             waste_item = form.save(commit=False)
             waste_item.save()
-
-            # บันทึกภาพขยะที่อัปโหลด
+            # หากมีรูปภาพขยะ
             for key in request.FILES:
                 if key.startswith('images-'):
                     for image in request.FILES.getlist(key):
                         waste_image = WasteImage.objects.create(image=image)
                         waste_item.images.add(waste_image)
-
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
         else:
-            print("Form Errors: ", form.errors)  # ตรวจสอบ Error ของฟอร์ม
+            print("Form Errors: ", form.errors)
     else:
-        form = WasteItemForm(initial={'barcode': barcode})
-    return render(request, 'barcode_scanner/form.html', {'form': form, 'barcode': barcode})
+        form = WasteItemForm()
+    return render(request, 'barcode_scanner/form.html', {'form': form})
+
 
 
 from django.shortcuts import get_object_or_404, render
 
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
-    print(waste_item.waste_type)  # ตรวจสอบค่าที่ดึงได้
-    print(waste_item.subtype)
-    print(waste_item.separation_method)
     return render(request, 'barcode_scanner/waste_item_detail.html', {'waste_item': waste_item})
+
 
 
 

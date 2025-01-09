@@ -7,36 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>รายละเอียดขยะ</title>
 </head>
-<body class="bg-gray-50 font-sans h-screen">
+<body class="bg-gray-50 font-sans">
     {% include 'accounts/header_logged_in.html' %}
-    <div class="pt-20 h-full flex flex-col items-center justify-start">
-        <h1 class="text-4xl font-bold text-orange-600 text-center mb-6">รายละเอียดขยะ</h1>
+    <div class="pt-20 flex flex-col items-center">
+        <h1 class="text-4xl font-bold text-orange-600 mb-6">รายละเอียดขยะ</h1>
 
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-            <h2 class="text-xl font-bold mb-4">รหัสบาร์โค้ด: {{ waste_item.barcode }}</h2>
-            <p class="text-lg"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
-            <p class="text-lg"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
-            <p class="text-lg"><strong>ประเภทขยะ:</strong> {{ waste_item.get_waste_type_display|default_if_none:'-' }}</p>
-            <p class="text-lg"><strong>หมวดหมู่:</strong> {{ waste_item.get_category_display|default_if_none:'-' }}</p>
-            <p class="text-lg"><strong>วิธีการแยกขยะ:</strong> {{ waste_item.separation_method|default_if_none:'-' }}</p>
+            <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+            <p><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+            <p><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+            <p><strong>ประเภทขยะ:</strong> {{ waste_item.get_waste_type_display|default_if_none:'-' }}</p>
+            <p><strong>หมวดหมู่ย่อย:</strong> {{ waste_item.subtype|default_if_none:'-' }}</p>
+            <p><strong>หมวดหมู่:</strong> {{ waste_item.get_category_display|default_if_none:'-' }}</p>
+            <p><strong>วิธีการแยกขยะ:</strong> {{ waste_item.separation_method|default_if_none:'-' }}</p>
 
             {% if waste_item.product_image %}
-                <h3 class="text-lg font-bold mt-4">ภาพผลิตภัณฑ์:</h3>
-                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="w-full rounded-md mb-4">
+                <p><strong>ภาพผลิตภัณฑ์:</strong></p>
+                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="w-full rounded-md">
             {% endif %}
 
             {% if waste_item.images.exists %}
-                <h3 class="text-lg font-bold mt-4">รูปภาพขยะ:</h3>
+                <p><strong>รูปภาพขยะ:</strong></p>
                 <div class="grid grid-cols-2 gap-4">
                     {% for image in waste_item.images.all %}
-                        <div>
-                            <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full h-auto rounded-md mb-2">
-                            <p class="text-center text-sm text-gray-600">หมวดหมู่ย่อย: {{ image.subtype|default_if_none:'-' }}</p>
-                        </div>
+                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full rounded-md">
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-lg text-gray-500">ไม่มีรูปภาพขยะที่เชื่อมโยง</p>
+                <p>ไม่มีรูปภาพขยะที่เชื่อมโยง</p>
             {% endif %}
         </div>
     </div>
