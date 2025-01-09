@@ -108,29 +108,40 @@ from .forms import WasteItemForm
 
 from .models import WasteImage
 
+from .models import WasteItem, WasteImage
+
+from .models import WasteItem, WasteImage
+from .forms import WasteItemForm
+
 def add_waste_item(request):
     if request.method == 'POST':
         form = WasteItemForm(request.POST, request.FILES)
         if form.is_valid():
-            waste_item = form.save(commit=False)  # บันทึกฟอร์มโดยไม่ commit ทันที
-            waste_item.product_image = request.FILES.get('product_image')  # บันทึกภาพผลิตภัณฑ์ (ถ้ามี)
+            # สร้าง WasteItem ใหม่
+            waste_item = form.save(commit=False)
+            # กำหนดค่าเพิ่มเติมจากฟอร์ม
+            waste_item.waste_type = request.POST.get('waste_type')
+            waste_item.subtype = request.POST.get('subtype')
+            waste_item.category = request.POST.get('category')
+            waste_item.separation_method = request.POST.get('separation_method')
             waste_item.save()
 
-            # บันทึกรูปภาพขยะ (หลายไฟล์)
-            for image_file in request.FILES.getlist('waste_images'):
-                waste_image = WasteImage.objects.create(image=image_file)
-                waste_item.images.add(waste_image)
+            # บันทึกภาพขยะ
+            for key in request.FILES:
+                if key.startswith('images-'):
+                    for image in request.FILES.getlist(key):
+                        waste_image = WasteImage.objects.create(image=image)
+                        waste_item.images.add(waste_image)
 
+            waste_item.save()
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
         else:
-            print(form.errors)  # ตรวจสอบข้อผิดพลาดในฟอร์ม
+            print("Form Errors:", form.errors)  # Debug form errors
     else:
         form = WasteItemForm()
 
     return render(request, 'barcode_scanner/form.html', {'form': form})
 
-
-from django.shortcuts import get_object_or_404, render
 
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)

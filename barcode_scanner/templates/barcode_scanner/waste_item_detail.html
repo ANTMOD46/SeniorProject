@@ -23,14 +23,17 @@
 
             {% if waste_item.product_image %}
                 <p><strong>ภาพผลิตภัณฑ์:</strong></p>
-                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="w-full rounded-md">
+                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="w-full rounded-md mb-4">
             {% endif %}
 
             {% if waste_item.images.exists %}
                 <p><strong>รูปภาพขยะ:</strong></p>
                 <div class="grid grid-cols-2 gap-4">
                     {% for image in waste_item.images.all %}
-                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full rounded-md">
+                        <div class="border rounded-lg p-2">
+                            <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full rounded-md">
+                            <p class="text-sm text-gray-600 mt-2"><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
+                        </div>
                     {% endfor %}
                 </div>
             {% else %}
