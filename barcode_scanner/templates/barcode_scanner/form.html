@@ -9,6 +9,8 @@
     <style>
         .hidden { display: none; }
         .waste-item { border: 1px solid #ddd; padding: 16px; margin-bottom: 16px; border-radius: 8px; }
+        .waste-item-header { background-color: #f9fafb; padding: 8px; border-radius: 4px; font-weight: bold; }
+        .waste-item-content { margin-top: 8px; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans h-screen">
@@ -19,88 +21,87 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
             <form method="post" enctype="multipart/form-data" action="{% url 'barcode_scanner:add_waste_item' %}">
                 {% csrf_token %}
-                
+
                 <!-- Barcode -->
                 <div class="mb-6">
                     <label for="barcode" class="block text-lg text-blue-600 font-medium">รหัสบาร์โค้ด:</label>
-                    <input type="text" id="barcode" name="barcode" value="{{ form.barcode.value }}" class="border border-gray-300 rounded-md w-full p-2">
+                    <input type="text" id="barcode" name="barcode" value="{{ barcode|default_if_none:'' }}" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
-                
+
                 <!-- Brand Name -->
                 <div class="mb-6">
                     <label for="brand_name" class="block text-lg text-blue-600 font-medium">ชื่อยี่ห้อ:</label>
-                    <input type="text" id="brand_name" name="brand_name" value="{{ form.brand_name.value }}" class="border border-gray-300 rounded-md w-full p-2">
+                    <input type="text" id="brand_name" name="brand_name" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
-                
+
                 <!-- Product Name -->
                 <div class="mb-6">
                     <label for="product_name" class="block text-lg text-blue-600 font-medium">ชื่อผลิตภัณฑ์:</label>
-                    <input type="text" id="product_name" name="product_name" value="{{ form.product_name.value }}" class="border border-gray-300 rounded-md w-full p-2">
+                    <input type="text" id="product_name" name="product_name" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
-                
 
-                
                 <!-- Product Image -->
                 <div class="mb-6">
                     <label for="product_image" class="block text-lg text-blue-600 font-medium">ภาพผลิตภัณฑ์:</label>
                     <input type="file" id="product_image" name="product_image" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
-                
+
                 <!-- Waste Items Container -->
                 <div id="waste-items-container">
                     <div class="waste-item" id="waste-item-1">
-                        <h2 class="text-xl text-blue-600 font-semibold">ขยะชิ้นที่ 1</h2>
-                        
-                        <!-- Waste Image -->
-                        <label for="images-1" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
-                        <input type="file" id="images-1" name="images-1[]" multiple class="border border-gray-300 rounded-md w-full p-2">
+                        <div class="waste-item-header">ขยะชิ้นที่ 1</div>
+                        <div class="waste-item-content">
+                            <!-- Waste Image -->
+                            <label for="images-1" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
+                            <input type="file" id="images-1" name="images-1[]" multiple class="border border-gray-300 rounded-md w-full p-2">
 
                             <!-- Waste Type -->
-                    <div class="mb-6">
-                        <label for="waste_type" class="block text-lg text-blue-600 font-medium">ประเภทขยะ:</label>
-                        <select id="waste_type" name="waste_type" class="border border-gray-300 rounded-md w-full p-2">
-                            <option value="">-- เลือกประเภทขยะ --</option>
-                            <option value="plastic">พลาสติก</option>
-                            <option value="paper">กระดาษ</option>
-                            <option value="metal">โลหะ</option>
-                            <option value="glass">แก้ว</option>
-                            <option value="others">อื่นๆ</option>
-                        </select>
-                    </div>
+                            <div class="mb-6">
+                                <label for="waste_type-1" class="block text-lg text-blue-600 font-medium">ประเภทขยะ:</label>
+                                <select id="waste_type-1" name="waste_type-1" class="border border-gray-300 rounded-md w-full p-2">
+                                    <option value="">-- เลือกประเภทขยะ --</option>
+                                    <option value="plastic">พลาสติก</option>
+                                    <option value="paper">กระดาษ</option>
+                                    <option value="metal">โลหะ</option>
+                                    <option value="glass">แก้ว</option>
+                                    <option value="others">อื่นๆ</option>
+                                </select>
+                            </div>
 
-                    <!-- Subtype -->
-                    <div class="mb-6">
-                        <label for="subtype" class="block text-lg text-blue-600 font-medium">หมวดหมู่ย่อย:</label>
-                        <select id="subtype" name="subtype" class="border border-gray-300 rounded-md w-full p-2">
-                            <option value="">-- เลือกหมวดหมู่ย่อย --</option>
-                        </select>
-                    </div>
+                            <!-- Subtype -->
+                            <div class="mb-6">
+                                <label for="subtype-1" class="block text-lg text-blue-600 font-medium">หมวดหมู่ย่อย:</label>
+                                <select id="subtype-1" name="subtype-1" class="border border-gray-300 rounded-md w-full p-2">
+                                    <option value="">-- เลือกหมวดหมู่ย่อย --</option>
+                                </select>
+                            </div>
 
-                    <!-- Category -->
-                    <div class="mb-6">
-                        <label for="category" class="block text-lg text-blue-600 font-medium">หมวดหมู่:</label>
-                        <select id="category" name="category" class="border border-gray-300 rounded-md w-full p-2">
-                            <option value="">-- เลือกหมวดหมู่ --</option>
-                            <option value="recyclable">สามารถรีไซเคิลได้</option>
-                            <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
-                            <option value="hazardous">ของเสียอันตราย</option>
-                            <option value="compostable">สามารถย่อยสลายได้</option>
-                        </select>
-                    </div>
+                            <!-- Category -->
+                            <div class="mb-6">
+                                <label for="category-1" class="block text-lg text-blue-600 font-medium">หมวดหมู่:</label>
+                                <select id="category-1" name="category-1" class="border border-gray-300 rounded-md w-full p-2">
+                                    <option value="">-- เลือกหมวดหมู่ --</option>
+                                    <option value="recyclable">สามารถรีไซเคิลได้</option>
+                                    <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
+                                    <option value="hazardous">ของเสียอันตราย</option>
+                                    <option value="compostable">สามารถย่อยสลายได้</option>
+                                </select>
+                            </div>
 
-                    <!-- Separation Method -->
-                    <div class="mb-6">
-                        <label for="separation_method" class="block text-lg text-blue-600 font-medium">วิธีการแยกขยะ:</label>
-                        <textarea id="separation_method" name="separation_method" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
+                            <!-- Separation Method -->
+                            <div class="mb-6">
+                                <label for="separation_method-1" class="block text-lg text-blue-600 font-medium">วิธีการแยกขยะ:</label>
+                                <textarea id="separation_method-1" name="separation_method-1" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
                 <!-- Add Waste Item Button -->
                 <button type="button" id="add-waste-item-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg mt-4">
                     + เพิ่มขยะชิ้นที่
                 </button>
-                
+
                 <!-- Submit Button -->
                 <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-400 mt-4">
                     บันทึก
@@ -152,36 +153,38 @@
                 newWasteItem.id = `waste-item-${wasteItemCount}`;
 
                 newWasteItem.innerHTML = `
-                    <h2 class="text-xl text-blue-600 font-semibold">ขยะชิ้นที่ ${wasteItemCount}</h2>
-                    <label for="images-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
-                    <input type="file" id="images-${wasteItemCount}" name="images-${wasteItemCount}[]" multiple class="border border-gray-300 rounded-md w-full p-2">
+                    <div class="waste-item-header">ขยะชิ้นที่ ${wasteItemCount}</div>
+                    <div class="waste-item-content">
+                        <label for="images-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
+                        <input type="file" id="images-${wasteItemCount}" name="images-${wasteItemCount}[]" multiple class="border border-gray-300 rounded-md w-full p-2">
 
-                    <label for="waste_type-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">ประเภทขยะ:</label>
-                    <select id="waste_type-${wasteItemCount}" name="waste_type-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
-                        <option value="">-- เลือกประเภทขยะ --</option>
-                        <option value="plastic">พลาสติก</option>
-                        <option value="paper">กระดาษ</option>
-                        <option value="metal">โลหะ</option>
-                        <option value="glass">แก้ว</option>
-                        <option value="others">อื่นๆ</option>
-                    </select>
+                        <label for="waste_type-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">ประเภทขยะ:</label>
+                        <select id="waste_type-${wasteItemCount}" name="waste_type-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
+                            <option value="">-- เลือกประเภทขยะ --</option>
+                            <option value="plastic">พลาสติก</option>
+                            <option value="paper">กระดาษ</option>
+                            <option value="metal">โลหะ</option>
+                            <option value="glass">แก้ว</option>
+                            <option value="others">อื่นๆ</option>
+                        </select>
 
-                    <label for="subtype-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่ย่อย:</label>
-                    <select id="subtype-${wasteItemCount}" name="subtype-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
-                        <option value="">-- เลือกหมวดหมู่ย่อย --</option>
-                    </select>
+                        <label for="subtype-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่ย่อย:</label>
+                        <select id="subtype-${wasteItemCount}" name="subtype-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
+                            <option value="">-- เลือกหมวดหมู่ย่อย --</option>
+                        </select>
 
-                    <label for="category-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่:</label>
-                    <select id="category-${wasteItemCount}" name="category-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
-                        <option value="">-- เลือกหมวดหมู่ --</option>
-                        <option value="recyclable">สามารถรีไซเคิลได้</option>
-                        <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
-                        <option value="hazardous">ของเสียอันตราย</option>
-                        <option value="compostable">สามารถย่อยสลายได้</option>
-                    </select>
+                        <label for="category-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่:</label>
+                        <select id="category-${wasteItemCount}" name="category-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
+                            <option value="">-- เลือกหมวดหมู่ --</option>
+                            <option value="recyclable">สามารถรีไซเคิลได้</option>
+                            <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
+                            <option value="hazardous">ของเสียอันตราย</option>
+                            <option value="compostable">สามารถย่อยสลายได้</option>
+                        </select>
 
-                    <label for="separation_method-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">วิธีการแยกขยะ:</label>
-                    <textarea id="separation_method-${wasteItemCount}" name="separation_method-${wasteItemCount}" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
+                        <label for="separation_method-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">วิธีการแยกขยะ:</label>
+                        <textarea id="separation_method-${wasteItemCount}" name="separation_method-${wasteItemCount}" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
+                    </div>
                 `;
 
                 wasteItemsContainer.appendChild(newWasteItem);

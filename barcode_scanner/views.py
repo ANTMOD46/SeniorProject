@@ -113,39 +113,69 @@ from .models import WasteItem, WasteImage
 from .models import WasteItem, WasteImage
 from .forms import WasteItemForm
 
+from django.shortcuts import render, redirect
+from .models import WasteItem, WasteImage
+from .forms import WasteItemForm
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import WasteItemForm
+from .models import WasteItem, WasteImage
+
+from django.shortcuts import render, redirect
+from .forms import WasteItemForm
+from .models import WasteItem, WasteImage
+
 def add_waste_item(request):
+    barcode = request.GET.get('barcode', None)  # Fetch barcode from query parameter
+
     if request.method == 'POST':
         form = WasteItemForm(request.POST, request.FILES)
         if form.is_valid():
-            # สร้าง WasteItem ใหม่
-            waste_item = form.save(commit=False)
-            # กำหนดค่าเพิ่มเติมจากฟอร์ม
-            waste_item.waste_type = request.POST.get('waste_type')
-            waste_item.subtype = request.POST.get('subtype')
-            waste_item.category = request.POST.get('category')
-            waste_item.separation_method = request.POST.get('separation_method')
-            waste_item.save()
+            # Save the main WasteItem
+            waste_item = form.save()
 
-            # บันทึกภาพขยะ
-            for key in request.FILES:
-                if key.startswith('images-'):
-                    for image in request.FILES.getlist(key):
-                        waste_image = WasteImage.objects.create(image=image)
+            # Save additional waste details
+            for key in request.POST:
+                if key.startswith('waste_type-'):
+                    index = key.split('-')[1]
+                    waste_type = request.POST.get(f'waste_type-{index}')
+                    subtype = request.POST.get(f'subtype-{index}')
+                    category = request.POST.get(f'category-{index}')
+                    separation_method = request.POST.get(f'separation_method-{index}')
+
+                    if waste_type or subtype or category or separation_method:
+                        # Create WasteImage instance
+                        waste_image = WasteImage.objects.create(
+                            waste_type=waste_type,
+                            subtype=subtype,
+                            category=category,
+                            separation_method=separation_method
+                        )
+
+                        # Add uploaded images
+                        if f'images-{index}' in request.FILES:
+                            for image_file in request.FILES.getlist(f'images-{index}'):
+                                waste_image.image.save(image_file.name, image_file)
+
+                        # Associate WasteImage with WasteItem
                         waste_item.images.add(waste_image)
 
             waste_item.save()
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
-        else:
-            print("Form Errors:", form.errors)  # Debug form errors
     else:
-        form = WasteItemForm()
+        # Pre-fill form with barcode if available
+        form = WasteItemForm(initial={'barcode': barcode})
 
-    return render(request, 'barcode_scanner/form.html', {'form': form})
+    return render(request, 'barcode_scanner/form.html', {'form': form, 'barcode': barcode})
+
+
+
 
 
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
     return render(request, 'barcode_scanner/waste_item_detail.html', {'waste_item': waste_item})
+
 
 
 

@@ -2,17 +2,30 @@
 from django.db import models
 
 class WasteImage(models.Model):
-    image = models.ImageField(upload_to='waste_images/')
+    waste_type = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name='ประเภทขยะ'
+    )
     subtype = models.CharField(
         max_length=50,
         blank=True,
         null=True,
         verbose_name='หมวดหมู่ย่อย'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    category = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name='หมวดหมู่'
+    )
+    separation_method = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='วิธีการแยกขยะ'
+    )
 
-    def __str__(self):
-        return f"Image {self.id} - {self.image.url}"
 
 
 class WasteItem(models.Model):
