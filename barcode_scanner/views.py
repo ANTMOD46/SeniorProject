@@ -122,19 +122,20 @@ from .forms import WasteItemForm
 from .models import WasteItem, WasteImage
 
 from django.shortcuts import render, redirect
-from .forms import WasteItemForm
 from .models import WasteItem, WasteImage
+from .forms import WasteItemForm
 
 def add_waste_item(request):
-    barcode = request.GET.get('barcode', None)  # Fetch barcode from query parameter
+    barcode = request.GET.get('barcode', None)
 
     if request.method == 'POST':
-        form = WasteItemForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Save the main WasteItem
-            waste_item = form.save()
+        item_form = WasteItemForm(request.POST, request.FILES)
+        if item_form.is_valid():
+            waste_item = item_form.save(commit=False)
+            waste_item.created_by = request.user  # ตั้งค่าผู้สร้าง
+            waste_item.save()
 
-            # Save additional waste details
+            # เพิ่มข้อมูล WasteImage
             for key in request.POST:
                 if key.startswith('waste_type-'):
                     index = key.split('-')[1]
@@ -144,39 +145,32 @@ def add_waste_item(request):
                     separation_method = request.POST.get(f'separation_method-{index}')
 
                     if waste_type or subtype or category or separation_method:
-                        # Create WasteImage instance
                         waste_image = WasteImage.objects.create(
                             waste_type=waste_type,
                             subtype=subtype,
                             category=category,
-                            separation_method=separation_method
+                            separation_method=separation_method,
+                            image=request.FILES.get(f'images-{index}'),
+                            added_by=request.user  # ตั้งค่าผู้เพิ่ม
                         )
-
-                        # Add uploaded images
-                        if f'images-{index}' in request.FILES:
-                            for image_file in request.FILES.getlist(f'images-{index}'):
-                                waste_image.image.save(image_file.name, image_file)
-
-                        # Associate WasteImage with WasteItem
                         waste_item.images.add(waste_image)
 
-            waste_item.save()
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
     else:
-        # Pre-fill form with barcode if available
-        form = WasteItemForm(initial={'barcode': barcode})
+        item_form = WasteItemForm(initial={'barcode': barcode})
 
-    return render(request, 'barcode_scanner/form.html', {'form': form, 'barcode': barcode})
-
+    return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
 
 
 
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import WasteItem
 
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
     return render(request, 'barcode_scanner/waste_item_detail.html', {'waste_item': waste_item})
-
-
 
 
 
