@@ -129,12 +129,17 @@ from django.shortcuts import render, redirect
 from .forms import WasteItemForm
 from .models import WasteItem, WasteImage
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import WasteItemForm
+from .models import WasteItem, WasteImage
+
 def add_waste_item(request):
     barcode = request.GET.get('barcode', None)
 
     if request.method == 'POST':
         item_form = WasteItemForm(request.POST, request.FILES)
         if item_form.is_valid():
+            # สร้าง WasteItem
             waste_item = item_form.save(commit=False)
             waste_item.created_by = request.user  # ตั้งค่าผู้สร้าง
             waste_item.save()
@@ -155,15 +160,16 @@ def add_waste_item(request):
                     print(f"image_file: {image_file}")
 
                     if waste_type or subtype or category or separation_method or image_file:
+                        # ต้องกำหนด waste_item ให้กับ WasteImage
                         waste_image = WasteImage.objects.create(
                             waste_type=waste_type,
                             subtype=subtype,
                             category=category,
                             separation_method=separation_method,
                             image=image_file,  # บันทึกไฟล์ภาพ
-                            added_by=request.user
+                            added_by=request.user,
+                            waste_item=waste_item  # เชื่อมโยง WasteImage กับ WasteItem
                         )
-                        waste_item.images.add(waste_image)  # เชื่อมโยงกับ WasteItem
                         print(f"WasteImage created and linked to WasteItem with barcode {waste_item.barcode}")
 
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
@@ -174,6 +180,7 @@ def add_waste_item(request):
         item_form = WasteItemForm(initial={'barcode': barcode})
 
     return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
+
 
 
 from django.shortcuts import render, get_object_or_404
@@ -211,12 +218,89 @@ def add_waste_detail(request, barcode):
 
 
 from django.shortcuts import render, get_object_or_404
+from collections import defaultdict
 from .models import WasteItem
 
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
-    return render(request, 'barcode_scanner/waste_item_detail.html', {'waste_item': waste_item})
 
+    # จัดกลุ่มข้อมูล WasteImages ตามผู้เพิ่ม (added_by)
+    grouped_images = defaultdict(list)
+    for image in waste_item.images.all():
+        grouped_images[image.added_by].append(image)
+
+    return render(request, 'barcode_scanner/waste_item_detail.html', {
+        'waste_item': waste_item,
+        'grouped_images': grouped_images
+    })
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import WasteImage
+
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from .models import WasteImage
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from barcode_scanner.models import WasteImage
+
+
+from django.http import JsonResponse
+
+@login_required
+def vote_correct(request, image_id):
+    image = get_object_or_404(WasteImage, id=image_id)
+
+    if request.user in image.correct_votes.all():
+        image.correct_votes.remove(request.user)
+    else:
+        image.correct_votes.add(request.user)
+        image.incorrect_votes.remove(request.user)
+
+    data = {
+        'total_correct': image.total_correct_votes(),
+        'total_incorrect': image.total_incorrect_votes(),
+    }
+    return JsonResponse(data)
+
+@login_required
+def vote_incorrect(request, image_id):
+    image = get_object_or_404(WasteImage, id=image_id)
+
+    if request.user in image.incorrect_votes.all():
+        image.incorrect_votes.remove(request.user)
+    else:
+        image.incorrect_votes.add(request.user)
+        image.correct_votes.remove(request.user)
+
+    data = {
+        'total_correct': image.total_correct_votes(),
+        'total_incorrect': image.total_incorrect_votes(),
+    }
+    return JsonResponse(data)
+
+
+@login_required
+def update_votes(request, image_id):
+    image = get_object_or_404(WasteImage, id=image_id)
+
+    # ส่งข้อมูลจำนวนโหวตกลับในรูปแบบ JSON
+    data = {
+        'total_correct': image.total_correct_votes(),
+        'total_incorrect': image.total_incorrect_votes(),
+    }
+    return JsonResponse(data)
 
 
 

@@ -4,6 +4,10 @@ from django.contrib.auth import get_user_model
 # ใช้ CustomUser สำหรับผู้ใช้
 User = get_user_model()
 
+
+
+
+
 class WasteImage(models.Model):
     WASTE_TYPE_CHOICES = [
         ('plastic', 'พลาสติก'),
@@ -54,15 +58,47 @@ class WasteImage(models.Model):
         verbose_name='วิธีการแยกขยะ'
     )
     added_by = models.ForeignKey(
-        User,  # ใช้ CustomUser
+        User,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
         verbose_name='ผู้เพิ่มข้อมูล'
     )
+    
+    waste_item = models.ForeignKey(
+    'WasteItem',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    verbose_name='รายการขยะที่เชื่อมโยง'
+)
+
+
+
+
+    # ฟิลด์สำหรับกดไลค์ "แยกถูก" และ "แยกผิด"
+    correct_votes = models.ManyToManyField(
+        User,
+        related_name='correct_waste_images',
+        blank=True,
+        verbose_name='แยกถูก'
+    )
+    incorrect_votes = models.ManyToManyField(
+        User,
+        related_name='incorrect_waste_images',
+        blank=True,
+        verbose_name='แยกผิด'
+    )
+
+    def total_correct_votes(self):
+        return self.correct_votes.count()
+
+    def total_incorrect_votes(self):
+        return self.incorrect_votes.count()
 
     def __str__(self):
         return f"{self.waste_type} - {self.category}"
+
 
 
 class WasteItem(models.Model):
@@ -101,3 +137,7 @@ class WasteItem(models.Model):
 
     def __str__(self):
         return f"{self.product_name} ({self.barcode})"
+
+
+
+

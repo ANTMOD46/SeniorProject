@@ -12,33 +12,137 @@
             margin: auto;
             padding: 20px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .header {
             text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #f97316;
+            font-weight: bold;
+        }
+        .profile-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-section img {
+            margin: auto;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+        }
+        .profile-section p {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #374151;
+        }
+        .product-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .product-info img {
+            margin: 20px auto;
+            max-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .product-info p {
+            font-size: 1rem;
+            color: #374151;
+            margin: 5px 0;
+        }
+        .waste-section {
+            margin-top: 40px;
+        }
+        .user-section {
+            margin-top: 40px;
+            border: 2px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 16px;
+            background-color: #ffffff;
+            margin-bottom: 30px;
+        }
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             margin-bottom: 20px;
         }
-        .item {
-            border: 1px solid #ddd;
-            padding: 10px;
+        .user-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #e5e7eb;
+            object-fit: cover;
+        }
+        .user-header .user-info {
+            font-size: 1rem;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        .waste-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            background-color: #f9fafb;
+        }
+        .waste-item img {
+            max-width: 120px;
             border-radius: 8px;
-            margin-bottom: 16px;
-        }
-        .item img {
-            width: 100%;
-            max-width: 200px;
-            border-radius: 4px;
-        }
-        .detail {
-            margin-top: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .detail p {
             margin: 5px 0;
+            color: #374151;
+        }
+        .vote-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .vote-buttons button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .vote-buttons .btn-correct {
+            background-color: #10b981;
+            color: white;
+        }
+        .vote-buttons .btn-correct:hover {
+            background-color: #059669;
+        }
+        .vote-buttons .btn-incorrect {
+            background-color: #ef4444;
+            color: white;
+        }
+        .vote-buttons .btn-incorrect:hover {
+            background-color: #dc2626;
         }
         .add-button-container {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 40px;
+        }
+        .add-button-container a {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .add-button-container a:hover {
+            background-color: #2563eb;
         }
     </style>
 </head>
@@ -46,61 +150,69 @@
     {% include 'accounts/header_logged_in.html' %}
     <div class="container">
         <div class="header">
-            <h1 class="text-4xl font-bold text-orange-600">รายละเอียดขยะ</h1>
+            <h1>รายละเอียดขยะ</h1>
         </div>
 
-        <div class="item">
+        <!-- Product Information -->
+        <div class="product-info">
             <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
             <p><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
             <p><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
             {% if waste_item.product_image %}
-            <div>
-                <p><strong>ภาพผลิตภัณฑ์:</strong></p>
-                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์">
-            </div>
+            <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์">
             {% endif %}
-            <p><strong>ผู้สร้าง:</strong>
-                {% if waste_item.created_by %}
-                    {{ waste_item.created_by.get_full_name|default:waste_item.created_by.username }}
-                {% else %}
-                    ไม่ระบุ
-                {% endif %}
-            </p>
         </div>
 
-        <h2 class="text-2xl font-bold text-orange-600 mt-6">ขยะเพิ่มเติม</h2>
-
-        {% if waste_item.images.exists %}
-        <div class="grid grid-cols-1 gap-6 mt-4">
-            {% for image in waste_item.images.all %}
-            <div class="item">
-                <h3 class="text-lg font-bold text-blue-600">ขยะชิ้นที่ {{ forloop.counter }}</h3>
-                {% if image.image %}
-                <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full rounded-md mb-2">
-                {% else %}
-                <p>ไม่มีรูปภาพขยะ</p>
-                {% endif %}
-
-                <div class="detail">
-                    <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
-                    <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
-                    <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
-                    <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
-                </div>
-                <p><strong>เพิ่มโดย:</strong>
-                    {% if image.added_by %}
-                        {{ image.added_by.get_full_name|default:image.added_by.username }}
+        <!-- Additional Waste Section -->
+        <div class="waste-section">
+            {% regroup waste_item.images.all by added_by as users %}
+            {% for user_group in users %}
+            <div class="user-section">
+                <div class="user-header">
+                    {% if user_group.grouper.profile_picture %}
+                    <img src="{{ user_group.grouper.profile_picture.url }}" alt="โปรไฟล์ผู้ใช้">
                     {% else %}
-                        ไม่ระบุ
+                    <img src="{% static 'images/default_profile.png' %}" alt="โปรไฟล์ผู้ใช้">
                     {% endif %}
-                </p>
+                    <div class="user-info">
+                        เพิ่มโดย: {{ user_group.grouper.get_full_name|default:user_group.grouper.username }}
+                    </div>
+                </div>
+                {% for image in user_group.list %}
+                <div class="waste-item">
+                    <div class="flex items-center gap-4">
+                        {% if image.image %}
+                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ">
+                        {% else %}
+                        <p>ไม่มีรูปภาพขยะ</p>
+                        {% endif %}
+                        <div class="detail">
+                            <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
+                            <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
+                            <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
+                            <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
+                        </div>
+                    </div>
+                    <!-- Vote Buttons -->
+                    <div class="vote-buttons">
+                        <form id="vote-correct-form-{{ image.id }}" method="post">
+                            {% csrf_token %}
+                            <button type="button" class="btn-correct" onclick="voteCorrect({{ image.id }})">
+                                👍 แยกถูก (<span id="correct-count-{{ image.id }}">{{ image.total_correct_votes }}</span>)
+                            </button>
+                        </form>
+                        <form id="vote-incorrect-form-{{ image.id }}" method="post">
+                            {% csrf_token %}
+                            <button type="button" class="btn-incorrect" onclick="voteIncorrect({{ image.id }})">
+                                👎 แยกผิด (<span id="incorrect-count-{{ image.id }}">{{ image.total_incorrect_votes }}</span>)
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
             {% endfor %}
-        </div>
-        {% else %}
-        <p class="text-gray-500 mt-6">ไม่มีรายละเอียดขยะเพิ่มเติม</p>
-        {% endif %}
-
+            
         <!-- ปุ่มเพิ่มการแยกขยะของคุณ -->
         <div class="add-button-container">
             <a href="{% url 'barcode_scanner:add_waste_detail' waste_item.barcode %}" 
@@ -109,6 +221,40 @@
          </a>
          
         </div>
+
+        <script>
+            function voteCorrect(imageId) {
+                fetch(`/scanner/vote-correct/${imageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
+                    document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            function voteIncorrect(imageId) {
+                fetch(`/scanner/vote-incorrect/${imageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
+                    document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
     </div>
 </body>
 </html>

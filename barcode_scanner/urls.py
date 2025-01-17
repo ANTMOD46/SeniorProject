@@ -16,6 +16,9 @@ urlpatterns = [
     # เพิ่ม URL pattern สำหรับ waste_item_detail
     path('add/', views.add_waste_item, name='add_waste_item'),
     path('add-waste-detail/<str:barcode>/', views.add_waste_detail, name='add_waste_detail'),
+    path('vote-correct/<int:image_id>/', views.vote_correct, name='vote_correct'),
+    path('vote-incorrect/<int:image_id>/', views.vote_incorrect, name='vote_incorrect'),
+    path('update-votes/<int:image_id>/', views.update_votes, name='update_votes'),  # ใหม่
     
 ]
 
