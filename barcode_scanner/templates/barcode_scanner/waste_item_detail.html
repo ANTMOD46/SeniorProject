@@ -36,6 +36,10 @@
         .detail p {
             margin: 5px 0;
         }
+        .add-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -70,11 +74,12 @@
         <div class="grid grid-cols-1 gap-6 mt-4">
             {% for image in waste_item.images.all %}
             <div class="item">
+                <h3 class="text-lg font-bold text-blue-600">ขยะชิ้นที่ {{ forloop.counter }}</h3>
                 {% if image.image %}
                 <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full rounded-md mb-2">
-            {% else %}
+                {% else %}
                 <p>ไม่มีรูปภาพขยะ</p>
-            {% endif %}
+                {% endif %}
 
                 <div class="detail">
                     <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
@@ -95,6 +100,15 @@
         {% else %}
         <p class="text-gray-500 mt-6">ไม่มีรายละเอียดขยะเพิ่มเติม</p>
         {% endif %}
+
+        <!-- ปุ่มเพิ่มการแยกขยะของคุณ -->
+        <div class="add-button-container">
+            <a href="{% url 'barcode_scanner:add_waste_detail' waste_item.barcode %}" 
+            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+             เพิ่มการแยกขยะของคุณ (ขยะชิ้นที่ {{ waste_item.images.count|add:1 }})
+         </a>
+         
+        </div>
     </div>
 </body>
 </html>

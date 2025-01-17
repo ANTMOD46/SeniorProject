@@ -15,6 +15,7 @@ urlpatterns = [
     path('detail/<int:pk>/', views.waste_item_detail, name='waste_item_detail'),
     # เพิ่ม URL pattern สำหรับ waste_item_detail
     path('add/', views.add_waste_item, name='add_waste_item'),
+    path('add-waste-detail/<str:barcode>/', views.add_waste_detail, name='add_waste_detail'),
     
 ]
 

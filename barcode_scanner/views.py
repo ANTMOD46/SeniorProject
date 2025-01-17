@@ -176,6 +176,38 @@ def add_waste_item(request):
     return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
 
 
+from django.shortcuts import render, get_object_or_404
+from .models import WasteItem
+
+def add_waste_detail(request, barcode):
+    waste_item = get_object_or_404(WasteItem, barcode=barcode)
+
+    if request.method == 'POST':
+        # Logic สำหรับการบันทึกข้อมูลใหม่
+        waste_type = request.POST.get('waste_type')
+        subtype = request.POST.get('subtype')
+        category = request.POST.get('category')
+        separation_method = request.POST.get('separation_method')
+        image_file = request.FILES.get('image')
+
+        # เพิ่มข้อมูลขยะ
+        from .models import WasteImage
+        waste_image = WasteImage.objects.create(
+            waste_type=waste_type,
+            subtype=subtype,
+            category=category,
+            separation_method=separation_method,
+            image=image_file,
+            added_by=request.user,
+        )
+        waste_item.images.add(waste_image)
+
+        # Redirect กลับไปยังหน้า waste_item_detail
+        return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
+
+    return render(request, 'barcode_scanner/add_waste_detail.html', {'barcode': barcode})
+
+
 
 
 from django.shortcuts import render, get_object_or_404
