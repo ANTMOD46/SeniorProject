@@ -125,6 +125,10 @@ from django.shortcuts import render, redirect
 from .models import WasteItem, WasteImage
 from .forms import WasteItemForm
 
+from django.shortcuts import render, redirect
+from .forms import WasteItemForm
+from .models import WasteItem, WasteImage
+
 def add_waste_item(request):
     barcode = request.GET.get('barcode', None)
 
@@ -143,24 +147,33 @@ def add_waste_item(request):
                     subtype = request.POST.get(f'subtype-{index}')
                     category = request.POST.get(f'category-{index}')
                     separation_method = request.POST.get(f'separation_method-{index}')
+                    image_file = request.FILES.get(f'images-{index}')  # ตรวจสอบไฟล์ภาพ
 
-                    if waste_type or subtype or category or separation_method:
+                    # Debugging ตรวจสอบค่าที่ได้รับจากฟอร์ม
+                    print(f"Processing image for index {index}:")
+                    print(f"waste_type: {waste_type}, subtype: {subtype}, category: {category}, separation_method: {separation_method}")
+                    print(f"image_file: {image_file}")
+
+                    if waste_type or subtype or category or separation_method or image_file:
                         waste_image = WasteImage.objects.create(
                             waste_type=waste_type,
                             subtype=subtype,
                             category=category,
                             separation_method=separation_method,
-                            image=request.FILES.get(f'images-{index}'),
-                            added_by=request.user  # ตั้งค่าผู้เพิ่ม
+                            image=image_file,  # บันทึกไฟล์ภาพ
+                            added_by=request.user
                         )
-                        waste_item.images.add(waste_image)
+                        waste_item.images.add(waste_image)  # เชื่อมโยงกับ WasteItem
+                        print(f"WasteImage created and linked to WasteItem with barcode {waste_item.barcode}")
 
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
+        else:
+            print("Form is not valid")
+            print(item_form.errors)  # Debugging แสดงข้อผิดพลาดของฟอร์ม
     else:
         item_form = WasteItemForm(initial={'barcode': barcode})
 
     return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
-
 
 
 
