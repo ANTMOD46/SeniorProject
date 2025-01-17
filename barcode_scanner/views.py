@@ -187,6 +187,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import WasteItem
 
 def add_waste_detail(request, barcode):
+    # Query WasteItem จาก barcode
     waste_item = get_object_or_404(WasteItem, barcode=barcode)
 
     if request.method == 'POST':
@@ -197,23 +198,31 @@ def add_waste_detail(request, barcode):
         separation_method = request.POST.get('separation_method')
         image_file = request.FILES.get('image')
 
-        # เพิ่มข้อมูลขยะ
-        from .models import WasteImage
-        waste_image = WasteImage.objects.create(
-            waste_type=waste_type,
-            subtype=subtype,
-            category=category,
-            separation_method=separation_method,
-            image=image_file,
-            added_by=request.user,
-        )
-        waste_item.images.add(waste_image)
+        # ตรวจสอบข้อมูลที่จำเป็น
+        if waste_type and category:
+            waste_image = WasteImage.objects.create(
+                waste_type=waste_type,
+                subtype=subtype,
+                category=category,
+                separation_method=separation_method,
+                image=image_file,
+                added_by=request.user
+            )
+            waste_item.images.add(waste_image)
+            return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
+        else:
+            error_message = "กรุณากรอกข้อมูลให้ครบถ้วน"
+            return render(request, 'barcode_scanner/add_waste_detail.html', {
+                'barcode': barcode,
+                'waste_item': waste_item,
+                'error_message': error_message
+            })
 
-        # Redirect กลับไปยังหน้า waste_item_detail
-        return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
-
-    return render(request, 'barcode_scanner/add_waste_detail.html', {'barcode': barcode})
-
+    # ส่ง context ไปยัง template
+    return render(request, 'barcode_scanner/add_waste_detail.html', {
+        'barcode': barcode,
+        'waste_item': waste_item
+    })
 
 
 

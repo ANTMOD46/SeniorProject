@@ -12,8 +12,11 @@
             margin: auto;
             padding: 20px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .header {
             text-align: center;
@@ -21,6 +24,7 @@
         }
         .form-group {
             margin-bottom: 16px;
+            width: 100%;
         }
         .form-group label {
             font-size: 1rem;
@@ -31,10 +35,10 @@
         .form-group textarea,
         .form-group input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-top: 8px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
         }
         .btn-submit {
             width: 100%;
@@ -49,70 +53,98 @@
         .btn-submit:hover {
             background-color: #2563eb;
         }
+        .product-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .product-info img {
+            margin-top: 10px;
+            max-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .content-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f3f4f6;
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
-    <div class="container">
-        <div class="header">
-            <h1 class="text-3xl font-bold text-orange-600">เพิ่มการแยกขยะของคุณ</h1>
-            <p class="text-gray-600 mt-2">เพิ่มข้อมูลการแยกขยะสำหรับบาร์โค้ด: <strong>{{ barcode }}</strong></p>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1 class="text-3xl font-bold text-orange-600">เพิ่มการแยกขยะของคุณ</h1>
+                <p class="text-gray-600 mt-2">เพิ่มข้อมูลการแยกขยะสำหรับบาร์โค้ด: <strong>{{ barcode }}</strong></p>
+            </div>
+
+            <!-- Product Information -->
+            <div class="product-info">
+                <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+                <p><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+                <p><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+                {% if waste_item.product_image %}
+                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์">
+                {% endif %}
+            </div>
+
+            <form method="post" enctype="multipart/form-data" action="{% url 'barcode_scanner:add_waste_detail' barcode=barcode %}">
+                {% csrf_token %}
+                <!-- Waste Type -->
+                <div class="form-group">
+                    <label for="waste_type">ประเภทขยะ</label>
+                    <select id="waste_type" name="waste_type" required>
+                        <option value="">-- เลือกประเภทขยะ --</option>
+                        <option value="plastic">พลาสติก</option>
+                        <option value="paper">กระดาษ</option>
+                        <option value="metal">โลหะ</option>
+                        <option value="glass">แก้ว</option>
+                        <option value="e_waste">e-waste</option>
+                        <option value="others">อื่นๆ</option>
+                    </select>
+                </div>
+
+                <!-- Subtype -->
+                <div class="form-group">
+                    <label for="subtype">หมวดหมู่ย่อย</label>
+                    <select id="subtype" name="subtype" required>
+                        <option value="">-- เลือกหมวดหมู่ย่อย --</option>
+                    </select>
+                </div>
+
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category">หมวดหมู่</label>
+                    <select id="category" name="category" required>
+                        <option value="">-- เลือกหมวดหมู่ --</option>
+                        <option value="recyclable">สามารถรีไซเคิลได้</option>
+                        <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
+                        <option value="hazardous">ของเสียอันตราย</option>
+                        <option value="compostable">สามารถย่อยสลายได้</option>
+                    </select>
+                </div>
+
+                <!-- Separation Method -->
+                <div class="form-group">
+                    <label for="separation_method">วิธีการแยกขยะ</label>
+                    <textarea id="separation_method" name="separation_method" rows="4" placeholder="ระบุวิธีการแยกขยะ เช่น ล้างให้สะอาด แยกสี"></textarea>
+                </div>
+
+                <!-- Waste Image -->
+                <div class="form-group">
+                    <label for="image">รูปภาพขยะ</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">
+                    บันทึกข้อมูล
+                </button>
+            </form>
         </div>
-
-        <form method="post" enctype="multipart/form-data" action="{% url 'barcode_scanner:add_waste_detail' barcode=barcode %}">
-            {% csrf_token %}
-
-            <!-- Waste Type -->
-            <div class="form-group">
-                <label for="waste_type">ประเภทขยะ</label>
-                <select id="waste_type" name="waste_type" required>
-                    <option value="">-- เลือกประเภทขยะ --</option>
-                    <option value="plastic">พลาสติก</option>
-                    <option value="paper">กระดาษ</option>
-                    <option value="metal">โลหะ</option>
-                    <option value="glass">แก้ว</option>
-                    <option value="e_waste">e-waste</option>
-                    <option value="others">อื่นๆ</option>
-                </select>
-            </div>
-
-            <!-- Subtype -->
-            <div class="form-group">
-                <label for="subtype">หมวดหมู่ย่อย</label>
-                <select id="subtype" name="subtype" required>
-                    <option value="">-- เลือกหมวดหมู่ย่อย --</option>
-                </select>
-            </div>
-
-            <!-- Category -->
-            <div class="form-group">
-                <label for="category">หมวดหมู่</label>
-                <select id="category" name="category" required>
-                    <option value="">-- เลือกหมวดหมู่ --</option>
-                    <option value="recyclable">สามารถรีไซเคิลได้</option>
-                    <option value="non_recyclable">ไม่สามารถรีไซเคิลได้</option>
-                    <option value="hazardous">ของเสียอันตราย</option>
-                    <option value="compostable">สามารถย่อยสลายได้</option>
-                </select>
-            </div>
-
-            <!-- Separation Method -->
-            <div class="form-group">
-                <label for="separation_method">วิธีการแยกขยะ</label>
-                <textarea id="separation_method" name="separation_method" rows="4" placeholder="ระบุวิธีการแยกขยะ เช่น ล้างให้สะอาด แยกสี"></textarea>
-            </div>
-
-            <!-- Waste Image -->
-            <div class="form-group">
-                <label for="image">รูปภาพขยะ</label>
-                <input type="file" id="image" name="image" accept="image/*">
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn-submit">
-                บันทึกข้อมูล
-            </button>
-        </form>
     </div>
 
     <script>
