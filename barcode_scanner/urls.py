@@ -20,5 +20,6 @@ urlpatterns = [
     path('vote-incorrect/<int:image_id>/', views.vote_incorrect, name='vote_incorrect'),
     path('update-votes/<int:image_id>/', views.update_votes, name='update_votes'),  # ใหม่
     
+    
 ]
 

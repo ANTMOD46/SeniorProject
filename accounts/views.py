@@ -105,3 +105,21 @@ def delete_member(request, member_id):
     member = get_object_or_404(CustomUser, id=member_id)
     member.delete()
     return redirect('accounts/admin_member_list')  # กลับไปยังหน้ารายชื่อสมาชิก
+
+
+
+from django.shortcuts import render
+from barcode_scanner.models import WasteImage
+
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import render
+from barcode_scanner.models import WasteImage
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def my_waste_details(request):
+    # ดึงเฉพาะ WasteImage ที่เชื่อมโยงกับ waste_item และผู้ใช้งานคนปัจจุบันเพิ่ม
+    user_waste_images = WasteImage.objects.filter(added_by=request.user, waste_item__isnull=False)
+    return render(request, 'barcode_scanner/my_waste_details.html', {'waste_images': user_waste_images})
+

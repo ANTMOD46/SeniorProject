@@ -358,3 +358,8 @@ def scan_barcode_redirect(request):
         # หากไม่มีบาร์โค้ดใน query string ให้ redirect กลับไปยังหน้า scan
         return redirect('barcode_scanner:scan_barcode_redirect')
 
+
+
+
+
+
