@@ -358,6 +358,54 @@ def scan_barcode_redirect(request):
         # หากไม่มีบาร์โค้ดใน query string ให้ redirect กลับไปยังหน้า scan
         return redirect('barcode_scanner:scan_barcode_redirect')
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import WasteItem
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import WasteItem  # ดึง WasteItem จาก barcode_scanner.models
+from django.shortcuts import render
+from barcode_scanner.models import WasteImage
+
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import render
+from barcode_scanner.models import WasteImage
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+from .models import WasteItem, WasteImage
+
+@login_required
+def all_barcodes(request):
+    waste_items = WasteItem.objects.all()
+    return render(request, 'barcode_scanner/all_barcode.html', {'waste_items': waste_items})
+
+@login_required
+def my_waste_details(request):
+    user_waste_images = WasteImage.objects.filter(added_by=request.user, waste_item__isnull=False)
+    return render(request, 'barcode_scanner/my_waste_details.html', {'waste_images': user_waste_images})
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from barcode_scanner.models import WasteItem
+
+
+from django.shortcuts import get_object_or_404, redirect
+from barcode_scanner.models import WasteItem
+
+@login_required
+def delete_waste_item(request, pk):
+    waste_item = get_object_or_404(WasteItem, pk=pk)  # ตรวจสอบว่ามี WasteItem นี้อยู่ในฐานข้อมูล
+    if request.method == 'POST':
+        waste_item.delete()  # ลบรายการ
+    return redirect('barcode_scanner:all_barcodes')  # เปลี่ยนเส้นทางกลับไปยังหน้ารายการบาร์โค้ดทั้งหมด
+
+
 
 
 

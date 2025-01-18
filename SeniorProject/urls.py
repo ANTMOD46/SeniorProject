@@ -31,7 +31,7 @@ urlpatterns = [
     path('waste/', include('waste_separation.urls')),
     path('Chat/', include('Chat.urls')),
     path('generator/', include('barcode_generator.urls')),
-    path('scanner/', include('barcode_scanner.urls')),
+    path('scanner/', include(('barcode_scanner.urls', 'scanner'), namespace='scanner')), 
    
     
     

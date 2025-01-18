@@ -77,11 +77,20 @@
                     <!-- Dropdown Menu -->
                     <div id="dropdownMenu" class="dropdown-menu absolute text-gray-700 pt-2 right-0 bg-white rounded-md shadow-lg w-48">
                         <a href="{% url 'home_user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าแรก</a>
-                        {% if user.is_superuser %}
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ดูการแยกขยะ</a>
-                        {% endif %}
                         
-                        <a href="{% url 'my_waste_details' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">การแยกขยะของฉัน</a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'scanner:all_barcodes' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">
+                            ดูการแยกขยะทั้งหมด
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'scanner:my_waste_details' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">
+                            การแยกขยะของฉัน
+                        </a>
+                        
+                        
+                        
+                        
+
 
                         <a href="{% url 'user_store' request.user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">หน้าร้านของฉัน</a>
                         <a href="{% url 'rooms' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">แชท</a> 

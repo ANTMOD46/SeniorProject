@@ -44,5 +44,8 @@ urlpatterns = [
         name='password_reset_complete'
     ),
     
-   path('my-waste-details/', views.my_waste_details, name='my_waste_details'),
+   
+   
+   
+
 ]
