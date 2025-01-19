@@ -15,26 +15,11 @@
             border-radius: 16px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 2.5rem;
-            color: #2563eb;
-            font-weight: bold;
-        }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
         .product-card {
-            border: 2px solid #60a5fa; /* สีฟ้าสำหรับกรอบ */
+            border: 2px solid #60a5fa;
             border-radius: 12px;
             padding: 16px;
             background-color: #f9fafb;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
         }
         .product-card:hover {
@@ -43,15 +28,11 @@
             background: linear-gradient(135deg, #e0f2fe, #fff);
         }
         .product-card img {
-            max-width: 100%;
-            height: auto;
+            max-width: 150px;
+            height: 150px;
+            object-fit: contain;
             border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        .product-card p {
-            font-size: 0.9rem;
-            color: #374151;
-            margin: 5px 0;
+            margin: 10px auto;
         }
         .detail-button {
             text-align: center;
@@ -61,29 +42,29 @@
             display: inline-block;
             padding: 8px 16px;
             font-size: 0.875rem;
-            border-radius: 25px; /* เพิ่มความโค้งมน */
+            border-radius: 25px;
             font-weight: bold;
             text-decoration: none;
             transition: all 0.3s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาสำหรับปุ่ม */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .detail-button a.btn-red {
-            background: linear-gradient(135deg, #ef4444, #f87171); /* สี Gradient แดง */
+        .detail-button a {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
             color: #fff;
         }
-        .detail-button a.btn-red:hover {
+        .detail-button a:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 8px rgba(239, 68, 68, 0.5); /* เพิ่มเงาเมื่อ Hover */
+            box-shadow: 0 6px 8px rgba(59, 130, 246, 0.5);
         }
-        .detail-button button.btn-yellow {
-            background: linear-gradient(135deg, #facc15, #fcd34d); /* สี Gradient เหลือง */
+        .detail-button button {
+            background: linear-gradient(135deg, #ef4444, #f87171);
             color: #fff;
             border: none;
             cursor: pointer;
         }
-        .detail-button button.btn-yellow:hover {
+        .detail-button button:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 8px rgba(250, 204, 21, 0.5); /* เพิ่มเงาเมื่อ Hover */
+            box-shadow: 0 6px 8px rgba(239, 68, 68, 0.5);
         }
         .modal {
             display: none;
@@ -92,7 +73,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* ทำให้พื้นหลังมืดลง */
+            background-color: rgba(0, 0, 0, 0.6);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -115,7 +96,7 @@
         }
         .modal-buttons button {
             padding: 10px 20px;
-            border-radius: 25px; /* ทำปุ่มโค้งมน */
+            border-radius: 25px;
             font-weight: bold;
             cursor: pointer;
             border: none;
@@ -123,24 +104,18 @@
             transition: all 0.3s ease-in-out;
         }
         .btn-confirm {
-            background: linear-gradient(135deg, #ef4444, #f87171); /* Gradient สีแดง */
+            background: linear-gradient(135deg, #ef4444, #f87171);
             color: white;
-            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.4);
         }
         .btn-confirm:hover {
-            background: linear-gradient(135deg, #dc2626, #e11d48); /* สีเข้มขึ้น */
-            box-shadow: 0 6px 8px rgba(239, 68, 68, 0.6);
-            transform: scale(1.05); /* ขยายเมื่อ Hover */
+            background: linear-gradient(135deg, #dc2626, #e11d48);
         }
         .btn-cancel {
-            background: linear-gradient(135deg, #f3f4f6, #e5e7eb); /* สีเทา */
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
             color: #374151;
-            box-shadow: 0 4px 6px rgba(149, 157, 165, 0.2);
         }
         .btn-cancel:hover {
-            background: linear-gradient(135deg, #d1d5db, #e5e7eb); /* สีเข้มขึ้น */
-            box-shadow: 0 6px 8px rgba(149, 157, 165, 0.4);
-            transform: scale(1.05); /* ขยายเมื่อ Hover */
+            background: linear-gradient(135deg, #d1d5db, #e5e7eb);
         }
         @keyframes fadeIn {
             from {
@@ -157,10 +132,10 @@
 <body class="bg-gray-50 font-sans">
     {% include 'accounts/header_logged_in.html' %}
     <div class="container">
-        <div class="header">
-            <h1>รายการบาร์โค้ดทั้งหมด</h1>
+        <div class="header text-center">
+            <h1 class="text-2xl font-bold text-blue-600">รายการบาร์โค้ดทั้งหมด</h1>
         </div>
-        <div class="product-grid">
+        <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             {% for waste_item in waste_items %}
             <div class="product-card">
                 <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
@@ -172,10 +147,10 @@
                 <p>ไม่มีภาพผลิตภัณฑ์</p>
                 {% endif %}
                 <div class="detail-button">
-                    <a href="{% url 'barcode_scanner:waste_item_detail' waste_item.id %}" class="btn-red">
+                    <a href="{% url 'barcode_scanner:waste_item_detail' waste_item.id %}">
                         ดูรายละเอียด
                     </a>
-                    <button class="btn-yellow" onclick="showDeleteModal({{ waste_item.id }})">
+                    <button onclick="showDeleteModal({{ waste_item.id }})">
                         ลบ
                     </button>
                 </div>
@@ -183,12 +158,12 @@
             {% endfor %}
         </div>
     </div>
-    <div id="deleteModal" class="modal">
+    <div id="deleteModal" class="modal hidden">
         <div class="modal-content">
             <h2 class="text-lg font-bold text-gray-700">ยืนยันการลบ</h2>
             <p class="text-gray-500 mt-2">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?</p>
             <div class="modal-buttons">
-                <form id="deleteForm" method="post" style="display:inline;">
+                <form id="deleteForm" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn-confirm">
                         ยืนยัน
@@ -200,6 +175,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         function showDeleteModal(id) {
             const modal = document.getElementById("deleteModal");
