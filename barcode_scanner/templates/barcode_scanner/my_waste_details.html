@@ -6,39 +6,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>การแยกขยะของฉัน</title>
+    <style>
+        .modal-bg {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans">
     {% include 'accounts/header_logged_in.html' %}
     <div class="container mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-center text-orange-500 mb-4">การแยกขยะของฉัน</h1>
+        <div class="header">
+            <h1 class="text-2xl font-bold text-center text-orange-500">การแยกขยะของฉัน</h1>
+        </div>
+
         {% with waste_images|length as total_images %}
         {% if total_images > 0 %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for image in waste_images %}
-            <div class="bg-gray-100 p-4 rounded-lg shadow">
-                {% if image.image %}
-                <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full h-40 object-cover rounded-lg mb-2">
-                {% endif %}
-                <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
-                <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
-                <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
-                <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {% regroup waste_images by waste_item.barcode as grouped_waste_images %}
+            {% for group in grouped_waste_images %}
+            <div class="waste-card bg-gray-100 p-4 rounded-lg shadow">
+                <div class="barcode-header bg-yellow-400 text-black text-center py-2 rounded-lg font-bold">
+                    บาร์โค้ด: {{ group.grouper }}
+                </div>
 
-                {% if image.waste_item and image.waste_item.id %}
-                <a href="{% url 'barcode_scanner:waste_item_detail' pk=image.waste_item.id %}" 
-                   class="mt-4 block text-center text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg">
-                   ดูรายละเอียดการแยก
-                </a>
-                {% else %}
-                <p class="text-red-500 text-sm mt-2">ไม่มีข้อมูล WasteItem เชื่อมโยง (waste_item: {{ image.waste_item }})</p>
+                {% with group.list.0.waste_item as waste_item %}
+                {% if waste_item %}
+                <div class="text-center mt-4 mb-4">
+                    {% if waste_item.product_image %}
+                    <!-- เพิ่มขนาดของภาพผลิตภัณฑ์ -->
+                    <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" 
+                         class="w-48 h-48 object-cover rounded-lg mx-auto mb-2">
+                    {% endif %}
+                    <p class="text-blue-600 font-semibold">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
+                </div>
                 {% endif %}
+                {% endwith %}
+
+                <div class="space-y-4">
+                    {% for image in group.list %}
+                    <div class="relative border border-gray-300 rounded-lg p-4">
+                        {% if image.image %}
+                        <!-- ภาพขยะแบบเต็มขนาด -->
+                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ" 
+                             class="w-full h-auto object-contain rounded-lg mb-4 max-h-[180px]">
+                        {% endif %}
+                        <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
+                        <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
+                        <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
+                        <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
+                        <button type="button" onclick="openModal({{ image.id }})" class="delete-btn mt-4 w-full bg-red-500 text-white rounded-lg py-2 hover:bg-red-700">
+                            ลบขยะชิ้นนี้
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if group.list.0.waste_item and group.list.0.waste_item.id %}
+                <a href="{% url 'barcode_scanner:waste_item_detail' pk=group.list.0.waste_item.id %}" 
+                class="block text-center mt-4 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 hover:scale-105">
+                ดูการแยกขยะ
+             </a>                          
+                {% endif %}
+                
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-center text-gray-500">ยังไม่มีการแยกขยะของคุณในขณะนี้</p>
+        <p class="text-center text-gray-500 mt-6">ยังไม่มีการแยกขยะของคุณในขณะนี้</p>
         {% endif %}
         {% endwith %}
     </div>
+
+    <!-- Modal -->
+    <div id="delete-modal" class="fixed inset-0 hidden z-50 flex items-center justify-center modal-bg">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center w-80">
+            <h2 class="text-lg font-bold text-gray-700 mb-4">ยืนยันการลบ</h2>
+            <p class="text-gray-600 mb-6">คุณแน่ใจหรือไม่ว่าต้องการลบขยะชิ้นนี้?</p>
+            <form id="delete-form" method="post">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700">ลบ</button>
+                <button type="button" onclick="closeModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 ml-4">ยกเลิก</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(imageId) {
+            const modal = document.getElementById('delete-modal');
+            const deleteForm = document.getElementById('delete-form');
+            deleteForm.action = `{% url 'barcode_scanner:delete_waste_image' pk=0 %}`.replace('0', imageId);
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('delete-modal');
+            modal.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>

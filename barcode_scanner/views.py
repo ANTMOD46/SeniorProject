@@ -418,6 +418,19 @@ def delete_waste_item(request, pk):
 
 
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import WasteImage
+
+@login_required
+def delete_waste_image(request, pk):
+    waste_image = get_object_or_404(WasteImage, pk=pk)
+
+    # ตรวจสอบว่าผู้ใช้ที่ลบเป็นเจ้าของหรือไม่
+    if waste_image.added_by == request.user:
+        waste_image.delete()
+        # เพิ่มข้อความแจ้งเตือนถ้าต้องการ
+    return redirect('barcode_scanner:my_waste_details')  # กลับไปที่หน้าการแยกขยะของฉัน
 
 
 

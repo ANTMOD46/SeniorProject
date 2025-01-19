@@ -24,6 +24,7 @@ urlpatterns = [
  
     path('all-barcodes/', views.all_barcodes, name='all_barcodes'),
     path('my-waste-details/', views.my_waste_details, name='my_waste_details'),
+    path('delete-waste-image/<int:pk>/', views.delete_waste_image, name='delete_waste_image'),
     
     
    
