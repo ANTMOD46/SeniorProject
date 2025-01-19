@@ -17,19 +17,31 @@
         <h1 class="text-4xl font-semibold text-center mb-8 text-blue-600">รายการโพสต์ทั้งหมด</h1>
 
         <!-- ฟอร์มกรองข้อมูล -->
-        <form method="get" class="mb-8 flex justify-center items-center space-x-4">
-            <select name="role" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white">
+        <form method="get" class="mb-8 flex flex-wrap justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <!-- ค้นหาหัวข้อ -->
+            <input 
+                type="text" 
+                name="title" 
+                placeholder="ค้นหาหัวข้อที่ต้องการซื้อ-ขาย" 
+                value="{{ selected_title|default_if_none:'' }}" 
+                class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto"
+            >
+
+            <!-- เลือกบทบาท -->
+            <select name="role" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto">
                 <option value="">-- ทุกบทบาท --</option>
                 <option value="buyer" {% if selected_role == 'buyer' %}selected{% endif %}>ผู้ซื้อ</option>
                 <option value="seller" {% if selected_role == 'seller' %}selected{% endif %}>ผู้ขาย</option>
             </select>
 
-            <select name="status" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white">
+            <!-- เลือกสถานะ -->
+            <select name="status" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto">
                 <option value="">-- ทุกสถานะ --</option>
                 <option value="open" {% if selected_status == 'open' %}selected{% endif %}>เปิดการขาย</option>
                 <option value="closed" {% if selected_status == 'closed' %}selected{% endif %}>ปิดการขาย</option>
             </select>
 
+            <!-- ปุ่มกรอง -->
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg transition duration-300">
                 กรอง
             </button>

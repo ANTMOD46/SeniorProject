@@ -58,26 +58,36 @@ def sell_item_all(request):
     # ดึงข้อมูลทั้งหมดจาก SellItem
     items = SellItem.objects.all()
     
-    # กรองข้อมูลตามเงื่อนไขจาก URL query parameters
-    role = request.GET.get('role')  # รับค่าจากพารามิเตอร์ ?role=buyer หรือ seller
-    status = request.GET.get('status')  # รับค่าจากพารามิเตอร์ ?status=open หรือ closed
-
+    # รับค่าจาก query parameters
+    role = request.GET.get('role')  # ?role=buyer หรือ seller
+    status = request.GET.get('status')  # ?status=open หรือ closed
+    title = request.GET.get('title')  # ?title=ข้อความค้นหา
+    
+    # กรองข้อมูลตามบทบาท
     if role:
         items = items.filter(user_role=role)
-
+    
+    # กรองข้อมูลตามสถานะ
     if status:
         if status == 'open':
             items = items.filter(is_closed=False)
         elif status == 'closed':
             items = items.filter(is_closed=True)
     
+    # กรองข้อมูลตามหัวข้อ (title)
+    if title:
+        items = items.filter(title__icontains=title)  # ค้นหาแบบไม่สนใจตัวพิมพ์ใหญ่-เล็ก
+    
+    # ส่งข้อมูลไปยัง template
     context = {
         'items': items,
         'selected_role': role,
         'selected_status': status,
+        'selected_title': title,
     }
     
     return render(request, 'posts/sell_item_all.html', context)
+
 
 
 
@@ -199,6 +209,7 @@ class CloseSaleView(View):
 def donation_all(request):
     role = request.GET.get('role')
     status = request.GET.get('status')
+    title = request.GET.get('title')
 
     donations = Donation.objects.all()
 
@@ -206,11 +217,14 @@ def donation_all(request):
         donations = donations.filter(role=role)
     if status:
         donations = donations.filter(is_closed=(status == 'closed'))
+    if title:
+        donations = donations.filter(title__icontains=title)
 
     context = {
         'donations': donations,
         'selected_role': role,
         'selected_status': status,
+        'selected_title': title,
     }
     return render(request, 'posts/donation_all.html', context)
 
@@ -302,8 +316,22 @@ class CloseDonationView(View):
     
 def announcement_all(request):
     # ดึงข้อมูลการประกาศทั้งหมดจากฐานข้อมูล
-    announcements = GeneralAnnouncement.objects.all()  # หรือใช้ .filter() ถ้าต้องการกรองข้อมูล
-    return render(request, 'posts/general_announcement_all.html', {'announcements': announcements})
+    announcements = GeneralAnnouncement.objects.all()
+    
+    # รับค่าจาก query parameter
+    title = request.GET.get('title')  # ค่าที่ผู้ใช้กรอกในช่องค้นหา
+    
+    # กรองข้อมูลตามหัวข้อการประกาศ
+    if title:
+        announcements = announcements.filter(title__icontains=title)  # กรองข้อมูลแบบไม่สนใจตัวพิมพ์ใหญ่-เล็ก
+
+    # ส่งค่าที่กรองไปยัง template
+    context = {
+        'announcements': announcements,  # รายการการประกาศ
+        'selected_title': title,  # ค่าที่กรอกในช่องค้นหา
+    }
+    return render(request, 'posts/general_announcement_all.html', context)
+
 
 from django.shortcuts import render
 
