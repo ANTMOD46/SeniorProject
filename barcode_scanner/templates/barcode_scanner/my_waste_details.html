@@ -15,7 +15,6 @@
         {% if total_images > 0 %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for image in waste_images %}
-            {% if image.waste_item %}
             <div class="bg-gray-100 p-4 rounded-lg shadow">
                 {% if image.image %}
                 <img src="{{ image.image.url }}" alt="รูปภาพขยะ" class="w-full h-40 object-cover rounded-lg mb-2">
@@ -25,12 +24,15 @@
                 <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
                 <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
 
+                {% if image.waste_item and image.waste_item.id %}
                 <a href="{% url 'barcode_scanner:waste_item_detail' pk=image.waste_item.id %}" 
                    class="mt-4 block text-center text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg">
                    ดูรายละเอียดการแยก
                 </a>
+                {% else %}
+                <p class="text-red-500 text-sm mt-2">ไม่มีข้อมูล WasteItem เชื่อมโยง (waste_item: {{ image.waste_item }})</p>
+                {% endif %}
             </div>
-            {% endif %}
             {% endfor %}
         </div>
         {% else %}

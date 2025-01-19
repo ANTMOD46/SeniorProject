@@ -184,30 +184,34 @@ def add_waste_item(request):
 from django.shortcuts import render, get_object_or_404
 from .models import WasteItem
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import WasteItem, WasteImage
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def add_waste_detail(request, barcode):
     # Query WasteItem จาก barcode
     waste_item = get_object_or_404(WasteItem, barcode=barcode)
 
     if request.method == 'POST':
-        # Logic สำหรับการบันทึกข้อมูลใหม่
         waste_type = request.POST.get('waste_type')
         subtype = request.POST.get('subtype')
         category = request.POST.get('category')
         separation_method = request.POST.get('separation_method')
         image_file = request.FILES.get('image')
 
-        # ตรวจสอบข้อมูลที่จำเป็น
-        if waste_type and category:
+        if waste_type and category:  # ตรวจสอบข้อมูลที่จำเป็น
             waste_image = WasteImage.objects.create(
                 waste_type=waste_type,
                 subtype=subtype,
                 category=category,
                 separation_method=separation_method,
                 image=image_file,
-                added_by=request.user
+                added_by=request.user,
+                waste_item=waste_item  # เชื่อมโยงกับ WasteItem
             )
-            waste_item.images.add(waste_image)
-            return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
+            waste_item.images.add(waste_image)  # เชื่อมโยง ManyToMany
+            return redirect('barcode_scanner:my_waste_details')
         else:
             error_message = "กรุณากรอกข้อมูลให้ครบถ้วน"
             return render(request, 'barcode_scanner/add_waste_detail.html', {
@@ -216,11 +220,11 @@ def add_waste_detail(request, barcode):
                 'error_message': error_message
             })
 
-    # ส่ง context ไปยัง template
     return render(request, 'barcode_scanner/add_waste_detail.html', {
         'barcode': barcode,
         'waste_item': waste_item
     })
+
 
 
 
@@ -381,10 +385,19 @@ def all_barcodes(request):
     waste_items = WasteItem.objects.all()
     return render(request, 'barcode_scanner/all_barcode.html', {'waste_items': waste_items})
 
+from django.shortcuts import render
+from .models import WasteImage
+
+from django.shortcuts import render
+from .models import WasteImage
+from django.contrib.auth.decorators import login_required
+
 @login_required
 def my_waste_details(request):
-    user_waste_images = WasteImage.objects.filter(added_by=request.user, waste_item__isnull=False)
+    user_waste_images = WasteImage.objects.filter(added_by=request.user)  # ดึงข้อมูลเฉพาะของผู้ใช้ปัจจุบัน
     return render(request, 'barcode_scanner/my_waste_details.html', {'waste_images': user_waste_images})
+
+
 
 
 
