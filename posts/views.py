@@ -100,16 +100,19 @@ class SellItemView(View):
 
     def post(self, request):
         form = SellItemForm(request.POST, request.FILES)
+        print(request.POST)  # ตรวจสอบว่าฟิลด์ `location` ถูกส่งมาหรือไม่
         if form.is_valid():
             sell_item = form.save(commit=False)
             sell_item.user = request.user
+            print(f"Location from form: {sell_item.location}")  # ดูค่าที่ได้จากฟอร์ม
             sell_item.save()
             messages.success(request, 'ลงประกาศขายสำเร็จ')
             return redirect('sell_item_details', item_id=sell_item.id)
         else:
-            print(form.errors)  # เพิ่มการพิมพ์ข้อผิดพลาดถ้ามี
+            print(form.errors)  # แสดงข้อผิดพลาดในฟอร์ม (ถ้ามี)
             messages.error(request, 'เกิดข้อผิดพลาดในการลงประกาศ')
         return render(request, 'posts/sell_item.html', {'form': form})
+
 
 from django.http import HttpResponse
 
@@ -118,13 +121,10 @@ from django.http import HttpResponse
 class SellItemDetailView(View):
     def get(self, request, item_id):
         post_ad = get_object_or_404(SellItem, id=item_id)
-        print(f"Post ID: {post_ad.id}, Template Path: posts/sell_item_details.html")
-        
         context = {
             'post_ad': post_ad,
             'can_edit': request.user == post_ad.user or request.user.is_staff,
-            'is_owner': request.user == post_ad.user,  # ตรวจสอบว่าเป็นเจ้าของโพสต์หรือไม่
-            
+            'is_owner': request.user == post_ad.user,
         }
         return render(request, 'posts/sell_item_details.html', context)
 

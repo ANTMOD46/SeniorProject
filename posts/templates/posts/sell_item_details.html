@@ -76,6 +76,23 @@
                 transform: translateY(0);
             }
         }
+        .post-type {
+            padding: 6px 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .post-type.sell {
+            background-color: #d1fae5; /* สีเขียวอ่อน */
+            color: #065f46; /* สีเขียวเข้ม */
+        }
+
+        .post-type.buy {
+            background-color: #e0f2fe; /* สีฟ้าอ่อน */
+            color: #0369a1; /* สีฟ้าเข้ม */
+        }
 
         /* Modal สำหรับแสดงข้อมูล */
         .modal {
@@ -118,14 +135,15 @@
                 <img src="{% static 'path_to_default_image.jpg' %}" alt="No Product Image" class="w-full h-72 object-cover rounded-md mb-4">
             {% endif %}
         </div>
-
-        {% comment %} <p class="text-sm font-semibold">
-            {% if is_seller %}
-                <span class="text-green-500">ขาย</span>
-            {% else %}
-                <span class="text-blue-500">รับซื้อ</span>
+          <!-- ระบุประเภทโพสต์ -->
+          <p class="post-type {{ post_ad.post_type }}">
+            {% if post_ad.post_type == 'sell' %}
+                ประกาศขาย
+            {% elif post_ad.post_type == 'buy' %}
+                ประกาศซื้อ
             {% endif %}
-        </p> {% endcomment %}
+        </p>
+        
 
         <p class="text-gray-500 mb-2">
             <i class="fas fa-calendar-alt"></i>
@@ -134,7 +152,9 @@
 
         <h1 class="text-3xl font-bold text-black mb-2">{{ post_ad.title }}</h1>
 
-        <p class="text-red-500 text-2xl font-bold mb-4">฿ {{ post_ad.price }}</p>
+        {% if post_ad.price %}
+        <p class="text-red-500 text-2xl font-bold mb-4">ราคาที่คาดหวัง฿ {{ post_ad.price }}</p>
+        {% endif %}
 
         <div class="flex justify-center items-center mb-4 space-x-4">
             <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ post_ad.user.username }}</span></p>
@@ -159,7 +179,7 @@
         <div id="phoneModal" class="modal">
             <div class="modal-content">
                 <h2 class="text-xl font-bold text-gray-700 mb-4">เบอร์โทรศัพท์</h2>
-                <p class="text-lg text-gray-600">{{ post_ad.phone }}</p> <!-- แก้จาก SellItem.phone เป็น post_ad.phone -->
+                <p class="text-lg text-gray-600">{{ post_ad.phone }}</p>
                 <button id="closePhoneModal" class="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-md">
                     ปิด
                 </button>
@@ -167,8 +187,9 @@
         </div>
 
         <p class="text-gray-600 mb-4"><strong>รายละเอียด:</strong> {{ post_ad.description }}</p>
-        <p class="text-gray-600 mb-4"><strong>สถานที่:</strong> {{ post_ad.location }}</p>
-        <p class="text-gray-600 mb-4"><strong>เบอร์โทร:</strong> {{ post_ad.phone }}</p>
+        <p class="text-gray-600 mb-4"><strong>สถานที่:</strong> {{ post_ad.location|default:"ไม่ระบุ" }}</p>
+
+
 
         {% if can_edit %}
         <div class="action-menu-container">
@@ -176,7 +197,8 @@
             <div id="actionMenu" class="menu z-10">
                 <a href="{% url 'update_item' item_id=post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
                 <a href="#" class="menu-item text-red-500" id="deletePostButton">ลบโพสต์</a>
-                <button class="menu-item text-green-500" id="closeSaleButton">ปิดการขาย</button>
+                <button id="closeSaleButton" class="menu-item text-green-500">ปิดการขาย</button>
+
             </div>
         </div>
         {% endif %}
@@ -211,30 +233,31 @@
         </form>
     </main>
 
-        <!-- Modal สำหรับการลบโพสต์ -->
-<div id="deletePostModal" class="modal">
-    <div class="modal-content">
-        <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าจะลบโพสต์?</h2>
-        {% comment %} <p class="text-lg text-gray-600 mb-4">การลบโพสต์จะไม่สามารถกู้คืนได้</p> {% endcomment %}
-        <form method="post" action="{% url 'delete_item' post_ad.id %}">
+    <!-- Modal สำหรับการลบโพสต์ -->
+    <div id="deletePostModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าจะลบโพสต์?</h2>
+            <form method="post" action="{% url 'delete_item' post_ad.id %}">
+                {% csrf_token %}
+                <div class="flex justify-center space-x-4">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md">
+                        ยืนยัน
+                    </button>
+                    <button id="cancelDeleteButton" type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md">
+                        ยกเลิก
+                    </button>
+                </div>
+            </form>
+        </div>
+        <form method="POST" action="{% url 'close_sale' post_ad.id %}">
             {% csrf_token %}
-            
-            <!-- ใช้ flex เพื่อให้ปุ่มอยู่ข้างกัน -->
-            <div class="flex justify-center space-x-4">
-                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md">
-                    ยืนยัน
-                </button>
-                <button id="cancelDeleteButton" type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md">
-                    ยกเลิก
-                </button>
-            </div>
+            <p class="text-lg font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าจะปิดการขายนี้?</p>
+            <button type="submit" class="confirm-button">ยืนยัน</button>
+            <a href="#" class="cancel-button" onclick="history.back(); return false;">ยกเลิก</a>
         </form>
         
+        
     </div>
-</div>
-
-
-
 
     <script>
         const showPhoneButton = document.getElementById('showPhoneButton');
@@ -247,35 +270,36 @@
         const cancelDeleteButton = document.getElementById('cancelDeleteButton');
         const closeSaleButton = document.getElementById('closeSaleButton');
 
-    if (closeSaleButton) {
-        closeSaleButton.addEventListener('click', function () {
-            if (confirm("คุณต้องการปิดการขายนี้ใช่หรือไม่?")) {
-                fetch("{% url 'close_sale' post_ad.id %}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload(); // รีโหลดหน้าหลังปิดการขาย
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("เกิดข้อผิดพลาดในการปิดการขาย");
-                });
-            }
-        });
-    }
+        if (closeSaleButton) {
+            closeSaleButton.addEventListener('click', function () {
+                if (confirm("คุณต้องการปิดการขายนี้ใช่หรือไม่?")) {
+                    fetch("{% url 'close_sale' post_ad.id %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                alert(data.message);
+                                location.reload(); // รีโหลดหน้าหลังปิดการขาย
+                            } else {
+                                alert(data.message);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            alert("เกิดข้อผิดพลาดในการปิดการขาย");
+                        });
+                }
+            });
+        }
         
+            
+    
 
-        // Toggle menu
         if (menuToggle && actionMenu) {
             menuToggle.addEventListener('click', function(event) {
                 event.stopPropagation();
@@ -289,7 +313,6 @@
             });
         }
 
-        // Show delete post modal
         if (deletePostButton && deletePostModal) {
             deletePostButton.addEventListener('click', function() {
                 deletePostModal.classList.add('show-modal');
@@ -300,7 +323,6 @@
             });
         }
 
-        // Show phone modal
         if (showPhoneButton && phoneModal && closePhoneModal) {
             showPhoneButton.addEventListener('click', function() {
                 phoneModal.classList.add('show-modal');

@@ -43,10 +43,11 @@
                 <input type="text" name="title" id="title" value="{{ post_ad.title }}" required class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4" {% if post_ad.post_type == "buy" %}style="display: none;"{% endif %}>
                 <label for="price" class="block text-gray-700">ราคา:</label>
-                <input type="number" name="price" id="price" value="{{ post_ad.price }}" required class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                <input type="number" name="price" id="price" value="{{ post_ad.price }}" class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
             </div>
+            
 
             <div class="mb-4">
                 <label for="description" class="block text-gray-700">รายละเอียด:</label>

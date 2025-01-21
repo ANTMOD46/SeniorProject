@@ -13,32 +13,32 @@
         }
 
         .form-container {
-            background: linear-gradient(135deg, #ebf8ff, #dbeafe); /* ไล่สีฟ้าอ่อน */
+            background: linear-gradient(135deg, #ebf8ff, #dbeafe);
             padding: 24px;
             border-radius: 16px;
-            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2); /* เพิ่มเงาสีน้ำเงิน */
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2);
             animation: fadeIn 0.5s ease-in-out;
         }
 
         .form-label {
-            color: #2563eb; /* สีฟ้าสำหรับข้อความ */
+            color: #2563eb;
             font-weight: 600;
         }
 
         .form-input {
-            border: 2px solid #bfdbfe; /* ขอบสีฟ้า */
-            background-color: #eff6ff; /* สีพื้นจาง */
+            border: 2px solid #bfdbfe;
+            background-color: #eff6ff;
             transition: all 0.3s ease-in-out;
         }
 
         .form-input:focus {
-            border-color: #2563eb; /* ขอบสีฟ้าเข้มเมื่อโฟกัส */
-            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4); /* เพิ่มเงา */
+            border-color: #2563eb;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
             outline: none;
         }
 
         .submit-button {
-            background-color: #2563eb; /* สีฟ้า */
+            background-color: #2563eb;
             color: white;
             transition: all 0.3s ease-in-out;
             padding: 12px 24px;
@@ -48,20 +48,20 @@
         }
 
         .submit-button:hover {
-            background-color: #1d4ed8; /* สีฟ้าเข้มขึ้น */
+            background-color: #1d4ed8;
             box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5);
             transform: scale(1.05);
         }
 
         .cancel-link {
-            color: #2563eb; /* สีฟ้าสำหรับลิงก์ */
+            color: #2563eb;
             font-weight: 600;
             text-decoration: underline;
             transition: color 0.3s ease-in-out;
         }
 
         .cancel-link:hover {
-            color: #1d4ed8; /* สีฟ้าเข้มขึ้นเมื่อ hover */
+            color: #1d4ed8;
         }
 
         @keyframes fadeIn {
@@ -69,43 +69,48 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
     </style>
-    <title>ลงประกาศขายสินค้า</title>
+    <title>ลงประกาศสินค้า</title>
 </head>
 
-<body class="bg-blue-50"> <!-- พื้นหลังสีฟ้าอ่อน -->
+<body class="bg-blue-50">
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="max-w-4xl mx-auto p-6 mt-10">
-        <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">ลงประกาศขายสินค้า</h1>
+        <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">ลงประกาศสินค้า</h1>
 
         <div class="form-container">
             <form action="{% url 'sell_item' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <!-- ฟิลด์ตัวเลือกว่าผู้ใช้เป็นผู้ซื้อหรือผู้ขาย -->
+                <!-- ประเภทประกาศ -->
                 <div>
-                    <label for="user_role" class="form-label block text-lg mb-1">คุณเป็นผู้ซื้อหรือผู้ขาย*</label>
-                    <select id="user_role" name="user_role" class="form-input w-full px-4 py-3 rounded-md" required>
-                        <option value="" disabled selected>เลือก...</option>
-                        <option value="buyer">ผู้ซื้อ</option>
-                        <option value="seller">ผู้ขาย</option>
+                    <label for="post_type" class="form-label block text-lg mb-1">ประเภทประกาศ*</label>
+                    <select id="post_type" name="post_type" class="form-input w-full px-4 py-3 rounded-md" required>
+                        <option value="" disabled selected>เลือกประเภทประกาศ...</option>
+                        <option value="sell">ประกาศขาย</option>
+                        <option value="buy">ประกาศซื้อ</option>
                     </select>
                 </div>
 
+                <!-- หัวข้อประกาศ -->
                 <div>
-                    <label for="title" class="form-label block text-lg mb-1">หัวข้อที่คุณต้องการซื้อ-ขาย*</label>
-                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-3 rounded-md" placeholder="ชื่อสินค้าเช่น ขวดพลาสติก เหล็ก" required>
+                    <label for="title" class="form-label block text-lg mb-1">หัวข้อประกาศ*</label>
+                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-3 rounded-md"
+                        placeholder="ชื่อสินค้า เช่น ขวดพลาสติก เหล็ก" required>
                 </div>
 
-                <div>
-                    <label for="price" class="form-label block text-lg mb-1">ระบุราคาที่เหมาะสม*</label>
-                    <input type="text" id="price" name="price" class="form-input w-full px-4 py-3 rounded-md" placeholder="ระบุราคาเป็นตัวเลขเช่น 100" required>
+                <!-- ราคาสำหรับประกาศขาย -->
+                <div id="price-container" class="hidden">
+                    <label for="price" class="form-label block text-lg mb-1">ระบุราคาที่คาดหวัง*</label>
+                    <input type="number" id="price" name="price" class="form-input w-full px-4 py-3 rounded-md"
+                        placeholder="ระบุราคาเป็นตัวเลข เช่น 100">
                 </div>
 
                 <!-- รูปภาพสินค้า -->
@@ -115,21 +120,29 @@
                     <p class="text-sm text-gray-500 mt-1">เพิ่มรูปภาพ</p>
                 </div>
 
+                <!-- รายละเอียดสินค้า -->
                 <div>
                     <label for="description" class="form-label block text-lg mb-1">รายละเอียดสินค้า*</label>
-                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-3 rounded-md" placeholder="ข้อมูลเพิ่มเติมที่ทำให้สินค้าของคุณได้แสดงรายละเอียด" required></textarea>
+                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-3 rounded-md"
+                        placeholder="ข้อมูลเพิ่มเติมที่ทำให้สินค้าของคุณได้แสดงรายละเอียด" required></textarea>
                 </div>
 
+                <!-- พื้นที่สินค้า -->
                 <div>
-                    <label for="location" class="form-label block text-lg mb-1">ระบุพื้นที่ของสินค้า*</label>
-                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-3 rounded-md" placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
+                    <label for="location" class="form-label block text-lg mb-1">พื้นที่สินค้า*</label>
+                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-3 rounded-md"
+                    placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
+                
                 </div>
 
+                <!-- เบอร์โทรติดต่อ -->
                 <div>
                     <label for="phone" class="form-label block text-lg mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
-                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-3 rounded-md" placeholder="เช่น 09xxxxxxxx" required>
+                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-3 rounded-md"
+                        placeholder="เช่น 09xxxxxxxx" required>
                 </div>
 
+                <!-- ปุ่มส่งฟอร์ม -->
                 <div class="text-center">
                     <button type="submit" class="submit-button">ลงประกาศ</button>
                     <a href="{% url 'post_ad' %}" class="cancel-link ml-4">ยกเลิก</a>
@@ -137,6 +150,19 @@
             </form>
         </div>
     </main>
+
+    <script>
+        const postTypeSelect = document.getElementById('post_type');
+        const priceContainer = document.getElementById('price-container');
+
+        postTypeSelect.addEventListener('change', () => {
+            if (postTypeSelect.value === 'sell') {
+                priceContainer.classList.remove('hidden');
+            } else {
+                priceContainer.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,10 +1,15 @@
 from django import forms
 from .models import SellItem, Donation, GeneralAnnouncement
 
+
+
 class SellItemForm(forms.ModelForm):
     class Meta:
         model = SellItem
-        fields = ['user_role', 'title', 'description', 'price', 'location', 'phone', 'image']
+        fields = ['title', 'description', 'price', 'post_type', 'image','location','phone']
+        widgets = {
+            'post_type': forms.Select(choices=SellItem.POST_TYPE_CHOICES),
+        }
        
 
 class DonationForm(forms.ModelForm):

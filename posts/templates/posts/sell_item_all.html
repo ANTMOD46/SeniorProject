@@ -1,13 +1,20 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายการโพสต์ทั้งหมด</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Kanit", serif;
+        }
+    </style>
 </head>
+
 <body class="bg-gray-50 font-sans">
 
     <!-- รวม header_logged_in.html -->
@@ -27,11 +34,11 @@
                 class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto"
             >
 
-            <!-- เลือกบทบาท -->
-            <select name="role" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto">
-                <option value="">-- ทุกบทบาท --</option>
-                <option value="buyer" {% if selected_role == 'buyer' %}selected{% endif %}>ผู้ซื้อ</option>
-                <option value="seller" {% if selected_role == 'seller' %}selected{% endif %}>ผู้ขาย</option>
+            <!-- เลือกประเภทประกาศ -->
+            <select name="post_type" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto">
+                <option value="">-- ทุกประเภท --</option>
+                <option value="sell" {% if selected_post_type == 'sell' %}selected{% endif %}>ประกาศขาย</option>
+                <option value="buy" {% if selected_post_type == 'buy' %}selected{% endif %}>ประกาศซื้อ</option>
             </select>
 
             <!-- เลือกสถานะ -->
@@ -54,9 +61,19 @@
                 <img src="{{ item.image.url }}" alt="{{ item.title }}" class="w-full h-48 object-cover rounded-lg shadow-md mb-4">
                 <h2 class="text-xl font-semibold text-gray-700 hover:text-blue-500 transition duration-200">{{ item.title }}</h2>
                 <p class="text-sm text-gray-500 mt-2">{{ item.description|truncatewords:10 }}</p>
+                
+                <!-- แสดงราคาเฉพาะกรณีประกาศขาย -->
+                {% if item.post_type == 'sell' %}
                 <p class="text-red-500 font-bold text-lg mt-2">฿ {{ item.price }}</p>
+                {% endif %}
+
                 <p class="text-gray-600 mt-2">
-                    <span class="font-semibold">บทบาท:</span> {{ item.user_role|title }}
+                    <span class="font-semibold">ประเภท:</span> 
+                    {% if item.post_type == 'sell' %}
+                        <span class="text-green-500">ประกาศขาย</span>
+                    {% else %}
+                        <span class="text-blue-500">ประกาศซื้อ</span>
+                    {% endif %}
                 </p>
                 <p class="text-gray-600 mt-1">
                     <span class="font-semibold">สถานะ:</span> 
@@ -77,4 +94,5 @@
     </div>
 
 </body>
+
 </html>

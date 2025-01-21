@@ -5,25 +5,54 @@ from .models import *
 
 
 
+from django.db import models
+from django.conf import settings
+
 class SellItem(models.Model):
-    user_role = models.CharField(max_length=20, choices=[
-        ('buyer', 'ผู้ซื้อ'),
-        ('seller', 'ผู้ขาย'),
-    ], default='buyer')
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    location = models.CharField(max_length=255)  # ฟิลด์โลเคชั่น
-    phone = models.CharField(max_length=15)  # ฟิลด์เบอร์โทรศัพท์
-    image = models.ImageField(upload_to='sell_items/')
-    created_at = models.DateTimeField(auto_now_add=True)  # เพิ่มวันที่ประกาศ
-    updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    is_closed = models.BooleanField(default=False)  # ฟิลด์เพื่อบันทึกว่าสินค้าปิดการขายแล้วหรือยัง
-    
+    POST_TYPE_CHOICES = [
+        ('sell', 'ประกาศขาย'),
+        ('buy', 'ประกาศซื้อ'),
+    ]
+
+    post_type = models.CharField(
+        max_length=10,
+        choices=POST_TYPE_CHOICES,
+        default='sell',
+        verbose_name='ประเภทประกาศ'
+    )
+    title = models.CharField(max_length=255, verbose_name='หัวข้อประกาศ')
+    description = models.TextField(verbose_name='รายละเอียดสินค้า')
+    price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name='ราคา (เฉพาะประกาศขาย)'
+    )
+    location = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=15, verbose_name='เบอร์โทรติดต่อ')
+    image = models.ImageField(upload_to='sell_items/', verbose_name='รูปภาพสินค้า')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='วันที่ประกาศ')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='วันที่แก้ไขประกาศ')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name='ผู้ประกาศ'
+    )
+    is_closed = models.BooleanField(default=False, verbose_name='ปิดการขายแล้วหรือยัง')
+
+    # ฟิลด์ที่เชื่อมโยงกับขยะ
+    related_waste = models.ManyToManyField(
+        'barcode_scanner.WasteImage',  # ระบุเส้นทางเต็มของโมเดล
+        blank=True,
+        related_name='sell_items',
+        verbose_name="ขยะที่เกี่ยวข้อง"
+    )
 
     def __str__(self):
         return self.title
+
+
 
 
     
