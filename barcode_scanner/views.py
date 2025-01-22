@@ -138,6 +138,8 @@ from .models import WasteItem, WasteImage
 from .forms import WasteItemForm
 
 def add_waste_item(request):
+    barcode = request.GET.get('barcode', None)  # ดึงข้อมูลบาร์โค้ดจาก URL
+    
     if request.method == 'POST':
         item_form = WasteItemForm(request.POST, request.FILES)
         if item_form.is_valid():
@@ -173,10 +175,9 @@ def add_waste_item(request):
             return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
 
     else:
-        barcode = request.GET.get('barcode', None)
-        item_form = WasteItemForm(initial={'barcode': barcode})
+          item_form = WasteItemForm(initial={'barcode': barcode})
 
-    return render(request, 'barcode_scanner/form.html', {'form': item_form})
+    return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
 
 
 
