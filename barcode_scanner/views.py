@@ -232,17 +232,51 @@ from django.shortcuts import render, get_object_or_404
 from collections import defaultdict
 from .models import WasteItem
 
+from collections import defaultdict
+from django.shortcuts import render, get_object_or_404
+from .models import WasteItem
+from posts.models import SellItem
+
+from django.db.models import Q
+
+from functools import reduce
+from operator import or_
+
+from django.db.models import Q
+from functools import reduce
+from operator import or_
+
+from collections import defaultdict
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, render
+from posts.models import SellItem
+from .models import WasteItem
+
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
 
-    # จัดกลุ่มข้อมูล WasteImages ตามผู้เพิ่ม (added_by)
-    grouped_images = defaultdict(list)
+    # เตรียมข้อมูลสำหรับ Template
+    images_with_related_buyers = []
     for image in waste_item.images.all():
-        grouped_images[image.added_by].append(image)
+        waste_types = [image.waste_type] if image.waste_type else []
+        subtypes = [image.subtype] if image.subtype else []
+
+        query = Q()
+        for value in waste_types + subtypes:
+            query |= Q(title__icontains=value) | Q(description__icontains=value)
+
+        related_buyers = SellItem.objects.filter(
+            post_type='buy'
+        ).filter(query).distinct()
+
+        images_with_related_buyers.append({
+            'image': image,
+            'related_buyers': related_buyers,
+        })
 
     return render(request, 'barcode_scanner/waste_item_detail.html', {
         'waste_item': waste_item,
-        'grouped_images': grouped_images
+        'images_with_related_buyers': images_with_related_buyers,
     })
 
 
@@ -268,39 +302,41 @@ from barcode_scanner.models import WasteImage
 
 
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from .models import WasteImage
 
+@csrf_exempt
 @login_required
 def vote_correct(request, image_id):
-    image = get_object_or_404(WasteImage, id=image_id)
+    if request.method == 'POST':
+        image = get_object_or_404(WasteImage, id=image_id)
+        if request.user in image.correct_votes.all():
+            image.correct_votes.remove(request.user)
+        else:
+            image.correct_votes.add(request.user)
+            image.incorrect_votes.remove(request.user)
+        return JsonResponse({
+            'status': 'success',
+            'total_correct': image.total_correct_votes(),
+            'total_incorrect': image.total_incorrect_votes(),
+        })
 
-    if request.user in image.correct_votes.all():
-        image.correct_votes.remove(request.user)
-    else:
-        image.correct_votes.add(request.user)
-        image.incorrect_votes.remove(request.user)
-
-    data = {
-        'total_correct': image.total_correct_votes(),
-        'total_incorrect': image.total_incorrect_votes(),
-    }
-    return JsonResponse(data)
-
+@csrf_exempt
 @login_required
 def vote_incorrect(request, image_id):
-    image = get_object_or_404(WasteImage, id=image_id)
-
-    if request.user in image.incorrect_votes.all():
-        image.incorrect_votes.remove(request.user)
-    else:
-        image.incorrect_votes.add(request.user)
-        image.correct_votes.remove(request.user)
-
-    data = {
-        'total_correct': image.total_correct_votes(),
-        'total_incorrect': image.total_incorrect_votes(),
-    }
-    return JsonResponse(data)
-
+    if request.method == 'POST':
+        image = get_object_or_404(WasteImage, id=image_id)
+        if request.user in image.incorrect_votes.all():
+            image.incorrect_votes.remove(request.user)
+        else:
+            image.incorrect_votes.add(request.user)
+            image.correct_votes.remove(request.user)
+        return JsonResponse({
+            'status': 'success',
+            'total_correct': image.total_correct_votes(),
+            'total_incorrect': image.total_incorrect_votes(),
+        })
 
 @login_required
 def update_votes(request, image_id):

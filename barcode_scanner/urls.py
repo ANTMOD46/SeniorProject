@@ -19,6 +19,7 @@ urlpatterns = [
     
     path('vote-correct/<int:image_id>/', views.vote_correct, name='vote_correct'),
     path('vote-incorrect/<int:image_id>/', views.vote_incorrect, name='vote_incorrect'),
+
     path('update-votes/<int:image_id>/', views.update_votes, name='update_votes'),
     path('delete/<int:pk>/', views.delete_waste_item, name='delete_waste_item'),
  

@@ -145,6 +145,7 @@
             background-color: #2563eb;
         }
     </style>
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body class="bg-gray-50 font-sans">
     {% include 'accounts/header_logged_in.html' %}
@@ -163,7 +164,6 @@
             {% endif %}
         </div>
 
-        <!-- Additional Waste Section -->
         <div class="waste-section">
             {% regroup waste_item.images.all by added_by as users %}
             {% for user_group in users %}
@@ -178,83 +178,111 @@
                         เพิ่มโดย: {{ user_group.grouper.get_full_name|default:user_group.grouper.username }}
                     </div>
                 </div>
-                {% for image in user_group.list %}
-                <div class="waste-item">
-                    <div class="flex items-center gap-4">
-                        {% if image.image %}
-                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ">
-                        {% else %}
-                        <p>ไม่มีรูปภาพขยะ</p>
-                        {% endif %}
-                        <div class="detail">
-                            <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
-                            <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
-                            <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
-                            <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
-                        </div>
-                    </div>
-                    <!-- Vote Buttons -->
-                    <div class="vote-buttons">
-                        <form id="vote-correct-form-{{ image.id }}" method="post">
-                            {% csrf_token %}
-                            <button type="button" class="btn-correct" onclick="voteCorrect({{ image.id }})">
-                                👍 แยกถูก (<span id="correct-count-{{ image.id }}">{{ image.total_correct_votes }}</span>)
-                            </button>
-                        </form>
-                        <form id="vote-incorrect-form-{{ image.id }}" method="post">
-                            {% csrf_token %}
-                            <button type="button" class="btn-incorrect" onclick="voteIncorrect({{ image.id }})">
-                                👎 แยกผิด (<span id="incorrect-count-{{ image.id }}">{{ image.total_incorrect_votes }}</span>)
-                            </button>
-                        </form>
+
+            {% for item in images_with_related_buyers %}
+            <div class="waste-item">
+                <div class="flex items-center gap-4">
+                    {% if item.image.image %}
+                    <img src="{{ item.image.image.url }}" alt="รูปภาพขยะ">
+                    {% else %}
+                    <p>ไม่มีรูปภาพขยะ</p>
+                    {% endif %}
+                    <div class="detail">
+                        <p><strong>ประเภทขยะ:</strong> {{ item.image.waste_type|default_if_none:'-' }}</p>
+                        <p><strong>หมวดหมู่ย่อย:</strong> {{ item.image.subtype|default_if_none:'-' }}</p>
+                        <p><strong>หมวดหมู่:</strong> {{ item.image.category|default_if_none:'-' }}</p>
+                        <p><strong>วิธีการแยกขยะ:</strong> {{ item.image.separation_method|default_if_none:'-' }}</p>
                     </div>
                 </div>
-                {% endfor %}
+                <div class="related-buyers mt-6">
+                    <h2 class="text-lg font-bold text-green-600 mb-4">แนะนำผู้รับซื้อสำหรับขยะชิ้นนี้</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {% for buyer in item.related_buyers %}
+                        <div class="flex flex-col items-center bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-all duration-300">
+                            <a href="{% url 'user_store' buyer.user.username %}">
+                                <img src="{% if buyer.user.profile_picture %}{{ buyer.user.profile_picture.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="โปรไฟล์">
+                            </a>
+                            <div>
+                                <a href="{% url 'user_store' buyer.user.username %}">
+                                    {{ buyer.user.username }}
+                                </a>
+                                <p>{{ buyer.title }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="vote-buttons mt-4">
+                    <button type="button" class="btn-correct" onclick="voteCorrect({{ item.image.id }})">
+                        👍 แยกถูก (<span id="correct-count-{{ item.image.id }}">{{ item.image.total_correct_votes }}</span>)
+                    </button>
+                    <button type="button" class="btn-incorrect" onclick="voteIncorrect({{ item.image.id }})">
+                        👎 แยกผิด (<span id="incorrect-count-{{ item.image.id }}">{{ item.image.total_incorrect_votes }}</span>)
+                    </button>
+                    
+                    
+                </div>
+                
             </div>
             {% endfor %}
-            
-        <!-- ปุ่มเพิ่มการแยกขยะของคุณ -->
+        </div>
+        {% endfor %}
         <div class="add-button-container">
-            <a href="{% url 'barcode_scanner:add_waste_detail' waste_item.barcode %}" 
-            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-             เพิ่มการแยกขยะของคุณ (ขยะชิ้นที่ {{ waste_item.images.count|add:1 }})
-         </a>
-         
+            <a href="{% url 'barcode_scanner:add_waste_detail' waste_item.barcode %}" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                เพิ่มการแยกขยะของคุณ (ขยะชิ้นที่ {{ waste_item.images.count|add:1 }})
+            </a>
         </div>
 
         <script>
             function voteCorrect(imageId) {
+                console.log("Starting voteCorrect for imageId:", imageId);
                 fetch(`/scanner/vote-correct/${imageId}/`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    }
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                    },
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log("Success:", data);
                     document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
                     document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error("Error during voteCorrect:", error));
             }
-
+    
             function voteIncorrect(imageId) {
+                console.log("Starting voteIncorrect for imageId:", imageId);
                 fetch(`/scanner/vote-incorrect/${imageId}/`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    }
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                    },
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log("Success:", data);
                     document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
                     document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error("Error during voteIncorrect:", error));
             }
         </script>
+        
+        
+        
     </div>
 </body>
 </html>
