@@ -2,13 +2,13 @@
 {% load static %}  
 {% block main %}
 <section class="flex w-full min-h-screen items-center justify-center mt-28 bg-white">
-    <div class="bg-white w-full max-w-4xl p-8 shadow-lg rounded-lg">
+    <div class="bg-gray-100 w-full max-w-4xl p-8 shadow-lg rounded-lg">
         <!-- SIGN-UP Header -->
         <div class="text-center mb-8">
-            <p class="text-5xl font-semibold text-blue-600 mb-6">สมัครสมาชิก</p>
-            <span class="block text-2xl font-light text-blue-500">สร้างบัญชีใหม่และเข้าร่วมกับเรา!</span>
-            <span class="block text-lg font-light text-blue-400 mt-2">มีบัญชีอยู่แล้ว?
-                <a href="{% url 'login' %}" class="underline text-blue-600 hover:text-blue-700">เข้าสู่ระบบ</a>
+            <p class="text-5xl font-semibold text-yellow-600 mb-6">สมัครสมาชิก</p>
+            <span class="block text-2xl font-light text-gray-800">สร้างบัญชีใหม่และเข้าร่วมกับเรา!</span>
+            <span class="block text-lg font-light text-gray-600 mt-2">มีบัญชีอยู่แล้ว?
+                <a href="{% url 'login' %}" class="underline text-yellow-600 hover:text-yellow-700">เข้าสู่ระบบ</a>
             </span>
         </div>   
 
@@ -20,8 +20,8 @@
             <div class="flex flex-col items-center justify-center mb-8 relative">
                 <label for="profile_image" class="cursor-pointer">
                     <div class="relative">
-                        <span class="absolute top-[-2.5rem] text-blue-500 font-semibold text-lg">เพิ่มรูปโปรไฟล์</span>
-                        <div class="w-32 h-32 rounded-full border-4 border-blue-300 flex items-center justify-center overflow-hidden mt-2">
+                        <span class="absolute top-[-2.5rem] text-gray-700 font-semibold text-lg">เพิ่มรูปโปรไฟล์</span>
+                        <div class="w-32 h-32 rounded-full border-4 border-yellow-300 flex items-center justify-center overflow-hidden mt-2">
                             <img src="{% static 'css/dist/Seniorproject/img/profile1.png' %}" id="profile_preview" class="w-28 h-28 rounded-full object-cover object-center" alt="Profile Image">
                         </div>
                     </div>
@@ -46,46 +46,46 @@
             <!-- Other Fields -->
             <div class="flex space-x-4">
                 <div class="w-1/2">
-                    <label class="block text-sm text-blue-600">ชื่อ</label>
-                    <input type="text" name="first_name" id="first_name" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                    <label class="block text-sm text-gray-800">ชื่อ</label>
+                    <input type="text" name="first_name" id="first_name" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" required>
                 </div>
                 <div class="w-1/2">
-                    <label class="block text-sm text-blue-600">นามสกุล</label>
-                    <input type="text" name="last_name" id="last_name" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                    <label class="block text-sm text-gray-800">นามสกุล</label>
+                    <input type="text" name="last_name" id="last_name" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" required>
                 </div>
             </div>
 
             <div>
-                <label class="block text-sm text-blue-600">ที่อยู่</label>
-                <input type="text" name="address" id="address" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                <label class="block text-sm text-gray-800">ที่อยู่</label>
+                <input type="text" name="address" id="address" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" required>
             </div>
 
             <div>
-                <label class="block text-sm text-blue-600">เบอร์โทรศัพท์</label>
-                <input type="text" name="phone_number" id="phone_number" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                <label class="block text-sm text-gray-800">เบอร์โทรศัพท์</label>
+                <input type="text" name="phone_number" id="phone_number" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" required>
             </div>
 
             <div>
-                <label class="block text-sm text-blue-600">อีเมล</label>
-                <input type="email" name="email" id="email" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" placeholder="abcd@efg.com" required>
+                <label class="block text-sm text-gray-800">อีเมล</label>
+                <input type="email" name="email" id="email" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" placeholder="abcd@efg.com" required>
             </div>
 
             <div>
-                <label class="block text-sm text-blue-600">ชื่อผู้ใช้</label>
-                <input type="text" name="username" id="username" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                <label class="block text-sm text-gray-800">ชื่อผู้ใช้</label>
+                <input type="text" name="username" id="username" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" required>
             </div>
 
             <div>
-                <label class="block text-sm text-blue-600">รหัสผ่าน</label>
-                <input type="password" name="password1" id="password1" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" placeholder="•••••••••" required>
+                <label class="block text-sm text-gray-800">รหัสผ่าน</label>
+                <input type="password" name="password1" id="password1" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" placeholder="•••••••••" required>
                 {% if form.password1.errors %}
                     <p class="text-red-500 text-xs italic">{{ form.password1.errors.as_text }}</p>
                 {% endif %}
             </div>
 
             <div>
-                <label class="block text-sm text-blue-600">ยืนยันรหัสผ่าน</label>
-                <input type="password" name="password2" id="password2" class="w-full h-14 p-2 mt-1 border border-blue-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" placeholder="•••••••••" required>
+                <label class="block text-sm text-gray-800">ยืนยันรหัสผ่าน</label>
+                <input type="password" name="password2" id="password2" class="w-full h-14 p-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-200" placeholder="•••••••••" required>
                 {% if form.password2.errors %}
                     <p class="text-red-500 text-xs italic">{{ form.password2.errors.as_text }}</p>
                 {% endif %}
@@ -105,7 +105,7 @@
             {% endif %}
 
             <div class="flex justify-center">
-                <button class="w-80 h-14 bg-blue-500 text-white font-medium rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300">สมัครสมาชิก</button>
+                <button class="w-80 h-14 bg-yellow-500 text-black font-medium rounded-lg shadow-lg hover:bg-yellow-600 transition-all duration-300">สมัครสมาชิก</button>
             </div>
         </form>
     </div>
