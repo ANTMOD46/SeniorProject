@@ -6,81 +6,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
-            font-family: "Kanit", serif;
+            font-family: "Kanit", sans-serif;
         }
 
         .category-button {
-            background-color: #f0f9ff; /* สีพื้นหลังฟ้าอ่อน */
-            padding: 16px;
+            background-color: #f8fafc;
+            padding: 16px 20px;
             margin: 10px 0;
             border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 1.2rem;
-            color: #1d4ed8; /* สีตัวอักษรน้ำเงินเข้ม */
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            text-decoration: none; /* ลบขีดเส้นใต้ของลิงก์ */
-            font-weight: bold;
+            color: #1d4ed8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #d1d5db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
         }
 
         .category-button:hover {
-            background-color: #dbeafe; /* สีพื้นหลังเข้มขึ้นเมื่อ hover */
-            color: #1e40af; /* สีตัวอักษรเข้มขึ้นเมื่อ hover */
+            background-color: #e5f3ff;
+            color: #1e40af;
+            transform: translateY(-3px);
         }
 
         .category-arrow {
             font-size: 1.5rem;
-            color: #2563eb; /* สีลูกศรฟ้าเข้ม */
+            color: #2563eb;
         }
 
         .disabled-button {
-            pointer-events: none; /* ปิดการใช้งานคลิก */
-            opacity: 0.6; /* ทำให้ดูจาง ๆ เพื่อบอกว่าคลิกไม่ได้ */
+            pointer-events: none;
+            opacity: 0.6;
         }
 
         body {
-            background-color: #ffffff; /* สีพื้นหลังหลักเป็นสีขาว */
+            background-color: #f9fafb;
+            padding: 0;
+            margin: 0;
         }
 
         h1 {
-            color: #1d4ed8; /* สีฟ้าสำหรับหัวข้อ */
+            color: #1d4ed8;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-text {
+            color: #6b7280;
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
     <title>ลงประกาศใหม่</title>
 </head>
 
-<body class="bg-white">
+<body>
 
-    <!-- ใช้ include เพื่อดึง header จากไฟล์ header_logged_in.html -->
     {% include 'accounts/header_logged_in.html' %}
-    
+
     <!-- Main Content -->
-    <main class="p-6">
-        <h1 class="text-3xl text-center font-bold mb-4">ลงประกาศใหม่</h1>
-        <p class="text-center text-gray-500 mb-8">เลือกหมวดหมู่</p>
+    <main class="main-container">
+        <h1 class="text-center">ลงประกาศใหม่</h1>
+        <p class="header-text">เลือกหมวดหมู่ที่คุณต้องการ</p>
 
         <!-- Category Buttons -->
-        <div class="space-y-4 max-w-xl mx-auto">
+        <div class="space-y-4">
             <a href="{% url 'sell_item' %}" class="category-button">
                 ซื้อขายขยะ/ของเก่า
-                <span class="category-arrow">→</span>
+                <span class="category-arrow">&rarr;</span>
             </a>
 
             <a href="{% url 'donation_form' %}" class="category-button">
                 การบริจาค
-                <span class="category-arrow">→</span>
+                <span class="category-arrow">&rarr;</span>
             </a>
 
             <a href="{% url 'general_announcement' %}" class="category-button">
                 กระทู้สอบถามทั่วไป
-                <span class="category-arrow">→</span>
+                <span class="category-arrow">&rarr;</span>
             </a>
         </div>
     </main>
+
 </body>
 
 </html>
