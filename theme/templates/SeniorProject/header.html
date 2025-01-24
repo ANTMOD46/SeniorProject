@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -42,7 +43,7 @@
 
 <body class="bg-pink-50 overflow-x-hidden">
     <!-- Header -->
-    <header class="fixed w-full bg-white border-b border-pink-200 shadow-lg z-50">
+    <header class="fixed w-full bg-white border-b border-gray-200 shadow-lg z-50">
         <div class="flex items-center justify-between max-w-screen-xl mx-auto px-6 py-2">
             <div class="flex items-center">
                 <!-- Logo -->
@@ -50,12 +51,12 @@
             </div>
             <div class="flex items-center space-x-4 nav-buttons">
                 <!-- ปุ่มสมัครสมาชิก -->
-            <a href="{% url 'signup' %}" class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm text-center px-6 py-2.5">
+            <a href="{% url 'signup' %}" class="text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm text-center px-6 py-2.5">
                 สมัครสมาชิก
             </a>
 
             <!-- ปุ่มเข้าสู่ระบบ -->
-            <a href="{% url 'login' %}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm text-center">
+            <a href="{% url 'login' %}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm text-center px-6 py-2.5">
                 เข้าสู่ระบบ
             </a>
 
