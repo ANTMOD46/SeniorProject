@@ -471,4 +471,29 @@ def delete_waste_image(request, pk):
 
 
 
+# สำหรับคนยังไม่สมาชิก
 
+def scan_camera_guest(request):
+    return render(request, 'barcode_scanner/scan_camera_guest.html')
+
+
+def scan_result_guest(request):
+    barcode = request.GET.get("barcode", None)
+
+    if barcode:
+        try:
+            # ถ้าพบบาร์โค้ดในฐานข้อมูล
+            waste_item = WasteItem.objects.get(barcode=barcode)
+            waste_images = waste_item.images.all()  # ดึงข้อมูล WasteImage
+            return render(request, 'barcode_scanner/waste_item_detail_guest.html', {
+                'waste_item': waste_item,
+                'waste_images': waste_images,  # ส่งข้อมูล WasteImage ไปที่ Template
+            })
+        except WasteItem.DoesNotExist:
+            # ถ้าไม่พบ ให้ส่งไปที่ Pop-up
+            return render(request, 'barcode_scanner/guest_popup.html', {'barcode': barcode})
+    else:
+        return redirect('barcode_scanner:scan_camera_guest')
+
+    
+    

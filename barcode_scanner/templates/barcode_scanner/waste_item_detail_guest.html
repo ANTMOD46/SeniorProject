@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>รายละเอียดขยะ</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #0ea5e9;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .product-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .product-info img {
+            margin: 20px auto;
+            max-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .product-info p {
+            font-size: 1rem;
+            color: #374151;
+            margin: 5px 0;
+        }
+        .waste-section {
+            margin-top: 40px;
+        }
+        .waste-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .waste-item img {
+            max-width: 100px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .detail {
+            flex-grow: 1;
+        }
+        .detail p {
+            margin: 5px 0;
+            color: #374151;
+            font-size: 1rem;
+        }
+        .vote-icons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px; /* เพิ่มช่องว่างระหว่างไอคอน */
+            margin-top: 10px;
+        }
+        .vote-icons span {
+            font-size: 1rem;
+            color: #374151;
+            font-weight: bold;
+        }
+        .login-alert {
+            text-align: center;
+            margin-top: 30px;
+            background-color: #fef9c3;
+            border: 1px solid #facc15;
+            color: #d97706;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .login-alert a {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        .login-alert a:hover {
+            color: #1d4ed8;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #e5e7eb;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    {% include 'SeniorProject/header.html' %}
+    <div class="container">
+        <div class="header">
+            <h1>รายละเอียดขยะ</h1>
+        </div>
+
+        <!-- Product Information -->
+        <div class="product-info">
+            <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+            <p><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+            <p><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+            {% if waste_item.product_image %}
+            <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์">
+            {% endif %}
+        </div>
+
+        <div class="waste-section">
+            {% for image in waste_images %}
+            <div class="waste-item">
+                <div class="flex items-center gap-4">
+                    {% if image.image %}
+                    <img src="{{ image.image.url }}" alt="รูปภาพขยะ">
+                    {% endif %}
+                    <div class="detail">
+                        <!-- User Profile Section -->
+                        <div class="user-profile">
+                            {% if image.added_by.profile_picture %}
+                            <img src="{{ image.added_by.profile_picture.url }}" alt="โปรไฟล์ผู้ใช้">
+                            {% else %}
+                            <img src="{% static 'images/default_profile.png' %}" alt="โปรไฟล์ผู้ใช้">
+                            {% endif %}
+                            <span>เพิ่มโดย: {{ image.added_by.get_full_name|default:image.added_by.username }}</span>
+                        </div>
+        
+                        <!-- Waste Details Section -->
+                        <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
+                        <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
+                        <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
+                        <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
+        
+                        <!-- Vote Section -->
+                        <div class="vote-icons">
+                            <span>👍 {{ image.total_correct_votes }}</span>
+                            <span>👎 {{ image.total_incorrect_votes }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Login Alert -->
+        <div class="login-alert">
+            กรุณา <a href="/accounts/login/">เข้าสู่ระบบ</a> เพื่อเพิ่มหรือแก้ไขข้อมูลการแยกขยะ
+        </div>
+    </div>
+</body>
+</html>
