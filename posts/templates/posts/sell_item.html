@@ -6,61 +6,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
             font-family: "Kanit", serif;
         }
 
         .form-container {
-            background: linear-gradient(135deg, #ebf8ff, #dbeafe);
+            background: #ffffff;
             padding: 24px;
             border-radius: 16px;
-            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             animation: fadeIn 0.5s ease-in-out;
         }
 
         .form-label {
-            color: #2563eb;
+            color: #1d4ed8;
             font-weight: 600;
         }
 
         .form-input {
-            border: 2px solid #bfdbfe;
-            background-color: #eff6ff;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
             transition: all 0.3s ease-in-out;
         }
 
         .form-input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+            border-color: #1d4ed8;
+            box-shadow: 0 0 8px rgba(29, 78, 216, 0.4);
             outline: none;
         }
 
         .submit-button {
-            background-color: #2563eb;
+            background-color: #1d4ed8;
             color: white;
             transition: all 0.3s ease-in-out;
             padding: 12px 24px;
             font-size: 1.1rem;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
         }
 
         .submit-button:hover {
-            background-color: #1d4ed8;
-            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5);
+            background-color: #2563eb;
+            box-shadow: 0 6px 15px rgba(29, 78, 216, 0.5);
             transform: scale(1.05);
         }
 
         .cancel-link {
-            color: #2563eb;
+            color: #1d4ed8;
             font-weight: 600;
             text-decoration: underline;
             transition: color 0.3s ease-in-out;
         }
 
         .cancel-link:hover {
+            color: #2563eb;
+        }
+
+        body {
+            background-color: #f9fafb;
+            padding: 0;
+            margin: 0;
+        }
+
+        h1 {
             color: #1d4ed8;
         }
 
@@ -79,11 +89,11 @@
     <title>ลงประกาศสินค้า</title>
 </head>
 
-<body class="bg-blue-50">
+<body>
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="max-w-4xl mx-auto p-6 mt-10">
-        <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">ลงประกาศสินค้า</h1>
+        <h1 class="text-4xl font-bold text-center mb-6">ลงประกาศสินค้า</h1>
 
         <div class="form-container">
             <form action="{% url 'sell_item' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
@@ -115,10 +125,17 @@
 
                 <!-- รูปภาพสินค้า -->
                 <div>
-                    <label for="image" class="form-label block text-lg mb-1">รูปภาพสินค้า*</label>
-                    <input type="file" id="image" name="image" class="form-input w-full px-4 py-3 rounded-md" required>
-                    <p class="text-sm text-gray-500 mt-1">เพิ่มรูปภาพ</p>
+                    <label for="image" class="form-label block text-lg mb-2">เพิ่มรูปภาพสินค้า*</label>
+                    <div class="relative w-32 h-32 flex justify-start items-center cursor-pointer">
+                        <label for="image" class="absolute inset-0 flex justify-center items-center">
+                            <img src="{% static 'css/dist/Seniorproject/img/upload.jpg' %}" alt="Upload Image" class="object-cover rounded-lg shadow-lg">
+                        </label>
+                    </div>
+                    <input type="file" id="image" name="image" class="hidden" required>
+                    <p class="text-sm text-gray-500 mt-2 text-left">คลิกที่รูปเพื่ออัปโหลด</p>
                 </div>
+
+                
 
                 <!-- รายละเอียดสินค้า -->
                 <div>
@@ -131,8 +148,7 @@
                 <div>
                     <label for="location" class="form-label block text-lg mb-1">พื้นที่สินค้า*</label>
                     <input type="text" id="location" name="location" class="form-input w-full px-4 py-3 rounded-md"
-                    placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
-                
+                        placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
                 </div>
 
                 <!-- เบอร์โทรติดต่อ -->
