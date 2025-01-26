@@ -7,23 +7,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>รายการแชท</title>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
     {% include 'accounts/header_logged_in.html' %}
-    
+
     <style>
         * { font-family: 'Kanit', sans-serif; }
-        body { background-color: #e3f2fd; }
+        body { background-color: #f1f5f9; }
         .header-title {
             text-align: center;
             font-size: 36px;
             font-weight: bold;
-            color: #0277bd;
+            color: #1e3a8a; /* สีหัวข้อโทนน้ำเงินเข้ม */
             margin-bottom: 20px;
-            border-bottom: 2px solid #0288d1;
+            border-bottom: 2px solid #2563eb;
             padding-bottom: 10px;
         }
         .chat-sidebar { 
-            background-color: #e1f5fe; 
+            background-color: #e2e8f0; /* สีเทาอ่อน */
             border-radius: 8px; 
             max-width: 600px; 
             margin: 0 auto; 
@@ -35,25 +35,25 @@
             align-items: center; 
             padding: 15px; 
             cursor: pointer; 
-            border-bottom: 1px solid #bbdefb; 
+            border-bottom: 1px solid #cbd5e1; /* เส้นแบ่งสีเทา */
             transition: background-color 0.3s ease;
         }
-        .chat-item:hover { background-color: #b3e5fc; }
+        .chat-item:hover { background-color: #c7d2fe; /* สีพื้นหลังเมื่อ hover โทนฟ้าอ่อน */ }
         .chat-item img { 
             width: 50px; 
             height: 50px; 
             border-radius: 50%; 
             margin-right: 15px; 
-            border: 2px solid #0288d1;
+            border: 2px solid #2563eb; /* สีกรอบรูปภาพ */
         }
         .chat-info { flex-grow: 1; }
         .chat-info .chat-name { 
             font-weight: bold; 
-            color: #01579b; 
+            color: #1e40af; /* สีชื่อโทนน้ำเงินเข้ม */
             margin-bottom: 2px; 
         }
         .chat-info .chat-preview { 
-            color: #607d8b; 
+            color: #475569; /* สีข้อความตัวอย่าง */
             font-size: 14px; 
             overflow: hidden; 
             white-space: nowrap; 
@@ -62,18 +62,17 @@
         }
         .chat-time { 
             font-size: 12px; 
-            color: #90a4ae; 
+            color: #64748b; /* สีเวลา */
             text-align: right; 
         }
         .empty-chat {
             text-align: center;
-            color: #607d8b;
+            color: #475569; /* สีข้อความเมื่อไม่มีแชท */
             font-size: 16px;
             margin-top: 20px;
         }
     </style>
-</head>
-<body>
+
     <div class="container mx-auto py-8">
         <!-- Header -->
         <h1 class="header-title">รายการแชท</h1>

@@ -14,60 +14,66 @@
 </head>
 <body class="bg-gray-50 font-sans">
     {% include 'accounts/header_logged_in.html' %}
-    <div class="container mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
+    <div class="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
         <div class="header">
-            <h1 class="text-2xl font-bold text-center text-orange-500">การแยกขยะของฉัน</h1>
+            <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">การแยกขยะของฉัน</h1>
         </div>
 
         {% with waste_images|length as total_images %}
         {% if total_images > 0 %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <div class="space-y-6 mt-6">
             {% regroup waste_images by waste_item.barcode as grouped_waste_images %}
             {% for group in grouped_waste_images %}
-            <div class="waste-card bg-gray-100 p-4 rounded-lg shadow">
-                <div class="barcode-header bg-yellow-400 text-black text-center py-2 rounded-lg font-bold">
-                    บาร์โค้ด: {{ group.grouper }}
+            <div class="waste-group bg-gray-100 p-6 rounded-lg shadow-md">
+                <div class="barcode-header  text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">
+                    รหัสบาร์โค้ด: {{ group.grouper }}
                 </div>
 
                 {% with group.list.0.waste_item as waste_item %}
                 {% if waste_item %}
-                <div class="text-center mt-4 mb-4">
+                <div class="text-center mt-4">
                     {% if waste_item.product_image %}
-                    <!-- เพิ่มขนาดของภาพผลิตภัณฑ์ -->
                     <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" 
-                         class="w-48 h-48 object-cover rounded-lg mx-auto mb-2">
+                         class="w-32 h-32 object-cover rounded-lg mx-auto mb-2 shadow">
                     {% endif %}
-                    <p class="text-blue-600 font-semibold">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
+                    <p class=" text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
+
                 </div>
                 {% endif %}
                 {% endwith %}
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                     {% for image in group.list %}
-                    <div class="relative border border-gray-300 rounded-lg p-4">
+                   <div class="relative border border-gray-300 rounded-lg p-4 bg-white shadow-sm flex flex-col items-center">
                         {% if image.image %}
-                        <!-- ภาพขยะแบบเต็มขนาด -->
+                        <!-- รูปภาพขยะ -->
                         <img src="{{ image.image.url }}" alt="รูปภาพขยะ" 
-                             class="w-full h-auto object-contain rounded-lg mb-4 max-h-[180px]">
+                             class="w-24 h-24 object-contain rounded-lg mb-4 shadow float-left mr-4">
                         {% endif %}
-                        <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
-                        <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
-                        <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
-                        <p><strong>วิธีการแยกขยะ:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
-                        <button type="button" onclick="openModal({{ image.id }})" class="delete-btn mt-4 w-full bg-red-500 text-white rounded-lg py-2 hover:bg-red-700">
-                            ลบขยะชิ้นนี้
+                        <!-- รายละเอียดของขยะ -->
+                        <div>
+                            <p class="text-sm"><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
+                            <p class="text-sm"><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
+                            <p class="text-sm"><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
+                            <p class="text-sm"><strong>วิธีการแยก:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
+                        </div>
+                        <button type="button" onclick="openModal({{ image.id }})" 
+                        class="delete-btn mt-4 w-auto px-4 bg-red-500 text-white rounded-lg py-2 text-sm hover:bg-red-700">
+                    ลบขยะชิ้นนี้
                         </button>
                     </div>
                     {% endfor %}
                 </div>
+                
 
                 {% if group.list.0.waste_item and group.list.0.waste_item.id %}
-                <a href="{% url 'barcode_scanner:waste_item_detail' pk=group.list.0.waste_item.id %}" 
-                class="block text-center mt-4 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 hover:scale-105">
-                ดูการแยกขยะ
-             </a>                          
+                <div class="text-center mt-6">
+                    <a href="{% url 'barcode_scanner:waste_item_detail' pk=group.list.0.waste_item.id %}" 
+                       class="bg-yellow-500 text-white font-medium py-2 px-6 rounded-lg shadow-lg hover:bg-green-600 hover:shadow-xl transition duration-300">
+                        ดูการแยกขยะ
+                    </a>
+                </div>
                 {% endif %}
-                
             </div>
             {% endfor %}
         </div>
@@ -77,7 +83,6 @@
         {% endwith %}
     </div>
 
-    <!-- Modal -->
     <div id="delete-modal" class="fixed inset-0 hidden z-50 flex items-center justify-center modal-bg">
         <div class="bg-white p-6 rounded-lg shadow-lg text-center w-80">
             <h2 class="text-lg font-bold text-gray-700 mb-4">ยืนยันการลบ</h2>

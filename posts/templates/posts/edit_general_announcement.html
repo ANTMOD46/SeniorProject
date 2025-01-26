@@ -10,57 +10,123 @@
     <title>แก้ไขประกาศ</title>
     <style>
         * {
-            font-family: "Kanit", serif;
+            font-family: "Kanit", sans-serif;
         }
     </style>
 </head>
 
-<body class="bg-blue-50"> <!-- เปลี่ยนพื้นหลังเป็นสีฟ้าอ่อน -->
+<body class="bg-gray-100"> <!-- เปลี่ยนพื้นหลังเป็นสีเทาสะอาด -->
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-lg mx-auto p-4 mt-10 bg-white shadow-lg rounded-lg">
-        <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">แก้ไขประกาศ</h1> <!-- เปลี่ยนหัวข้อเป็นสีฟ้า -->
+    <main class="flex justify-center items-center min-h-screen mt-6">
+        <div class="bg-white w-full max-w-lg p-8 rounded-lg shadow-lg">
+            <!-- Header Section -->
+            <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">แก้ไขประกาศ</h1>
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
+            <!-- Form Section -->
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
 
-            <!-- ฟิลด์สำหรับหัวข้อการประกาศ -->
-            <div class="mb-6">
-                <label for="title" class="block text-lg font-semibold text-gray-700 mb-2">หัวข้อการประกาศ</label>
-                <input type="text" name="title" value="{{ form.title.value }}" class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500"> <!-- เปลี่ยนขอบเป็นฟ้า -->
-                {{ form.title.errors }}
-            </div>
+                <!-- หัวข้อการประกาศ -->
+                <div>
+                    <label for="title" class="block text-gray-700 font-medium mb-2">หัวข้อการประกาศ</label>
+                    <input type="text" name="title" value="{{ form.title.value }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="ระบุหัวข้อประกาศ" required>
+                    {{ form.title.errors }}
+                </div>
 
-            <!-- ฟิลด์สำหรับเนื้อหาของประกาศ -->
-            <div class="mb-6">
-                <label for="content" class="block text-lg font-semibold text-gray-700 mb-2">รายละเอียดประกาศ</label>
-                <textarea name="content" rows="4" class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ form.content.value }}</textarea> <!-- เปลี่ยนขอบเป็นฟ้า -->
-                {{ form.content.errors }}
-            </div>
+                <!-- รายละเอียดประกาศ -->
+                <div>
+                    <label for="content" class="block text-gray-700 font-medium mb-2">รายละเอียดประกาศ</label>
+                    <textarea name="content" rows="4"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                        placeholder="ระบุรายละเอียดประกาศ" required>{{ form.content.value }}</textarea>
+                    {{ form.content.errors }}
+                </div>
 
-            <!-- ฟิลด์สำหรับสถานที่ -->
-            <div class="mb-6">
-                <label for="location" class="block text-lg font-semibold text-gray-700 mb-2">สถานที่</label>
-                <input type="text" name="location" value="{{ form.location.value }}" class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500"> <!-- เปลี่ยนขอบเป็นฟ้า -->
-                {{ form.location.errors }}
-            </div>
+                <!-- สถานที่ -->
+                <div>
+                    <label for="location" class="block text-gray-700 font-medium mb-2">สถานที่</label>
+                    <input type="text" name="location" value="{{ form.location.value }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="ระบุสถานที่" required>
+                    {{ form.location.errors }}
+                </div>
 
-            <!-- ฟิลด์สำหรับรูปภาพ -->
-            <div class="mb-6">
-                <label for="image" class="block text-lg font-semibold text-gray-700 mb-2">รูปภาพ</label>
-                <input type="file" name="image" class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500"> <!-- เปลี่ยนขอบเป็นฟ้า -->
-                {% if announcement.image %}
-                    <img src="{{ announcement.image.url }}" alt="ประกาศ" class="w-full h-48 object-cover mt-2">
-                {% endif %}
-                {{ form.image.errors }}
-            </div>
+                <!-- รูปภาพ -->
+                <div class="relative w-full h-40 flex justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-4 bg-gray-50 cursor-pointer">
+                    <label for="image" id="image-preview-container" class="absolute inset-0 flex flex-col justify-center items-center cursor-pointer">
+                        {% if announcement.image %}
+                        <img id="image-preview" src="{{ announcement.image.url }}" alt="ประกาศ" class="w-full h-full object-cover rounded-md">
+                        {% else %}
+                        <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span id="upload-text" class="mt-2 text-sm text-gray-500">คลิกเพื่ออัปโหลดรูปภาพ</span>
+                        {% endif %}
+                    </label>
+                    <input type="file" id="image" name="image" class="hidden" onchange="previewSelectedImage(event)">
+                </div>
 
-            <div class="text-center">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">บันทึกการแก้ไข</button> <!-- เปลี่ยนปุ่มเป็นฟ้า -->
-            </div>
-        </form>
+                <!-- ปุ่มบันทึก -->
+                <div class="flex justify-between items-center mt-6">
+                    <button type="submit"
+                        class="py-3 px-6 bg-blue-600 text-white font-medium rounded-md shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        บันทึกการแก้ไข
+                    </button>
+                    <a href="{% url 'post_ad' %}"
+                        class="text-blue-600 font-medium hover:underline focus:outline-none transition-all">
+                        ยกเลิก
+                    </a>
+                </div>
+            </form>
+        </div>
     </main>
 </body>
+
+<script>
+    function previewSelectedImage(event) {
+        const file = event.target.files[0];
+        const imagePreview = document.getElementById('image-preview');
+        const uploadIcon = document.getElementById('upload-icon');
+        const uploadText = document.getElementById('upload-text');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+    
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // ถ้ามีภาพแสดงอยู่แล้ว ให้เปลี่ยน src
+                if (imagePreview) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                } else {
+                    // สร้างภาพใหม่ถ้ายังไม่มี
+                    const imgElement = document.createElement('img');
+                    imgElement.id = 'image-preview';
+                    imgElement.src = e.target.result;
+                    imgElement.className = 'w-full h-full object-cover rounded-md';
+                    imagePreviewContainer.appendChild(imgElement);
+                }
+    
+                // ซ่อน SVG และข้อความ
+                if (uploadIcon) uploadIcon.style.display = 'none';
+                if (uploadText) uploadText.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // คืนค่า SVG และข้อความเมื่อไม่มีการเลือกไฟล์
+            if (imagePreview) {
+                imagePreview.remove(); // ลบภาพ
+            }
+            if (uploadIcon) uploadIcon.style.display = 'block'; // แสดง SVG
+            if (uploadText) uploadText.style.display = 'block'; // แสดงข้อความ
+        }
+    }
+    
+</script>
 
 </html>

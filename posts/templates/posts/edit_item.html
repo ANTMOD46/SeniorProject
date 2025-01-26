@@ -10,72 +10,164 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
     <style>
         * {
-            font-family: "Kanit", serif;
+            font-family: "Kanit", sans-serif;
         }
 
-        /* Adjust the image container margin */
-        .image-container {
-            margin-bottom: 30px; /* Space below the image to prevent overlap with the form */
+        /* ปรับขนาดภาพให้พอดีกับพื้นที่ */
+        .image-preview-container {
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #d1d5db; /* สีเทาสำหรับเส้นประ */
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f9fafb;
+            position: relative;
+        }
+
+        .image-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .image-preview-container svg {
+            width: 48px;
+            height: 48px;
+        }
+
+        .image-preview-container label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
     <title>แก้ไขโพสต์</title>
 </head>
 
-<body class="bg-blue-50"> <!-- เปลี่ยนพื้นหลังให้เป็นฟ้าอ่อน -->
-    <!-- รวม header_logged_in.html -->
+<body class="bg-gray-100">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-lg mx-auto p-4 mt-10 bg-white shadow-lg rounded-lg relative">
-        <h1 class="text-3xl font-bold text-blue-600 mb-4">แก้ไขโพสต์</h1> <!-- เปลี่ยนข้อความหัวเรื่องให้เป็นสีฟ้า -->
+    <main class="flex justify-center items-center min-h-screen mt-6">
+        <div class="bg-white w-full max-w-lg p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">แก้ไขโพสต์</h1>
 
-        <form action="{% url 'update_item' post_ad.id %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="image-container">
-                {% if post_ad.image %}
-                    <img src="{{ post_ad.image.url }}" alt="Product Image" class="w-full h-72 object-cover rounded-md mb-4">
-                {% else %}
-                    <img src="{% static 'path_to_default_image.jpg' %}" alt="No Product Image" class="w-full h-72 object-cover rounded-md mb-4">
-                {% endif %}
-            </div>
+            <form action="{% url 'update_item' post_ad.id %}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
 
-            <div class="mb-4">
-                <label for="title" class="block text-gray-700">ชื่อโพสต์:</label>
-                <input type="text" name="title" id="title" value="{{ post_ad.title }}" required class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
-            </div>
+                <div class="relative w-full h-40 flex justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-4 bg-gray-50 cursor-pointer">
+                    <label for="image" id="image-preview-container" class="absolute inset-0 flex flex-col justify-center items-center cursor-pointer">
+                        {% if post_ad.image %}
+                        <img id="preview-img" src="{{ post_ad.image.url }}" alt="Product Image" class="w-full h-full object-cover rounded-md">
+                        {% else %}
+                        <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <span id="upload-text" class="text-gray-600 mt-2 text-sm">คลิกเพื่ออัปโหลดภาพใหม่</span>
+                        {% endif %}
+                    </label>
+                    <input type="file" id="image" name="image" class="hidden" accept="image/*" onchange="previewImage(event)">
+                </div>
+                
 
-            <div class="mb-4" {% if post_ad.post_type == "buy" %}style="display: none;"{% endif %}>
-                <label for="price" class="block text-gray-700">ราคา:</label>
-                <input type="number" name="price" id="price" value="{{ post_ad.price }}" class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
-            </div>
-            
+                <!-- ชื่อโพสต์ -->
+                <div>
+                    <label for="title" class="block text-gray-700 font-medium mb-2">ชื่อโพสต์</label>
+                    <input type="text" name="title" id="title" value="{{ post_ad.title }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                </div>
 
-            <div class="mb-4">
-                <label for="description" class="block text-gray-700">รายละเอียด:</label>
-                <textarea name="description" id="description" rows="4" required class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">{{ post_ad.description }}</textarea>
-            </div>
+                <!-- ราคา -->
+                <div {% if post_ad.post_type == "buy" %}class="hidden"{% endif %}>
+                    <label for="price" class="block text-gray-700 font-medium mb-2">ราคา</label>
+                    <input type="number" name="price" id="price" value="{{ post_ad.price }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
 
-            <div class="mb-4">
-                <label for="location" class="block text-gray-700">สถานที่:</label>
-                <input type="text" name="location" id="location" value="{{ post_ad.location }}" required class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
-            </div>
+                <!-- รายละเอียด -->
+                <div>
+                    <label for="description" class="block text-gray-700 font-medium mb-2">รายละเอียด</label>
+                    <textarea name="description" id="description" rows="4"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+                        required>{{ post_ad.description }}</textarea>
+                </div>
 
-            <div class="mb-4">
-                <label for="phone" class="block text-gray-700">เบอร์โทร:</label>
-                <input type="text" name="phone" id="phone" value="{{ post_ad.phone }}" required class="w-full px-4 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500">
-            </div>
+                <!-- สถานที่ -->
+                <div>
+                    <label for="location" class="block text-gray-700 font-medium mb-2">สถานที่</label>
+                    <input type="text" name="location" id="location" value="{{ post_ad.location }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                </div>
 
-            <div class="mb-4">
-                <label for="image" class="block text-gray-700">อัปโหลดภาพใหม่:</label>
-                <input type="file" name="image" id="image" accept="image/*" class="w-full px-4 py-2 border border-blue-300 rounded-md">
-            </div>
+                <!-- เบอร์โทร -->
+                <div>
+                    <label for="phone" class="block text-gray-700 font-medium mb-2">เบอร์โทร</label>
+                    <input type="text" name="phone" id="phone" value="{{ post_ad.phone }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                </div>
 
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mt-4">บันทึกการแก้ไข</button> <!-- เปลี่ยนปุ่มให้เป็นสีฟ้า -->
-        </form>
-
-        <div class="mt-4">
-            <a href="{% url 'sell_item_details' post_ad.id %}" class="text-blue-600">กลับไปยังโพสต์</a> <!-- เปลี่ยนลิงค์ให้เป็นสีฟ้า -->
+                <!-- ปุ่มบันทึก -->
+                <div class="flex justify-between items-center">
+                    <button type="submit"
+                        class="bg-blue-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-500 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all">
+                        บันทึกการแก้ไข
+                    </button>
+                    <a href="{% url 'sell_item_details' post_ad.id %}" class="text-blue-600 font-medium hover:underline">กลับไปยังโพสต์</a>
+                </div>
+            </form>
         </div>
     </main>
-    
+
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0]; // รับไฟล์ที่เลือก
+            const previewImg = document.getElementById('preview-img');
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+        
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // ถ้ามี <img> ให้เปลี่ยน src
+                    if (previewImg) {
+                        previewImg.src = e.target.result;
+                        previewImg.style.display = 'block'; // แสดงภาพ
+                    } else {
+                        // ถ้าไม่มี <img> ให้สร้างใหม่
+                        const imgElement = document.createElement('img');
+                        imgElement.id = 'preview-img';
+                        imgElement.src = e.target.result;
+                        imgElement.className = 'w-full h-full object-cover rounded-md';
+                        imagePreviewContainer.appendChild(imgElement);
+                    }
+                    // ซ่อน SVG และข้อความ
+                    if (uploadIcon) uploadIcon.style.display = 'none';
+                    if (uploadText) uploadText.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // คืนค่า SVG และข้อความ หากไม่มีการอัปโหลดภาพ
+                if (previewImg) {
+                    previewImg.style.display = 'none'; // ซ่อนภาพ
+                    previewImg.src = ''; // รีเซ็ตภาพ
+                }
+                if (uploadIcon) uploadIcon.style.display = 'block'; // แสดง SVG
+                if (uploadText) uploadText.style.display = 'block'; // แสดงข้อความ
+            }
+        }
+        
+        
+    </script>
 </body>
+
 </html>

@@ -7,102 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: "Kanit", serif;
-        }
-
-        .form-container {
-            background: #ffffff;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .form-label {
-            color: #1d4ed8;
-            font-weight: 600;
-        }
-
-        .form-input {
-            border: 1px solid #d1d5db;
-            background-color: #f9fafb;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .form-input:focus {
-            border-color: #1d4ed8;
-            box-shadow: 0 0 8px rgba(29, 78, 216, 0.4);
-            outline: none;
-        }
-
-        .submit-button {
-            background-color: #1d4ed8;
-            color: white;
-            transition: all 0.3s ease-in-out;
-            padding: 12px 24px;
-            font-size: 1.1rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
-        }
-
-        .submit-button:hover {
-            background-color: #2563eb;
-            box-shadow: 0 6px 15px rgba(29, 78, 216, 0.5);
-            transform: scale(1.05);
-        }
-
-        .cancel-link {
-            color: #1d4ed8;
-            font-weight: 600;
-            text-decoration: underline;
-            transition: color 0.3s ease-in-out;
-        }
-
-        .cancel-link:hover {
-            color: #2563eb;
-        }
-
-        body {
-            background-color: #f9fafb;
-            padding: 0;
-            margin: 0;
-        }
-
-        h1 {
-            color: #1d4ed8;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
     <title>ลงประกาศสินค้า</title>
 </head>
 
-<body>
+<body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-4xl mx-auto p-6 mt-10">
-        <h1 class="text-4xl font-bold text-center mb-6">ลงประกาศสินค้า</h1>
+    <main class="flex justify-center items-center min-h-screen mt-6">
+        <div class="bg-white w-full max-w-lg p-8 pt-10 rounded-lg shadow-lg">
+            <!-- Header Section -->
+            <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">ลงประกาศสินค้า</h1>
 
-        <div class="form-container">
+            <!-- Form Section -->
             <form action="{% url 'sell_item' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <!-- ประเภทประกาศ -->
                 <div>
-                    <label for="post_type" class="form-label block text-lg mb-1">ประเภทประกาศ*</label>
-                    <select id="post_type" name="post_type" class="form-input w-full px-4 py-3 rounded-md" required>
+                    <label for="post_type" class="block text-gray-700 font-medium mb-2">ประเภทประกาศ*</label>
+                    <select id="post_type" name="post_type" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         <option value="" disabled selected>เลือกประเภทประกาศ...</option>
                         <option value="sell">ประกาศขาย</option>
                         <option value="buy">ประกาศซื้อ</option>
@@ -111,63 +34,66 @@
 
                 <!-- หัวข้อประกาศ -->
                 <div>
-                    <label for="title" class="form-label block text-lg mb-1">หัวข้อประกาศ*</label>
-                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="title" class="block text-gray-700 font-medium mb-2">หัวข้อประกาศ</label>
+                    <input type="text" id="title" name="title" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ชื่อสินค้า เช่น ขวดพลาสติก เหล็ก" required>
                 </div>
 
                 <!-- ราคาสำหรับประกาศขาย -->
                 <div id="price-container" class="hidden">
-                    <label for="price" class="form-label block text-lg mb-1">ระบุราคาที่คาดหวัง*</label>
-                    <input type="number" id="price" name="price" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="price" class="block text-gray-700 font-medium mb-2">ระบุราคาที่คาดหวัง</label>
+                    <input type="number" id="price" name="price"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ระบุราคาเป็นตัวเลข เช่น 100">
                 </div>
 
                 <!-- รูปภาพสินค้า -->
                 <div>
-                    <label for="image" class="form-label block text-lg mb-2">เพิ่มรูปภาพสินค้า*</label>
-                    <div class="relative w-32 h-32 flex justify-start items-center cursor-pointer">
-                        <label for="image" class="absolute inset-0 flex justify-center items-center">
-                            <img src="{% static 'css/dist/Seniorproject/img/upload.jpg' %}" alt="Upload Image" class="object-cover rounded-lg shadow-lg">
+                    <label for="image" class="block text-gray-700 font-medium mb-2">เพิ่มรูปภาพสินค้า</label>
+                    <div class="relative w-full h-40 flex justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-4 bg-gray-50 cursor-pointer">
+                        <label for="image" id="image-preview-container" class="absolute inset-0 flex flex-col justify-center items-center cursor-pointer">
+                            <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm1 10l3-3 2 2 4-4 3 3v3H5v-1zm2-4a2 2 0 110-4 2 2 0 010 4z" />
+                            </svg>
+                            <span id="upload-text" class="mt-2 text-sm text-gray-500">คลิกเพื่อเพิ่มรูปภาพสินค้า</span>
                         </label>
+                        <input type="file" id="image" name="image" class="hidden" onchange="previewSelectedImage(event)" required>
                     </div>
-                    <input type="file" id="image" name="image" class="hidden" required>
-                    <p class="text-sm text-gray-500 mt-2 text-left">คลิกที่รูปเพื่ออัปโหลด</p>
                 </div>
-
-                
 
                 <!-- รายละเอียดสินค้า -->
                 <div>
-                    <label for="description" class="form-label block text-lg mb-1">รายละเอียดสินค้า*</label>
-                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="description" class="block text-gray-700 font-medium mb-2">รายละเอียดสินค้า</label>
+                    <textarea id="description" name="description" rows="4" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                         placeholder="ข้อมูลเพิ่มเติมที่ทำให้สินค้าของคุณได้แสดงรายละเอียด" required></textarea>
                 </div>
-
+                
                 <!-- พื้นที่สินค้า -->
                 <div>
-                    <label for="location" class="form-label block text-lg mb-1">พื้นที่สินค้า*</label>
-                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="location" class="block text-gray-700 font-medium mb-2">พื้นที่สินค้า</label>
+                    <input type="text" id="location" name="location" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ระบุที่อยู่ จังหวัด อำเภอ" required>
                 </div>
 
                 <!-- เบอร์โทรติดต่อ -->
                 <div>
-                    <label for="phone" class="form-label block text-lg mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
-                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="phone" class="block text-gray-700 font-medium mb-2">เบอร์โทรศัพท์ติดต่อ</label>
+                    <input type="text" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="เช่น 09xxxxxxxx" required>
                 </div>
 
                 <!-- ปุ่มส่งฟอร์ม -->
-                <div class="text-center">
-                    <button type="submit" class="submit-button">ลงประกาศ</button>
-                    <a href="{% url 'post_ad' %}" class="cancel-link ml-4">ยกเลิก</a>
+                <div class="flex justify-between items-center mt-4">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-500 focus:ring-2 focus:ring-blue-400 transition-all">ลงประกาศ</button>
+                    <a href="{% url 'post_ad' %}" class="text-blue-600 font-medium hover:underline">ยกเลิก</a>
                 </div>
             </form>
         </div>
     </main>
 
     <script>
+        // แสดงหรือซ่อนฟิลด์ราคา
         const postTypeSelect = document.getElementById('post_type');
         const priceContainer = document.getElementById('price-container');
 
@@ -178,6 +104,30 @@
                 priceContainer.classList.add('hidden');
             }
         });
+
+        // แสดงตัวอย่างรูปภาพที่อัปโหลด
+        function previewSelectedImage(event) {
+            const file = event.target.files[0];
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    let imgElement = imagePreviewContainer.querySelector('img');
+                    if (!imgElement) {
+                        imgElement = document.createElement('img');
+                        imgElement.className = 'w-full h-full object-cover rounded-md';
+                        imagePreviewContainer.appendChild(imgElement);
+                    }
+                    imgElement.src = e.target.result;
+                    uploadIcon.style.display = 'none';
+                    uploadText.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 </body>
 

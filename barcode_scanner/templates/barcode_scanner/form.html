@@ -16,7 +16,7 @@
 <body class="bg-gray-50 font-sans h-screen">
     {% include 'accounts/header_logged_in.html' %}
     <div class="pt-20 h-full flex flex-col items-center justify-start">
-        <h1 class="text-4xl font-bold text-orange-600 text-center mb-6">เพิ่มวิธีจัดการขยะ</h1>
+        <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">เพิ่มวิธีจัดการขยะ</h1>
 
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
             <form method="post" enctype="multipart/form-data" action="{% url 'barcode_scanner:add_waste_item' %}">
@@ -24,27 +24,42 @@
 
                 <!-- Barcode -->
                 <div class="mb-6">
-                    <label for="barcode" class="block text-lg text-blue-600 font-medium">รหัสบาร์โค้ด:</label>
+                    <label for="barcode" class="block text-lg text-gray-700 font-medium">รหัสบาร์โค้ด:</label>
                     <input type="text" id="barcode" name="barcode" value="{{ barcode|default_if_none:'' }}" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
 
                 <!-- Brand Name -->
                 <div class="mb-6">
-                    <label for="brand_name" class="block text-lg text-blue-600 font-medium">ชื่อยี่ห้อ:</label>
+                    <label for="brand_name" class="block text-lg text-gray-700 font-medium">ชื่อยี่ห้อ:</label>
                     <input type="text" id="brand_name" name="brand_name" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
 
                 <!-- Product Name -->
                 <div class="mb-6">
-                    <label for="product_name" class="block text-lg text-blue-600 font-medium">ชื่อผลิตภัณฑ์:</label>
+                    <label for="product_name" class="block text-lg text-gray-700 font-medium">ชื่อผลิตภัณฑ์:</label>
                     <input type="text" id="product_name" name="product_name" class="border border-gray-300 rounded-md w-full p-2">
                 </div>
 
                 <!-- Product Image -->
                 <div class="mb-6">
-                    <label for="product_image" class="block text-lg text-blue-600 font-medium">ภาพผลิตภัณฑ์:</label>
-                    <input type="file" id="product_image" name="product_image" class="border border-gray-300 rounded-md w-full p-2">
+                    <label for="product_image" class="block text-lg text-gray-700 font-medium mb-2">เพิ่มรูปภาพผลิตภัณฑ์:</label>
+                    <div class="border border-gray-300 rounded-md w-full p-4 flex items-center justify-center cursor-pointer hover:border-gray-400">
+                        <label for="product_image" class="flex flex-col items-center justify-center cursor-pointer">
+                            <img id="product_image_preview" src="" alt="Preview" class="hidden image-preview">
+                            <svg id="product_image_icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus text-gray-600">
+                                <path d="M16 5h6"/>
+                                <path d="M19 2v6"/>
+                                <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/>
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                                <circle cx="9" cy="9" r="2"/>
+                            </svg>
+                            <span id="product_image_text" class="mt-2 text-gray-600 text-sm">คลิกเพื่อเพิ่มรูปภาพผลิตภัณฑ์</span>
+                        </label>
+                        <input type="file" id="product_image" name="product_image" class="hidden" accept="image/*" onchange="previewProductImage(event)">
+                    </div>
                 </div>
+
+                
 
                 <!-- Waste Items Container -->
                 <div id="waste-items-container">
@@ -52,25 +67,41 @@
                         <div class="waste-item-header">ขยะชิ้นที่ 1</div>
                         <div class="waste-item-content">
                             <!-- Waste Image -->
-                            <label for="images-1" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
-                            <input type="file" id="images-1" name="images-1" class="border border-gray-300 rounded-md w-full p-2">
-
+                            <!-- Waste Image -->
+                            <div class="mb-6">
+                                <label for="images-1" class="block text-lg text-gray-700 font-medium mb-2">เพิ่มรูปภาพขยะ:</label>
+                                <div class="border border-gray-300 rounded-md w-full p-4 flex items-center justify-center cursor-pointer hover:border-gray-400">
+                                    <label for="images-1" class="flex flex-col items-center justify-center cursor-pointer">
+                                        <img id="images_preview-1" src="" alt="Preview" class="hidden image-preview">
+                                        <svg id="images_icon-1" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus text-gray-600">
+                                            <path d="M16 5h6"/>
+                                            <path d="M19 2v6"/>
+                                            <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/>
+                                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                                            <circle cx="9" cy="9" r="2"/>
+                                        </svg>
+                                        <span id="images_text-1" class="mt-2 text-gray-600 text-sm">คลิกเพื่อเพิ่มรูปภาพขยะ</span>
+                                    </label>
+                                    <input type="file" id="images-1" name="images-1" class="hidden" accept="image/*" onchange="previewWasteImage(event, 1)">
+                                </div>
+                            </div>
+                      
                             <!-- Waste Type -->
                             <div class="mb-6">
-                                <label for="waste_type-1" class="block text-lg text-blue-600 font-medium">ประเภทขยะ:</label>
+                                <label for="waste_type-1" class="block text-lg text-gray-700 font-medium">ประเภทขยะ:</label>
                                 <select id="waste_type-1" name="waste_type-1" class="border border-gray-300 rounded-md w-full p-2">
-                                    <option value="">-- เลือกประเภทขยะ --</option>
                                     <option value="plastic">พลาสติก</option>
                                     <option value="paper">กระดาษ</option>
                                     <option value="metal">โลหะ</option>
                                     <option value="glass">แก้ว</option>
+                                    <option value="e_waste">e-waste</option>
                                     <option value="others">อื่นๆ</option>
                                 </select>
                             </div>
 
                             <!-- Subtype -->
                             <div class="mb-6">
-                                <label for="subtype-1" class="block text-lg text-blue-600 font-medium">หมวดหมู่ย่อย:</label>
+                                <label for="subtype-1" class="block text-lg text-gray-700 font-medium">หมวดหมู่ย่อย:</label>
                                 <select id="subtype-1" name="subtype-1" class="border border-gray-300 rounded-md w-full p-2">
                                     <option value="">-- เลือกหมวดหมู่ย่อย --</option>
                                 </select>
@@ -78,7 +109,7 @@
 
                             <!-- Category -->
                             <div class="mb-6">
-                                <label for="category-1" class="block text-lg text-blue-600 font-medium">หมวดหมู่:</label>
+                                <label for="category-1" class="block text-lg text-gray-700 font-medium">หมวดหมู่:</label>
                                 <select id="category-1" name="category-1" class="border border-gray-300 rounded-md w-full p-2">
                                     <option value="">-- เลือกหมวดหมู่ --</option>
                                     <option value="recyclable">สามารถรีไซเคิลได้</option>
@@ -90,7 +121,7 @@
 
                             <!-- Separation Method -->
                             <div class="mb-6">
-                                <label for="separation_method-1" class="block text-lg text-blue-600 font-medium">วิธีการแยกขยะ:</label>
+                                <label for="separation_method-1" class="block text-lg text-gray-700 font-medium">วิธีการแยกขยะ:</label>
                                 <textarea id="separation_method-1" name="separation_method-1" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
                             </div>
                         </div>
@@ -111,6 +142,41 @@
     </div>
 
     <script>
+        function previewProductImage(event) {
+            const imagePreview = document.getElementById('product_image_preview');
+            const imageIcon = document.getElementById('product_image_icon');
+            const imageText = document.getElementById('product_image_text');
+
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    imageIcon.classList.add('hidden');
+                    imageText.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewWasteImage(event, id) {
+            const imagePreview = document.getElementById(`images_preview-${id}`);
+            const imageIcon = document.getElementById(`images_icon-${id}`);
+            const imageText = document.getElementById(`images_text-${id}`);
+
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    imageIcon.classList.add('hidden');
+                    imageText.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
         const wasteTypeToSubtypes = {
             plastic: ['พลาสติกแข็ง', 'พลาสติกใส', 'พลาสติกฟิล์ม','ถุง/ฟิล์ม ยืด PE','ฟิล์มพลาสติกหลายชั้นเคลือบโลหะ','ขวดPETใส','พลาสติกเหนียว PP+PE','PETรวมใส','พลาสติกกรอบ PS+ABS+PC','โฟมPS','ถุง/ฟิล์ม PP รวม','ฟิล์มหดPVC','ฟิล์มพลาสติกหลายชั้น','หลอดบีบพลาสติกหลายชั้น','ถุง/ฟิล์มOPP','หลอดพลาสติก','ฟิล์มพลาสติกPOF','แก้วพลาสติก ประเภท PET'],
             paper: ['กระดาษสี', 'กระดาษขาวดำ', 'กระดาษลัง','กระดาษกล่อง','กระดาษเศษ','หนังสือพิมพ์เล่ม','กล่องเครื่องดื่ม','กระดาษเคลือบพลาสติก','แกนกระดาษ','หนังสือเก่า'],
@@ -157,26 +223,41 @@
 
                 newWasteItem.innerHTML = `
                     <div class="waste-item-header">ขยะชิ้นที่ ${wasteItemCount}</div>
-                    <div class="waste-item-content">
-                        <label for="images-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">รูปภาพขยะ:</label>
-                        <input type="file" id="images-${wasteItemCount}" name="images-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
+                    <div class="mb-6">
+                        <label for="images-${wasteItemCount}" class="block text-lg text-gray-700 font-medium mb-2">เพิ่มรูปภาพขยะ:</label>
+                        <div class="border border-gray-300 rounded-md w-full p-4 flex items-center justify-center cursor-pointer hover:border-gray-400">
+                            <label for="images-${wasteItemCount}" class="flex flex-col items-center justify-center cursor-pointer">
+                                <img id="images_preview-${wasteItemCount}" src="" alt="Preview" class="hidden image-preview">
+                                <svg id="images_icon-${wasteItemCount}" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus text-gray-600">
+                                    <path d="M16 5h6"/>
+                                    <path d="M19 2v6"/>
+                                    <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"/>
+                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                                    <circle cx="9" cy="9" r="2"/>
+                                </svg>
+                                <span id="images_text-${wasteItemCount}" class="mt-2 text-gray-600 text-sm">คลิกเพื่อเพิ่มรูปภาพ</span>
+                            </label>
+                            <input type="file" id="images-${wasteItemCount}" name="images-${wasteItemCount}" class="hidden" accept="image/*" onchange="previewWasteImage(event, ${wasteItemCount})">
+                        </div>
+                    </div>
 
-                        <label for="waste_type-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">ประเภทขยะ:</label>
+                        <label for="waste_type-${wasteItemCount}" class="block text-lg text-gray-700 font-medium">ประเภทขยะ:</label>
                         <select id="waste_type-${wasteItemCount}" name="waste_type-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
                             <option value="">-- เลือกประเภทขยะ --</option>
                             <option value="plastic">พลาสติก</option>
                             <option value="paper">กระดาษ</option>
                             <option value="metal">โลหะ</option>
                             <option value="glass">แก้ว</option>
+                            <option value="e_waste">e-waste</option>
                             <option value="others">อื่นๆ</option>
                         </select>
 
-                        <label for="subtype-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่ย่อย:</label>
+                        <label for="subtype-${wasteItemCount}" class="block text-lg text-gray-700 font-medium">หมวดหมู่ย่อย:</label>
                         <select id="subtype-${wasteItemCount}" name="subtype-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
                             <option value="">-- เลือกหมวดหมู่ย่อย --</option>
                         </select>
 
-                        <label for="category-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">หมวดหมู่:</label>
+                        <label for="category-${wasteItemCount}"class="block text-lg text-gray-700 font-medium"">หมวดหมู่:</label>
                         <select id="category-${wasteItemCount}" name="category-${wasteItemCount}" class="border border-gray-300 rounded-md w-full p-2">
                             <option value="">-- เลือกหมวดหมู่ --</option>
                             <option value="recyclable">สามารถรีไซเคิลได้</option>
@@ -185,7 +266,7 @@
                             <option value="compostable">สามารถย่อยสลายได้</option>
                         </select>
 
-                        <label for="separation_method-${wasteItemCount}" class="block text-lg text-blue-600 font-medium mt-4">วิธีการแยกขยะ:</label>
+                        <label for="separation_method-${wasteItemCount}" class="block text-lg text-gray-700 font-medium"">วิธีการแยกขยะ:</label>
                         <textarea id="separation_method-${wasteItemCount}" name="separation_method-${wasteItemCount}" rows="4" class="border border-gray-300 rounded-md w-full p-2"></textarea>
                     </div>
                 `;

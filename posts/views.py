@@ -144,7 +144,7 @@ class SellItemDetailView(View):
 
 
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView
+
 from .models import SellItem
 
 class SellItemDeleteView(DeleteView):
@@ -162,15 +162,19 @@ class EditItemView(UserPassesTestMixin, UpdateView):
         post_ad = self.get_object()
         return self.request.user == post_ad.user or self.request.user.is_staff
 
-class DeleteItemView(UserPassesTestMixin, DeleteView):
-    model = SellItem
-    template_name = 'posts/sell_item_confirm_delete.html'  # หรือเทมเพลตยืนยันการลบ
-    success_url = reverse_lazy('sell_item_all')
-
-    def test_func(self):
-        return self.request.user == self.get_object().user or self.request.user.is_staff
 
     
+@login_required
+def delete_item(request, item_id):
+    # ดึงโพสต์ตาม ID
+    post_ad = get_object_or_404(SellItem, id=item_id)
+    # ตรวจสอบสิทธิ์การลบ
+    if request.user == post_ad.user or request.user.is_staff:
+        if request.method == 'POST':
+            post_ad.delete()
+            return JsonResponse({'success': True, 'message': 'ลบโพสต์สำเร็จ'})
+        return JsonResponse({'success': False, 'message': 'คำขอไม่ถูกต้อง'})
+    return JsonResponse({'success': False, 'message': 'คุณไม่มีสิทธิ์ลบโพสต์นี้'})
 
 class EditItemView(UpdateView):
     model = SellItem
@@ -193,16 +197,28 @@ class EditItemView(UpdateView):
 from django.http import JsonResponse
 from django.views import View
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
+from .models import SellItem  # ปรับให้ตรงกับโมเดลที่ใช้งาน
+
 class CloseSaleView(View):
     def post(self, request, item_id):
+        # ตรวจสอบว่าไอเท็มมีอยู่หรือไม่
         post_ad = get_object_or_404(SellItem, id=item_id)
-        if request.user == post_ad.user or request.user.is_staff:
-            post_ad.is_closed = True
-            post_ad.save()
-            return JsonResponse({"success": True, "message": "ปิดการขายสำเร็จ"})
-        return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการขายนี้"})
 
-    
+        # ตรวจสอบสิทธิ์ของผู้ใช้
+        if request.user == post_ad.user or request.user.is_staff:
+            if not post_ad.is_closed:
+                post_ad.is_closed = True
+                post_ad.save()
+                return JsonResponse({"success": True, "message": "ปิดการขายสำเร็จ"})
+            else:
+                return JsonResponse({"success": False, "message": "ประกาศนี้ถูกปิดการขายไปแล้ว"})
+
+        # หากผู้ใช้ไม่มีสิทธิ์
+        return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการขายนี้"}, status=403)
+
     
 
 
@@ -309,8 +325,9 @@ class CloseDonationView(View):
         if request.user == donation.user or request.user.is_staff:
             donation.is_closed = True
             donation.save()
-            return JsonResponse({"success": True, "message": "ปิดการบริจาคสำเร็จ"})
+            return JsonResponse({"success": True, "is_closed": donation.is_closed})
         return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการบริจาคนี้"})
+
 
 
     
@@ -546,3 +563,6 @@ def delete_announcement_comment(request, announcement_id, comment_id):
     
     # หากไม่มีสิทธิ์
     return HttpResponseForbidden("คุณไม่มีสิทธิ์ในการลบความคิดเห็นนี้")
+
+
+

@@ -5,14 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
     <title>รายการโพสต์ทั้งหมด</title>
+    <style>
+        * {
+            font-family: "Kanit", serif;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-100 font-sans">
 
+    <!-- Header -->
     {% include 'accounts/header_logged_in.html' %}
 
     <div class="container mx-auto py-12 px-6">
-        <h1 class="text-4xl font-semibold text-center mb-8 text-blue-600">รายการโพสต์ทั้งหมด</h1>
+        <h1 class="text-4xl font-semibold text-center mb-8 text-gray-800">รายการโพสต์ทั้งหมด</h1>
 
         <!-- ฟอร์มกรองข้อมูล -->
         <form method="get" class="mb-8 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
@@ -22,25 +29,25 @@
                 name="title"
                 placeholder="ค้นหาหัวข้อการบริจาค"
                 value="{{ selected_title|default_if_none:'' }}"
-                class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto"
+                class="p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-gray-400 bg-white w-full sm:w-auto"
             >
 
             <!-- กรองประเภท -->
-            <select name="role" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto">
+            <select name="role" class="p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-gray-400 bg-white w-full sm:w-auto">
                 <option value="">-- ทุกประเภท --</option>
                 <option value="donor" {% if selected_role == 'donor' %}selected{% endif %}>ประกาศบริจาค</option>
                 <option value="recipient" {% if selected_role == 'recipient' %}selected{% endif %}>ประกาศรับบริจาค</option>
             </select>
 
             <!-- กรองสถานะ -->
-            <select name="status" class="p-3 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 bg-white w-full sm:w-auto">
+            <select name="status" class="p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-gray-400 bg-white w-full sm:w-auto">
                 <option value="">-- ทุกสถานะ --</option>
                 <option value="open" {% if selected_status == 'open' %}selected{% endif %}>เปิดการบริจาค</option>
                 <option value="closed" {% if selected_status == 'closed' %}selected{% endif %}>ปิดการบริจาค</option>
             </select>
 
             <!-- ปุ่มกรอง -->
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg transition duration-300">
+            <button type="submit" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transition duration-300">
                 กรอง
             </button>
         </form>
@@ -48,16 +55,15 @@
         <!-- แสดงรายการโพสต์ -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {% for donation in donations %}
-            <div class="bg-white p-6 shadow-lg rounded-lg hover:shadow-xl transition-all duration-300">
+            <div class="bg-gray-50 p-6 shadow-lg rounded-lg hover:shadow-xl transition-all duration-300 border border-gray-300">
                 <img src="{{ donation.image.url }}" alt="{{ donation.title }}" class="w-full h-48 object-cover rounded-lg shadow-md mb-4">
-                <h2 class="text-xl font-semibold text-gray-700 hover:text-blue-500 transition duration-200">{{ donation.title }}</h2>
-                <p class="text-sm text-gray-500 mt-2">{{ donation.description|truncatewords:10 }}</p>
+                <h2 class="text-xl font-semibold text-gray-800 hover:text-gray-600 transition duration-200">{{ donation.title }}</h2>
                 <p class="text-gray-600">
                     <span class="font-semibold">ประเภท:</span> 
                     {% if donation.role == 'donor' %}
-                        <span class="text-blue-500">ประกาศบริจาค</span>
+                        <span class="text-gray-700">ประกาศบริจาค</span>
                     {% elif donation.role == 'recipient' %}
-                        <span class="text-purple-500">ประกาศรับบริจาค</span>
+                        <span class="text-gray-700">ประกาศรับบริจาค</span>
                     {% endif %}
                 </p>
                 <p class="text-gray-600">
@@ -73,7 +79,7 @@
                     <p>📍 {{ donation.location }}</p>
                     <p>📅 {{ donation.created_at|date:"d F Y, H:i" }}</p>
                 </div>
-                <a href="{% url 'donation_details' pk=donation.id %}" class="block text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg mt-6 transition duration-300">
+                <a href="{% url 'donation_details' pk=donation.id %}" class="block text-center bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg mt-6 transition duration-300">
                     ดูรายละเอียด
                 </a>
             </div>

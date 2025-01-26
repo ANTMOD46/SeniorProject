@@ -1,288 +1,170 @@
-{% load static %}
+{% load static %} 
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>รายละเอียดขยะ</title>
-    <style>
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 2.5rem;
-            color: #f97316;
-            font-weight: bold;
-        }
-        .profile-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .profile-section img {
-            margin: auto;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #e5e7eb;
-        }
-        .profile-section p {
-            margin-top: 10px;
-            font-size: 1rem;
-            color: #374151;
-        }
-        .product-info {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .product-info img {
-            margin: 20px auto;
-            max-width: 200px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .product-info p {
-            font-size: 1rem;
-            color: #374151;
-            margin: 5px 0;
-        }
-        .waste-section {
-            margin-top: 40px;
-        }
-        .user-section {
-            margin-top: 40px;
-            border: 2px solid #e5e7eb;
-            padding: 20px;
-            border-radius: 16px;
-            background-color: #ffffff;
-            margin-bottom: 30px;
-        }
-        .user-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .user-header img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid #e5e7eb;
-            object-fit: cover;
-        }
-        .user-header .user-info {
-            font-size: 1rem;
-            color: #3b82f6;
-            font-weight: bold;
-        }
-        .waste-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            background-color: #f9fafb;
-        }
-        .waste-item img {
-            max-width: 120px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .detail p {
-            margin: 5px 0;
-            color: #374151;
-        }
-        .vote-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .vote-buttons button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .vote-buttons .btn-correct {
-            background-color: #10b981;
-            color: white;
-        }
-        .vote-buttons .btn-correct:hover {
-            background-color: #059669;
-        }
-        .vote-buttons .btn-incorrect {
-            background-color: #ef4444;
-            color: white;
-        }
-        .vote-buttons .btn-incorrect:hover {
-            background-color: #dc2626;
-        }
-        .add-button-container {
-            text-align: center;
-            margin-top: 40px;
-        }
-        .add-button-container a {
-            background-color: #3b82f6;
-            color: #fff;
-            padding: 12px 20px;
-            font-size: 1rem;
-            border-radius: 8px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-        .add-button-container a:hover {
-            background-color: #2563eb;
-        }
-    </style>
-    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body class="bg-gray-50 font-sans">
     {% include 'accounts/header_logged_in.html' %}
-    <div class="container">
-        <div class="header">
-            <h1>รายละเอียดขยะ</h1>
+    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">รายละเอียดผลิตภัณฑ์</h1>
         </div>
 
         <!-- Product Information -->
-        <div class="product-info">
-            <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
-            <p><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
-            <p><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+        <div class="text-center mb-10">
+            <p class="text-gray-700 font-medium"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+            <p class="text-gray-700 font-medium"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+            <p class="text-gray-700 font-medium"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
             {% if waste_item.product_image %}
-            <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์">
+            <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="mx-auto mt-4 w-40 h-40 object-cover rounded-lg shadow">
             {% endif %}
         </div>
 
-        <div class="waste-section">
-            {% regroup waste_item.images.all by added_by as users %}
-            {% for user_group in users %}
-            <div class="user-section">
-                <div class="user-header">
+        <!-- Waste Section -->
+        <div>
+            {% regroup images_with_related_buyers by image.added_by as grouped_images %}
+            {% for user_group in grouped_images %}
+            <div class="bg-gray-100 p-4 mb-6 rounded-lg shadow">
+                <!-- User Header -->
+                <div class="flex items-center gap-4 mb-4">
                     {% if user_group.grouper.profile_picture %}
-                    <img src="{{ user_group.grouper.profile_picture.url }}" alt="โปรไฟล์ผู้ใช้">
+                    <img src="{{ user_group.grouper.profile_picture.url }}" alt="โปรไฟล์ผู้ใช้" class="w-12 h-12 object-cover rounded-full shadow">
                     {% else %}
-                    <img src="{% static 'images/default_profile.png' %}" alt="โปรไฟล์ผู้ใช้">
+                    <img src="{% static 'images/default_profile.png' %}" alt="โปรไฟล์ผู้ใช้" class="w-12 h-12 object-cover rounded-full shadow">
                     {% endif %}
-                    <div class="user-info">
-                        เพิ่มโดย: {{ user_group.grouper.get_full_name|default:user_group.grouper.username }}
-                    </div>
+                    <p class="text-lg font-semibold text-blue-600">เพิ่มโดย: {{ user_group.grouper.get_full_name|default:user_group.grouper.username }}</p>
                 </div>
 
-            {% for item in images_with_related_buyers %}
-            <div class="waste-item">
-                <div class="flex items-center gap-4">
-                    {% if item.image.image %}
-                    <img src="{{ item.image.image.url }}" alt="รูปภาพขยะ">
-                    {% else %}
-                    <p>ไม่มีรูปภาพขยะ</p>
-                    {% endif %}
-                    <div class="detail">
-                        <p><strong>ประเภทขยะ:</strong> {{ item.image.waste_type|default_if_none:'-' }}</p>
-                        <p><strong>หมวดหมู่ย่อย:</strong> {{ item.image.subtype|default_if_none:'-' }}</p>
-                        <p><strong>หมวดหมู่:</strong> {{ item.image.category|default_if_none:'-' }}</p>
-                        <p><strong>วิธีการแยกขยะ:</strong> {{ item.image.separation_method|default_if_none:'-' }}</p>
-                    </div>
-                </div>
-                <div class="related-buyers mt-6">
-                    <h2 class="text-lg font-bold text-green-600 mb-4">แนะนำผู้รับซื้อสำหรับขยะชิ้นนี้</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {% for buyer in item.related_buyers %}
-                        <div class="flex flex-col items-center bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-all duration-300">
-                            <a href="{% url 'user_store' buyer.user.username %}">
-                                <img src="{% if buyer.user.profile_picture %}{{ buyer.user.profile_picture.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="โปรไฟล์">
-                            </a>
-                            <div>
-                                <a href="{% url 'user_store' buyer.user.username %}">
-                                    {{ buyer.user.username }}
-                                </a>
-                                <p>{{ buyer.title }}</p>
-                            </div>
+                <!-- Waste Items -->
+                {% for item in user_group.list %}
+                <div class="bg-white p-4 mb-4 rounded-lg shadow">
+                    <div class="flex items-center gap-4">
+                        {% if item.image.image %}
+                        <img src="{{ item.image.image.url }}" alt="รูปภาพขยะ" class="w-24 h-24 object-cover rounded-lg shadow">
+                        {% else %}
+                        <p class="text-gray-500 italic">ไม่มีรูปภาพขยะ</p>
+                        {% endif %}
+                        <div>
+                            <p class="text-gray-700"><strong>ประเภทขยะ:</strong> {{ item.image.waste_type|default_if_none:'-' }}</p>
+                            <p class="text-gray-700"><strong>หมวดหมู่ย่อย:</strong> {{ item.image.subtype|default_if_none:'-' }}</p>
+                            <p class="text-gray-700"><strong>หมวดหมู่:</strong> {{ item.image.category|default_if_none:'-' }}</p>
+                            <p class="text-gray-700"><strong>วิธีการแยกขยะ:</strong> {{ item.image.separation_method|default_if_none:'-' }}</p>
                         </div>
-                        {% endfor %}
                     </div>
-                </div>
-                <div class="vote-buttons mt-4">
-                    <button type="button" class="btn-correct" onclick="voteCorrect({{ item.image.id }})">
-                        👍 แยกถูก (<span id="correct-count-{{ item.image.id }}">{{ item.image.total_correct_votes }}</span>)
-                    </button>
-                    <button type="button" class="btn-incorrect" onclick="voteIncorrect({{ item.image.id }})">
-                        👎 แยกผิด (<span id="incorrect-count-{{ item.image.id }}">{{ item.image.total_incorrect_votes }}</span>)
-                    </button>
+
+                    <!-- Related Buyers -->
+                    {% if item.related_buyers %}
+                    <div class="mt-4">
+                        <h2 class="text-lg font-bold text-green-600">แนะนำผู้รับซื้อสำหรับขยะชิ้นนี้</h2>
+                        <!-- จัด layout -->
+                        <div class="flex flex-wrap justify-start gap-2">
+                            {% for buyer in item.related_buyers %}
+                            <div class="bg-white border border-gray-300 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center justify-between w-28 h-36 p-3">
+                                <a href="{% url 'user_store' buyer.user.username %}" class="block text-center w-full">
+                                    <!-- รูปโปรไฟล์ -->
+                                    <div class="flex justify-center items-center h-20 w-20 mx-auto mb-2">
+                                        <img src="{% if buyer.user.profile_picture %}{{ buyer.user.profile_picture.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
+                                            alt="โปรไฟล์" class="w-16 h-16 object-cover rounded-full shadow">
+                                    </div>
+                                    <!-- ชื่อผู้ใช้ -->
+                                    <p class="text-sm font-medium text-gray-700 truncate">{{ buyer.user.username }}</p>
+                                    <!-- title -->
+                                    <p class="text-xs text-purple-500 truncate">{{ buyer.title }}</p>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-red-500 italic mt-6">ไม่มีผู้รับซื้อที่เกี่ยวข้อง</p>
+                    {% endif %}
+
+
+
+                  
+                    <!-- Vote Buttons -->
+                    <div class="flex gap-4 mt-4 justify-end">
+                        <button type="button" class="py-2 px-4 text-gray-700 hover:text-green-600 transition" onclick="voteCorrect({{ item.image.id }})">
+                            👍 (<span id="correct-count-{{ item.image.id }}">{{ item.image.total_correct_votes }}</span>)
+                        </button>
+                        <button type="button" class="py-2 px-4 text-gray-700 hover:text-red-600 transition" onclick="voteIncorrect({{ item.image.id }})">
+                            👎 (<span id="incorrect-count-{{ item.image.id }}">{{ item.image.total_incorrect_votes }}</span>)
+                        </button>
+                    </div>
                     
-                    
                 </div>
-                
+                {% endfor %}
             </div>
             {% endfor %}
         </div>
-        {% endfor %}
-        <div class="add-button-container">
-            <a href="{% url 'barcode_scanner:add_waste_detail' waste_item.barcode %}" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+        <!-- Add Waste Button -->
+        <div class="text-center mt-8">
+            <a href="{% url 'barcode_scanner:add_waste_detail' waste_item.barcode %}" class="py-3 px-6 bg-blue-500 text-white font-bold rounded-lg shadow hover:bg-blue-600 transition">
                 เพิ่มการแยกขยะของคุณ (ขยะชิ้นที่ {{ waste_item.images.count|add:1 }})
             </a>
         </div>
-
-        <script>
-            function voteCorrect(imageId) {
-                console.log("Starting voteCorrect for imageId:", imageId);
-                fetch(`/scanner/vote-correct/${imageId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Success:", data);
-                    document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
-                    document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
-                })
-                .catch(error => console.error("Error during voteCorrect:", error));
-            }
-    
-            function voteIncorrect(imageId) {
-                console.log("Starting voteIncorrect for imageId:", imageId);
-                fetch(`/scanner/vote-incorrect/${imageId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Success:", data);
-                    document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
-                    document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
-                })
-                .catch(error => console.error("Error during voteIncorrect:", error));
-            }
-        </script>
-        
-        
-        
     </div>
+
+    <script>
+        function voteCorrect(imageId) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        
+            fetch(`/scanner/vote-correct/${imageId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
+                document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
+            })
+            .catch(error => {
+                console.error('Error during voteCorrect:', error);
+                alert('ไม่สามารถโหวตได้ โปรดลองใหม่อีกครั้ง');
+            });
+        }
+        
+        function voteIncorrect(imageId) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        
+            fetch(`/scanner/vote-incorrect/${imageId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById(`correct-count-${imageId}`).innerText = data.total_correct;
+                document.getElementById(`incorrect-count-${imageId}`).innerText = data.total_incorrect;
+            })
+            .catch(error => {
+                console.error('Error during voteIncorrect:', error);
+                alert('ไม่สามารถโหวตได้ โปรดลองใหม่อีกครั้ง');
+            });
+        }
+        
+    </script>
 </body>
 </html>

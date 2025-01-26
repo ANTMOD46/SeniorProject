@@ -9,8 +9,7 @@
         }
 
         body {
-            background: linear-gradient(to bottom, #e0f7fa, #ffffff); /* สีฟ้าอ่อน ไล่ระดับ */
-            min-height: 100vh; /* ให้เต็มหน้าจอ */
+            min-height: 100vh;
             margin: 0;
             padding: 0;
         }
@@ -22,48 +21,29 @@
             border-radius: 5px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             right: 10px;
-            top: 40px;
+            top: 10px;
             z-index: 1000;
             width: 160px;
             padding: 10px 0;
         }
 
+        .menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
         .menu-item {
             padding: 10px 15px;
-            cursor: pointer;
             font-size: 16px;
             text-align: left;
             transition: background-color 0.3s;
             border-radius: 4px;
             display: block;
+            cursor: pointer;
         }
 
         .menu-item:hover {
             background-color: #f0f0f0;
-        }
-
-        #menuToggle {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 24px;
-            padding: 5px;
-            position: relative;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .action-menu-container {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
-        }
-
-        .menu.show {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
         }
 
         @keyframes fadeIn {
@@ -76,25 +56,7 @@
                 transform: translateY(0);
             }
         }
-        .post-type {
-            padding: 6px 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            display: inline-block;
-        }
 
-        .post-type.sell {
-            background-color: #d1fae5; /* สีเขียวอ่อน */
-            color: #065f46; /* สีเขียวเข้ม */
-        }
-
-        .post-type.buy {
-            background-color: #e0f2fe; /* สีฟ้าอ่อน */
-            color: #0369a1; /* สีฟ้าเข้ม */
-        }
-
-        /* Modal สำหรับแสดงข้อมูล */
         .modal {
             display: none;
             position: fixed;
@@ -119,6 +81,61 @@
         .show-modal {
             display: flex;
         }
+
+        .announcement-type {
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #3b82f6; /* สีฟ้า */
+            background-color: #dbeafe; /* พื้นหลังฟ้าอ่อน */
+            color: #1d4ed8; /* สีฟ้าตัวอักษร */
+            border-radius: 8px;
+            text-align: center;
+            display: inline-block;
+        }
+        .announcement-type.sell {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .announcement-type.buy {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .announcement-type.closed {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .announcement-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .date-container {
+            display: flex;
+            align-items: center;
+            color: #f59e0b; /* สีเหลือง */
+            font-size: 0.9rem;
+            margin-bottom: 8px; /* ระยะห่างจากด้านล่าง */
+            margin-top: 12px; /* ระยะห่างด้านบน */
+        }
+        .field-label {
+            color: #1f2937;
+            font-weight: bold;
+        }
+
+        .field-value {
+            color: #4b5563;
+        }
+        .announcement-type.closed {
+            background-color: #fee2e2; /* พื้นหลังสีแดงอ่อน */
+            color: #b91c1c; /* สีตัวอักษรสีแดงเข้ม */
+            border-color: #b91c1c; /* สีขอบแดง */
+        }
+        
+        
     </style>
 
     <title>รายละเอียดการประกาศ</title>
@@ -127,50 +144,104 @@
 <body class="bg-pink-50">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-lg mx-auto p-4 mt-10 bg-white shadow-lg rounded-lg relative">
-        <div class="image-container">
+    <main class="max-w-4xl mx-auto p-6 mt-8 bg-white shadow-md rounded-lg">
+        <div class="relative">
+            <div class="absolute top-4 right-4">
+                {% if can_edit %}
+                    <button id="menuToggle" class="text-gray-500 hover:text-gray-700 text-2xl">⋮</button>
+                    <div id="actionMenu" class="menu">
+                        <a href="{% url 'update_item' item_id=post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
+                        <a href="#" class="menu-item text-red-500" id="deletePostButton">ลบโพสต์</a>
+                        <button id="closeSaleButton" class="menu-item text-green-500">ปิดการขาย</button>
+                    </div>
+                {% endif %}
+            </div>
             {% if post_ad.image %}
                 <img src="{{ post_ad.image.url }}" alt="Product Image" class="w-full h-72 object-cover rounded-md mb-4">
             {% else %}
                 <img src="{% static 'path_to_default_image.jpg' %}" alt="No Product Image" class="w-full h-72 object-cover rounded-md mb-4">
             {% endif %}
         </div>
-          <!-- ระบุประเภทโพสต์ -->
-          <p class="post-type {{ post_ad.post_type }}">
-            {% if post_ad.post_type == 'sell' %}
-                ประกาศขาย
-            {% elif post_ad.post_type == 'buy' %}
-                ประกาศซื้อ
-            {% endif %}
-        </p>
-        
 
-        <p class="text-gray-500 mb-2">
-            <i class="fas fa-calendar-alt"></i>
-            {{ post_ad.created_at|date:"d F Y, H:i a" }}
-        </p>
-
-        <h1 class="text-3xl font-bold text-black mb-2">{{ post_ad.title }}</h1>
-
-        {% if post_ad.price %}
-        <p class="text-red-500 text-2xl font-bold mb-4">ราคาที่คาดหวัง฿ {{ post_ad.price }}</p>
-        {% endif %}
-
-        <div class="flex justify-center items-center mb-4 space-x-4">
-            <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ post_ad.user.username }}</span></p>
-            <div class="flex items-center space-x-2">
-                <i class="fas fa-store"></i>
-                <a href="{% url 'user_store' post_ad.user.username %}" class="text-blue-500 hover:underline">ดูประกาศทั้งหมด</a>
+        <div class="announcement-container">
+            <div id="announcementStatus" class="announcement-type 
+                {% if post_ad.post_type == 'sell' %}sell{% elif post_ad.post_type == 'buy' %}buy{% endif %}
+                {% if post_ad.is_closed %} closed {% endif %}">
+                {% if post_ad.is_closed %}
+                    {% if post_ad.post_type == 'sell' %}
+                        ปิดการประกาศขายแล้ว
+                    {% elif post_ad.post_type == 'buy' %}
+                        ปิดการประกาศรับซื้อแล้ว
+                    {% endif %}
+                {% else %}
+                    {% if post_ad.post_type == 'sell' %}
+                        ประกาศขาย
+                    {% elif post_ad.post_type == 'buy' %}
+                        ประกาศซื้อ
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
+        
+        
 
-        <div class="flex justify-center space-x-8 mt-4 mb-4">
-            <a href="{% url 'start_chat' user_id=post_ad.user.id %}" 
-            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
-            แชท
+                        <!-- วันที่ -->
+            <div class="date-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days">
+                    <path d="M8 2v4"/>
+                    <path d="M16 2v4"/>
+                    <rect width="18" height="18" x="3" y="4" rx="2"/>
+                    <path d="M3 10h18"/>
+                    <path d="M8 14h.01"/>
+                    <path d="M12 14h.01"/>
+                    <path d="M16 14h.01"/>
+                    <path d="M8 18h.01"/>
+                    <path d="M12 18h.01"/>
+                    <path d="M16 18h.01"/>
+                </svg>
+                <span>{{ post_ad.created_at|date:"d F Y, H:i a" }}</span>
+            </div>
+
+
+            <!-- ชื่อประกาศ -->
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ post_ad.title }}</h1>
+
+
+            {% if post_ad.price %}
+            <p class="text-blue-900 text-2xl font-bold mb-4 text-left">ราคาที่คาดหวัง฿ {{ post_ad.price }}</p>
+        {% endif %}
+        
+        
+        
+        <div class="flex justify-center items-center mb-4 space-x-4">
+            <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ post_ad.user.username }}</span></p>
+            <a href="{% url 'user_store' post_ad.user.username %}" class="flex items-center text-blue-500 hover:underline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store mr-1">
+                    <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
+                    <path d="M2 7h20"/>
+                    <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 16 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 12 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 8 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>
+                </svg>
+                ดูประกาศทั้งหมด
+            </a>
+        </div>
+
+        <div class="flex justify-center gap-4 mt-6">
+            <a href="{% url 'start_chat' user_id=post_ad.user.id %}" class="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square mr-2">
+                    <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/>
+                    <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>
+                </svg>
+                แชท
             </a>
 
-            <button id="showPhoneButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
+            <button id="showPhoneButton" class="flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-call mr-2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    <path d="M14.05 2a9 9 0 0 1 8 7.94"/>
+                    <path d="M14.05 6A5 5 0 0 1 18 10"/>
+                </svg>
                 โทร
             </button>
         </div>
@@ -186,22 +257,37 @@
             </div>
         </div>
 
-        <p class="text-gray-600 mb-4"><strong>รายละเอียด:</strong> {{ post_ad.description }}</p>
-        <p class="text-gray-600 mb-4"><strong>สถานที่:</strong> {{ post_ad.location|default:"ไม่ระบุ" }}</p>
-
-
-
-        {% if can_edit %}
-        <div class="action-menu-container">
-            <button id="menuToggle" class="hover:text-gray-600">⋮</button>
-            <div id="actionMenu" class="menu z-10">
-                <a href="{% url 'update_item' item_id=post_ad.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
-                <a href="#" class="menu-item text-red-500" id="deletePostButton">ลบโพสต์</a>
-                <button id="closeSaleButton" class="menu-item text-green-500">ปิดการขาย</button>
-
+        <!-- Modal สำหรับลบโพสต์ -->
+        <div id="deletePostModal" class="modal">
+            <div class="modal-content">
+                <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้?</h2>
+                <div class="flex justify-center space-x-4">
+                    <button id="confirmDeletePost" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md">ลบ</button>
+                    <button id="cancelDeletePost" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-md">ยกเลิก</button>
+                </div>
             </div>
         </div>
-        {% endif %}
+
+        <!-- Modal สำหรับปิดการขาย -->
+        <div id="closeSaleModal" class="modal">
+            <div class="modal-content">
+                <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าต้องการปิดการขายนี้?</h2>
+                <div class="flex justify-center space-x-4">
+                    <button id="confirmCloseSale" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md">ปิดการขาย</button>
+                    <button id="cancelCloseSale" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-md">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="mt-6">           
+            <p class="field-label">รายละเอียด: <span class="field-value">{{ post_ad.description }}</span></p>
+            <p class="field-label mt-2">สถานที่: <span class="field-value">{{ post_ad.location|default:"ไม่ระบุ" }}</span></p>
+        </div>
+
+
+
 
         <h2 class="text-xl font-bold text-blue-600 mt-6">ความคิดเห็น</h2>
 
@@ -233,96 +319,119 @@
         </form>
     </main>
 
-    <!-- Modal สำหรับการลบโพสต์ -->
-    <div id="deletePostModal" class="modal">
-        <div class="modal-content">
-            <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าจะลบโพสต์?</h2>
-            <form method="post" action="{% url 'delete_item' post_ad.id %}">
-                {% csrf_token %}
-                <div class="flex justify-center space-x-4">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md">
-                        ยืนยัน
-                    </button>
-                    <button id="cancelDeleteButton" type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md">
-                        ยกเลิก
-                    </button>
-                </div>
-            </form>
-        </div>
-        <form method="POST" action="{% url 'close_sale' post_ad.id %}">
-            {% csrf_token %}
-            <p class="text-lg font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าจะปิดการขายนี้?</p>
-            <button type="submit" class="confirm-button">ยืนยัน</button>
-            <a href="#" class="cancel-button" onclick="history.back(); return false;">ยกเลิก</a>
-        </form>
-        
-        
-    </div>
-
     <script>
         const showPhoneButton = document.getElementById('showPhoneButton');
         const phoneModal = document.getElementById('phoneModal');
         const closePhoneModal = document.getElementById('closePhoneModal');
-        const menuToggle = document.getElementById('menuToggle');
-        const actionMenu = document.getElementById('actionMenu');
+
         const deletePostButton = document.getElementById('deletePostButton');
         const deletePostModal = document.getElementById('deletePostModal');
-        const cancelDeleteButton = document.getElementById('cancelDeleteButton');
-        const closeSaleButton = document.getElementById('closeSaleButton');
+        const confirmDeletePost = document.getElementById('confirmDeletePost');
+        const cancelDeletePost = document.getElementById('cancelDeletePost');
 
-        if (closeSaleButton) {
-            closeSaleButton.addEventListener('click', function () {
-                if (confirm("คุณต้องการปิดการขายนี้ใช่หรือไม่?")) {
-                    fetch("{% url 'close_sale' post_ad.id %}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}',
-                            'Content-Type': 'application/json',
-                        },
+        const closeSaleButton = document.getElementById('closeSaleButton');
+        const closeSaleModal = document.getElementById('closeSaleModal');
+        const confirmCloseSale = document.getElementById('confirmCloseSale');
+        const cancelCloseSale = document.getElementById('cancelCloseSale');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.getElementById('menuToggle');
+            const actionMenu = document.getElementById('actionMenu');
+        
+            if (menuToggle && actionMenu) {
+                // แสดง/ซ่อนเมนูเมื่อกดปุ่มจุดสามจุด
+                menuToggle.addEventListener('click', (event) => {
+                    event.stopPropagation(); // หยุด event propagation
+                    actionMenu.classList.toggle('show');
+                });
+        
+                // ซ่อนเมนูเมื่อคลิกที่อื่น
+                document.addEventListener('click', (event) => {
+                    if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
+                        actionMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
+        
+
+        // Toggle Delete Post Modal
+        if (deletePostButton) {
+            deletePostButton.addEventListener('click', () => {
+                deletePostModal.classList.add('show-modal');
+            });
+        
+            cancelDeletePost.addEventListener('click', () => {
+                deletePostModal.classList.remove('show-modal');
+            });
+        
+            confirmDeletePost.addEventListener('click', () => {
+                fetch("{% url 'delete_item' post_ad.id %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('ลบโพสต์สำเร็จ');
+                            window.location.href = "{% url 'sell_item_all' %}";
+                        } else {
+                            alert('เกิดข้อผิดพลาด: ' + data.message);
+                        }
                     })
-                        .then((response) => response.json())
-                        .then((data) => {
-                            if (data.success) {
-                                alert(data.message);
-                                location.reload(); // รีโหลดหน้าหลังปิดการขาย
-                            } else {
-                                alert(data.message);
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                            alert("เกิดข้อผิดพลาดในการปิดการขาย");
-                        });
-                }
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('ไม่สามารถลบโพสต์ได้');
+                    });
+            });
+        }
+            
+        // Toggle Close Sale Modal
+        if (closeSaleButton) {
+            closeSaleButton.addEventListener('click', () => {
+                closeSaleModal.classList.add('show-modal');
+            });
+        
+            cancelCloseSale.addEventListener('click', () => {
+                closeSaleModal.classList.remove('show-modal');
+            });
+        
+            confirmCloseSale.addEventListener('click', () => {
+                fetch("{% url 'close_sale' post_ad.id %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // อัปเดต DOM เพื่อแสดงสถานะปิดการขาย/ซื้อ
+                        const announcementStatus = document.getElementById('announcementStatus');
+                        if (announcementStatus) {
+                            const postType = announcementStatus.classList.contains('sell') ? 'ขาย' : 'รับซื้อ';
+                            announcementStatus.textContent = `ปิดการประกาศ${postType}แล้ว`;
+                            announcementStatus.classList.add('closed');
+                        }
+                        closeSaleModal.classList.remove('show-modal');
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('ไม่สามารถปิดการประกาศได้');
+                });
             });
         }
         
             
-    
+        
+        
 
-        if (menuToggle && actionMenu) {
-            menuToggle.addEventListener('click', function(event) {
-                event.stopPropagation();
-                actionMenu.classList.toggle('show');
-            });
-
-            document.addEventListener('click', function(event) {
-                if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
-                    actionMenu.classList.remove('show');
-                }
-            });
-        }
-
-        if (deletePostButton && deletePostModal) {
-            deletePostButton.addEventListener('click', function() {
-                deletePostModal.classList.add('show-modal');
-            });
-
-            cancelDeleteButton.addEventListener('click', function() {
-                deletePostModal.classList.remove('show-modal');
-            });
-        }
-
+        // Phone Modal
         if (showPhoneButton && phoneModal && closePhoneModal) {
             showPhoneButton.addEventListener('click', function() {
                 phoneModal.classList.add('show-modal');

@@ -11,42 +11,78 @@
         * {
             font-family: "Kanit", sans-serif;
         }
+        body {
+            background-color: #fefce8;
+        }
         .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
             object-fit: cover;
             border-radius: 100%;
             margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .post-item {
+            background-color: #ffffff;
+            border: 1px solid #fde047;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        h1, h2 {
+            color: #4b5563;
         }
         .filter-button {
-            background-color: #f3f4f6;
-            border: 1px solid #d1d5db;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-right: 5px;
-            transition: background-color 0.3s;
-        }
-        .filter-button:hover {
-            background-color: #e5e7eb;
+            background-color: #fef9c3;
+            border: 1px solid #fde047;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
         }
         .filter-button.active {
-            background-color: #d1d5db;
+            background-color: #f59e0b;
+            color: white;
+            border-color: #d97706;
+        }
+        .view-more-link {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            border: 2px solid #16a34a;
+            color: #16a34a;
+            font-weight: bold;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .view-more-link:hover {
+            background-color: #16a34a;
+            color: white;
+        }
+        .username {
+            color: #2563eb;
+            font-weight: bold;
         }
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body>
     {% include 'accounts/header_logged_in.html' %}
-    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-6">
         <div class="text-center">
-            <h1 class="text-3xl font-bold text-blue-600">หน้าร้านของ {{ user_profile.username }}</h1>
+            <h1 class="text-3xl font-bold mb-4">หน้าร้านของ <span class="text-gray-600">{{ user_profile.username }}</span></h1>
             <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url }}{% else %}{% static 'css/dist/Seniorproject/img/default-profile.png' %}{% endif %}" alt="Profile Image" class="profile-img">
-            <p class="mt-2 text-gray-600">ชื่อผู้ใช้: {{ user_profile.username }}</p>
+            <p class="mt-3 text-gray-700 text-lg">
+                ชื่อผู้ใช้: <span class="username">{{ user_profile.username }}</span>
+            </p>
         </div>
+        
+        
 
         <!-- Filter Buttons -->
-        <div class="flex justify-center mt-6">
+        <div class="flex justify-center mt-8 gap-3">
             <button class="filter-button active" data-filter="all">ทั้งหมด</button>
             <button class="filter-button" data-filter="GeneralAnnouncement">กระทู้สอบถามทั่วไป</button>
             <button class="filter-button" data-filter="SellItem">การซื้อขาย</button>
@@ -54,62 +90,50 @@
         </div>
 
         <!-- Posts Section -->
-        <h2 class="text-2xl font-semibold mt-6">การประกาศทั้งหมด</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <h2 class="text-2xl font-semibold mt-8">การประกาศทั้งหมด</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
             {% for post in posts %}
-                <div class="p-4 bg-gray-50 rounded-lg shadow-md post-item" data-type="{{ post.model_name }}">
-                    <!-- แสดงภาพโพสต์ -->
+                <div class="post-item" data-type="{{ post.model_name }}"> <!-- เพิ่ม data-type -->
                     {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="ภาพโพสต์" class="w-full h-40 object-cover rounded-md mb-2">
+                        <img src="{{ post.image.url }}" alt="ภาพโพสต์" class="w-full h-40 object-cover rounded-lg mb-4">
                     {% else %}
-                        <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="w-full h-40 object-cover rounded-md mb-2">
+                        <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="w-full h-40 object-cover rounded-lg mb-4">
                     {% endif %}
-        
-                    <!-- แสดงชื่อเรื่องโพสต์ -->
+
                     {% if post.title %}
-                        <h3 class="text-xl font-bold">{{ post.title }}</h3>
+                        <h3 class="text-xl font-bold text-gray-700">{{ post.title }}</h3>
                     {% else %}
-                        <h3 class="text-xl font-bold">{{ post.recipient }}</h3> <!-- สำหรับ Donation -->
+                        <h3 class="text-xl font-bold text-gray-700">{{ post.recipient }}</h3>
                     {% endif %}
-        
-                    <!-- แสดงวันที่โพสต์ -->
-                    <p class="text-gray-500 text-sm">
+
+                    <p class="text-gray-600 text-sm mt-2">
                         โพสต์เมื่อ: {{ post.created_at|date:"d F Y, H:i" }}
                     </p>
-        
-                    <!-- แสดงเนื้อหาย่อ -->
-                    <p class="text-gray-600">{{ post.content|truncatewords:15 }}</p>
-        
-                    <!-- ลิงก์ดูเพิ่มเติม -->
-                    <a href="{% if post.model_name == 'GeneralAnnouncement' %}
-                                {% url 'general_announcement_detail' post.id %}
-                             {% elif post.model_name == 'SellItem' %}
-                                {% url 'sell_item_details' post.id %}
-                             {% else %}
-                                {% url 'donation_details' post.id %}
-                             {% endif %}" 
-                       class="text-blue-500 hover:underline">ดูเพิ่มเติม</a>
+
+                    <a href="{% if post.model_name == 'GeneralAnnouncement' %}{% url 'general_announcement_detail' post.id %}{% elif post.model_name == 'SellItem' %}{% url 'sell_item_details' post.id %}{% else %}{% url 'donation_details' post.id %}{% endif %}" class="view-more-link">ดูเพิ่มเติม</a>
                 </div>
             {% empty %}
                 <p class="text-gray-500">ไม่มีประกาศในขณะนี้</p>
             {% endfor %}
         </div>
-        
+    </div>
 
     <script>
-        // JavaScript สำหรับการกรองโพสต์
         document.querySelectorAll('.filter-button').forEach(button => {
             button.addEventListener('click', function() {
-                // Remove active class from all buttons
+                // ลบ active class ออกจากปุ่มทั้งหมด
                 document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
 
+                // รับค่ากรองจากปุ่ม
                 const filter = this.getAttribute('data-filter');
+
+                // กรองโพสต์ตาม data-type
                 document.querySelectorAll('.post-item').forEach(item => {
                     if (filter === 'all' || item.getAttribute('data-type') === filter) {
-                        item.style.display = 'block';
+                        item.style.display = 'block'; // แสดงโพสต์ที่ตรงกับ filter
                     } else {
-                        item.style.display = 'none';
+                        item.style.display = 'none'; // ซ่อนโพสต์ที่ไม่ตรง
                     }
                 });
             });

@@ -94,7 +94,7 @@
     <div class="content-wrapper">
         <div class="container">
             <div class="header">
-                <h1 class="text-3xl font-bold text-orange-600">เพิ่มการแยกขยะของคุณ</h1>
+                <h1  class="text-4xl font-bold text-gray-900 text-center mb-6">เพิ่มการแยกขยะของคุณ</h1>
                 <p class="text-gray-600 mt-2">เพิ่มข้อมูลการแยกขยะสำหรับบาร์โค้ด: <strong>{{ barcode }}</strong></p>
             </div>
 
@@ -147,24 +147,56 @@
                 <!-- Separation Method -->
                 <div class="form-group">
                     <label for="separation_method">วิธีการแยกขยะ</label>
-                    <textarea id="separation_method" name="separation_method" rows="4" placeholder="ระบุวิธีการแยกขยะ เช่น ล้างให้สะอาด แยกสี"></textarea>
+                    <textarea id="separation_method" name="separation_method" rows="4" placeholder="ระบุวิธีการแยกขยะ เช่น ล้างให้สะอาด แยกสี" style="resize: none;"></textarea>
                 </div>
 
                 <!-- Waste Image -->
-                <div class="form-group">
-                    <label for="image">รูปภาพขยะ</label>
-                    <input type="file" id="image" name="image" accept="image/*">
+                <div class="form-group mb-8"> <!-- เพิ่ม mb-8 เพื่อให้ห่างมากขึ้น -->
+                    <label for="image" class="block text-lg text-gray-700 font-medium mb-2">เพิ่มรูปภาพขยะ:</label>
+                    <div class="border border-gray-300 rounded-md w-full p-4 flex items-center justify-center cursor-pointer hover:border-gray-400">
+                        <label for="image" class="flex flex-col items-center justify-center cursor-pointer">
+                            <img id="image_preview" src="" alt="Preview" class="hidden image-preview">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus text-gray-600">
+                                <path d="M16 5h6" />
+                                <path d="M19 2v6" />
+                                <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5" />
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                <circle cx="9" cy="9" r="2" />
+                            </svg>
+                            <span class="mt-2 text-gray-600 text-sm">คลิกเพื่อเพิ่มรูปภาพขยะ</span>
+                        </label>
+                        <input type="file" id="image" name="image" class="hidden" accept="image/*" onchange="previewImage(event)">
+                    </div>
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn-submit">
-                    บันทึกข้อมูล
-                </button>
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-700 mt-8">
+                        บันทึกข้อมูล
+                    </button>
+                </div>
+                
             </form>
+            </div>
         </div>
-    </div>
 
     <script>
+        function previewImage(event) {
+            const imagePreview = document.getElementById('image_preview');
+            const imageIcon = event.target.previousElementSibling.querySelector('svg');
+            const imageText = event.target.previousElementSibling.querySelector('span');
+    
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    imageIcon.classList.add('hidden');
+                    imageText.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
         // Object เก็บข้อมูลประเภทขยะและหมวดหมู่ย่อย
         const wasteTypeToSubtypes = {
             plastic: ['พลาสติกแข็ง', 'พลาสติกใส', 'พลาสติกฟิล์ม','ถุง/ฟิล์ม ยืด PE','ฟิล์มพลาสติกหลายชั้นเคลือบโลหะ','ขวดPETใส','พลาสติกเหนียว PP+PE','PETรวมใส','พลาสติกกรอบ PS+ABS+PC','โฟมPS','ถุง/ฟิล์ม PP รวม','ฟิล์มหดPVC','ฟิล์มพลาสติกหลายชั้น','หลอดบีบพลาสติกหลายชั้น','ถุง/ฟิล์มOPP','หลอดพลาสติก','ฟิล์มพลาสติกPOF','แก้วพลาสติก ประเภท PET'],

@@ -6,88 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: "Lora", serif;
-        }
-
-        .form-container {
-            background: #ffffff; /* สีขาว */
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
-        }
-
-        .form-label {
-            color: #1d4ed8; /* สีฟ้าเข้ม */
-            font-weight: 600;
-        }
-
-        .form-input {
-            border: 2px solid #e5e7eb; /* สีเทาอ่อน */
-            background-color: #f9fafb; /* สีขาวสะอาด */
-            transition: all 0.3s ease-in-out;
-        }
-
-        .form-input:focus {
-            border-color: #1d4ed8; /* สีฟ้าเข้มเมื่อโฟกัส */
-            box-shadow: 0 0 8px rgba(29, 78, 216, 0.5); /* เพิ่มเงา */
-            outline: none;
-        }
-
-        .submit-button {
-            background-color: #1d4ed8; /* สีฟ้าเข้ม */
-            color: white;
-            transition: all 0.3s ease-in-out;
-            padding: 12px 24px;
-            font-size: 1.1rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3); /* เพิ่มเงา */
-        }
-
-        .submit-button:hover {
-            background-color: #2563eb; /* สีฟ้าเข้มขึ้น */
-            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5); /* เพิ่มเงา */
-            transform: scale(1.05);
-        }
-
-        .cancel-link {
-            color: #1d4ed8; /* สีฟ้าสำหรับลิงก์ */
-            font-weight: 600;
-            text-decoration: underline;
-            transition: color 0.3s ease-in-out;
-        }
-
-        .cancel-link:hover {
-            color: #2563eb; /* สีฟ้าเข้มขึ้นเมื่อ hover */
-        }
-
-        body {
-            background-color: #f9fafb; /* สีพื้นหลังขาวสะอาด */
-        }
-
-        h1 {
-            color: #1d4ed8; /* สีฟ้าเข้ม */
-        }
-    </style>
     <title>ลงประกาศการบริจาค</title>
 </head>
 
-<body>
+<body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-4xl mx-auto p-6 mt-10">
-        <h1 class="text-4xl font-bold text-center mb-6">ลงประกาศการบริจาค</h1>
+    <main class="flex justify-center items-center min-h-screen mt-16">
+        <div class="bg-white max-w-lg w-full p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">ลงประกาศการบริจาค</h1>
 
-        <div class="form-container">
             <form action="{% url 'donation_form' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <!-- ประเภทผู้ใช้ -->
                 <div>
-                    <label for="role" class="form-label block text-lg mb-1">ประเภทผู้ใช้*</label>
-                    <select id="role" name="role" class="form-input w-full px-4 py-3 rounded-md" required>
+                    <label for="role" class="block text-lg font-medium text-gray-700 mb-2">ประเภทผู้ใช้</label>
+                    <select id="role" name="role"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
                         <option value="" disabled selected>เลือก...</option>
                         <option value="donor">ผู้บริจาค</option>
                         <option value="recipient">ผู้รับบริจาค</option>
@@ -96,53 +33,94 @@
 
                 <!-- หัวข้อการบริจาค -->
                 <div>
-                    <label for="title" class="form-label block text-lg mb-1">หัวข้อการบริจาค*</label>
-                    <input type="text" id="title" name="title" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="title" class="block text-lg font-medium text-gray-700 mb-2">หัวข้อการบริจาค</label>
+                    <input type="text" id="title" name="title"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ชื่อการบริจาค เช่น เสื้อผ้า หนังสือ" required>
                 </div>
 
                 <!-- รายละเอียด -->
                 <div>
-                    <label for="description" class="form-label block text-lg mb-1">รายละเอียดการบริจาค*</label>
-                    <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="description" class="block text-lg font-medium text-gray-700 mb-2">รายละเอียดการบริจาค</label>
+                    <textarea id="description" name="description" rows="4"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                         placeholder="รายละเอียดเพิ่มเติม" required></textarea>
                 </div>
 
                 <!-- สถานที่ -->
                 <div>
-                    <label for="location" class="form-label block text-lg mb-1">สถานที่*</label>
-                    <input type="text" id="location" name="location" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="location" class="block text-lg font-medium text-gray-700 mb-2">สถานที่</label>
+                    <input type="text" id="location" name="location"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ที่อยู่ จังหวัด อำเภอ" required>
                 </div>
 
                 <!-- เบอร์โทรศัพท์ -->
                 <div>
-                    <label for="phone" class="form-label block text-lg mb-1">เบอร์โทรศัพท์ติดต่อ*</label>
-                    <input type="text" id="phone" name="phone" class="form-input w-full px-4 py-3 rounded-md"
+                    <label for="phone" class="block text-lg font-medium text-gray-700 mb-2">เบอร์โทรศัพท์ติดต่อ</label>
+                    <input type="text" id="phone" name="phone"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="เช่น 09xxxxxxxx" required>
                 </div>
 
                 <!-- รูปภาพ -->
                 <div>
-                    <label for="image" class="form-label block text-lg mb-1">เพิ่มรูปภาพ*</label>
-                    <div class="relative w-32 h-32 flex justify-start items-center cursor-pointer">
-                        <label for="image" class="absolute inset-0 flex justify-center items-center">
-                            <img src="{% static 'css/dist/Seniorproject/img/upload.jpg' %}" alt="Upload Image" class="object-cover rounded-lg shadow-lg">
+                    <label for="image" class="block text-lg font-medium text-gray-700 mb-2">เพิ่มรูปภาพ</label>
+                    <div
+                        class="relative w-full h-40 flex justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-4 bg-gray-50 cursor-pointer">
+                        <label for="image" id="image-preview-container"
+                            class="absolute inset-0 flex flex-col justify-center items-center cursor-pointer">
+                            <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="text-gray-500 mb-2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <span id="upload-text" class="text-gray-600 text-sm">คลิกเพื่ออัปโหลดรูปภาพ</span>
                         </label>
+                        <input type="file" id="image" name="image" class="hidden" required onchange="previewSelectedImage(event)">
                     </div>
-                    <input type="file" id="image" name="image" class="hidden" required>
-                    <p class="text-sm text-gray-500 mt-2 text-left">คลิกที่รูปเพื่ออัปโหลด</p>
                 </div>
-                
 
                 <!-- ปุ่มส่งฟอร์ม -->
-                <div class="text-center">
-                    <button type="submit" class="submit-button">ลงประกาศ</button>
-                    <a href="{% url 'post_ad' %}" class="cancel-link ml-4">ยกเลิก</a>
+                <div class="flex justify-between items-center mt-6">
+                    <button type="submit"
+                        class="py-3 px-6 bg-blue-600 text-white font-medium rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                        ลงประกาศ
+                    </button>
+                    <a href="{% url 'post_ad' %}"
+                        class="text-blue-600 font-medium hover:underline focus:outline-none transition-all">
+                        ยกเลิก
+                    </a>
                 </div>
+                
             </form>
         </div>
     </main>
 </body>
-
+<script>
+    function previewSelectedImage(event) {
+        const file = event.target.files[0];
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const uploadIcon = document.getElementById('upload-icon');
+        const uploadText = document.getElementById('upload-text');
+    
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                let imgElement = imagePreviewContainer.querySelector('img');
+                if (!imgElement) {
+                    imgElement = document.createElement('img');
+                    imgElement.className = 'w-full h-full object-cover rounded-md';
+                    imagePreviewContainer.appendChild(imgElement);
+                }
+                imgElement.src = e.target.result;
+                uploadIcon.style.display = 'none';
+                uploadText.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
 </html>

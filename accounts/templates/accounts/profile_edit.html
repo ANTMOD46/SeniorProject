@@ -1,117 +1,97 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขข้อมูลส่วนตัว</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-    <title>แก้ไขข้อมูลส่วนตัว</title>
     <style>
         * {
-            font-family: "Kanit", serif;
+            font-family: "Kanit", sans-serif;
         }
-
         .profile-img {
-            width: 180px; /* ขยายความกว้าง */
-            height: 180px; /* ขยายความสูง */
-            border-radius: 50%; /* ทำให้เป็นวงกลม */
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
             object-fit: cover;
-            cursor: pointer; /* เพิ่ม cursor เป็น pointer */
-            transition: transform 0.3s ease;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 4px solid #e5e7eb; /* ขอบสีเทา */
         }
-
         .profile-img:hover {
-            transform: scale(1.1); /* เพิ่มเอฟเฟกต์เมื่อ hover */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-
-        .input-field,
-        .textarea-field {
-            border: 2px solid #cbd5e0; /* สีขอบกรอบ */
-            border-radius: 8px; /* มุมมน */
-            padding: 12px 16px;
-            font-size: 16px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        body {
+            background-color: #f3f4f6;
         }
-
-        .input-field:focus,
-        .textarea-field:focus {
-            outline: none; /* ลบเส้น outline */
-            border-color: #2563eb; /* สีฟ้าเมื่อโฟกัส */
-            box-shadow: 0 0 8px rgba(37, 99, 235, 0.5); /* เงาฟ้าเมื่อโฟกัส */
-        }
-
-        .textarea-field {
-            resize: none; /* ปิดการย่อ-ขยายของ textarea */
-        }
-
-        #profile_picture {
-            display: none; /* ซ่อน input type="file" */
+        textarea {
+            resize: none; /* ปิดการย่อ-ขยาย */
         }
     </style>
 </head>
-
-<body class="bg-blue-50">
+<body class="bg-gray-100">
 
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-lg mx-auto p-6 mt-10 bg-white shadow-xl rounded-lg">
-        <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">แก้ไขข้อมูลส่วนตัว</h1>
+    <main class="max-w-lg mx-auto p-8 mt-12 bg-white shadow-xl rounded-lg">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">แก้ไขข้อมูลส่วนตัว</h1>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
-            <!-- ฟิลด์สำหรับรูปโปรไฟล์ -->
-            <div class="text-center mb-6">
+            <!-- รูปโปรไฟล์ -->
+            <div class="text-center mb-8">
                 <label for="profile_picture">
                     <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" 
-                         alt="โปรไฟล์" class="profile-img mx-auto mb-4" id="profile-preview">
+                         alt="โปรไฟล์" class="profile-img mx-auto" id="profile-preview">
                 </label>
-                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" onchange="previewProfileImage(event)">
-                <p class="text-sm text-gray-500">คลิกที่รูปภาพเพื่ออัปโหลด</p>
+                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" onchange="previewProfileImage(event)" class="hidden">
+                <p class="text-sm text-gray-500 mt-2">คลิกที่รูปเพื่อเปลี่ยนรูปโปรไฟล์</p>
             </div>
 
-            <!-- ฟิลด์สำหรับชื่อผู้ใช้ -->
+            <!-- ชื่อผู้ใช้ -->
             <div class="mb-6">
                 <label for="username" class="block text-lg font-semibold text-gray-700 mb-2">ชื่อผู้ใช้</label>
-                <input type="text" name="username" id="username" class="input-field w-full" value="{{ user.username }}" required>
+                <input type="text" name="username" id="username" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.username }}" required>
             </div>
 
-            <!-- ฟิลด์สำหรับอีเมล -->
+            <!-- อีเมล -->
             <div class="mb-6">
                 <label for="email" class="block text-lg font-semibold text-gray-700 mb-2">อีเมล</label>
-                <input type="email" name="email" id="email" class="input-field w-full" value="{{ user.email }}" required>
+                <input type="email" name="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.email }}" required>
             </div>
 
-            <!-- ฟิลด์สำหรับชื่อจริง -->
+            <!-- ชื่อจริง -->
             <div class="mb-6">
                 <label for="first_name" class="block text-lg font-semibold text-gray-700 mb-2">ชื่อจริง</label>
-                <input type="text" name="first_name" id="first_name" class="input-field w-full" value="{{ user.first_name }}">
+                <input type="text" name="first_name" id="first_name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.first_name }}">
             </div>
 
-            <!-- ฟิลด์สำหรับนามสกุล -->
+            <!-- นามสกุล -->
             <div class="mb-6">
                 <label for="last_name" class="block text-lg font-semibold text-gray-700 mb-2">นามสกุล</label>
-                <input type="text" name="last_name" id="last_name" class="input-field w-full" value="{{ user.last_name }}">
+                <input type="text" name="last_name" id="last_name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.last_name }}">
             </div>
 
-            <!-- ฟิลด์สำหรับเบอร์โทรศัพท์ -->
+            <!-- เบอร์โทร -->
             <div class="mb-6">
                 <label for="phone_number" class="block text-lg font-semibold text-gray-700 mb-2">เบอร์โทรศัพท์</label>
-                <input type="tel" name="phone_number" id="phone_number" class="input-field w-full" value="{{ user.profile.phone_number }}" placeholder="กรอกเบอร์โทรศัพท์" required>
+                <input type="tel" name="phone_number" id="phone_number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.phone_number }}">
             </div>
 
-            <!-- ฟิลด์สำหรับที่อยู่ -->
             <div class="mb-6">
                 <label for="address" class="block text-lg font-semibold text-gray-700 mb-2">ที่อยู่</label>
-                <textarea name="address" id="address" rows="3" class="textarea-field w-full" placeholder="กรอกที่อยู่ของคุณ">{{ user.profile.address }}</textarea>
+                <textarea name="address" id="address" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" style="resize: none;">{{ user.address }}</textarea>
             </div>
 
+
+            <!-- ปุ่มบันทึก -->
             <div class="text-center">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">บันทึกการเปลี่ยนแปลง</button>
-                <a href="{% url 'home_user' %}" class="ml-4 text-gray-600 hover:underline">ยกเลิก</a>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-lg">บันทึก</button>
+                <a href="{% url 'home_user' %}" class="ml-4 text-gray-600 hover:text-gray-900 underline">ยกเลิก</a>
             </div>
         </form>
     </main>
@@ -127,5 +107,4 @@
         }
     </script>
 </body>
-
 </html>

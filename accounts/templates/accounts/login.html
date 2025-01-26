@@ -1,14 +1,17 @@
 {% extends 'Seniorproject/base.html' %}
 
 {% block main %}
-<section class="flex w-full h-screen items-center justify-center bg-gray-50">
-    <div class="bg-white w-full max-w-lg p-8 rounded-lg shadow-xl">
+<section class="flex w-full h-screen items-center justify-center bg-gray-100">
+    <div class="bg-white w-full max-w-lg p-10 rounded-lg shadow-md">
         <!-- SIGN IN Header -->
         <div class="text-center mb-8">
-            <p class="text-5xl font-semibold text-yellow-600 mb-6">เข้าสู่ระบบ</p> 
-            <span class="block text-2xl font-light text-gray-800">Welcome Keep the world clean and share</span>
-            <span class="block text-lg font-light text-gray-600 mt-2">ยังไม่ได้เป็นสมาชิก? 
-                <a href="{% url 'signup' %}" class="underline text-yellow-600 hover:text-yellow-700">สมัครสมาชิก</a>
+            <p class="text-4xl font-semibold text-gray-800 mb-4">เข้าสู่ระบบ</p>
+            <span class="block text-lg font-light text-gray-700">
+                ยินดีต้อนรับ เข้าร่วมกับเราเพื่อสร้างโลกที่สะอาด
+            </span>
+            <span class="block text-sm text-gray-600 mt-2">
+                ยังไม่ได้เป็นสมาชิก? 
+                <a href="{% url 'signup' %}" class="text-blue-500 underline hover:text-blue-600">สมัครสมาชิก</a>
             </span>
         </div>
 
@@ -21,24 +24,29 @@
                 <p class="text-red-500 text-sm text-center">{{ error_message }}</p>
             {% endif %}
 
+            <!-- Username Field -->
             <div>
-                <label class="block text-sm text-gray-800">ชื่อผู้ใช้</label>
-                <input type="text" name="username" class="w-full h-14 p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-300 focus:outline-none" required>
+                <label class="block text-sm text-gray-700">ชื่อผู้ใช้</label>
+                <input type="text" name="username" class="w-full h-12 px-4 mt-1 border border-gray-300 rounded-md focus:ring focus:ring-gray-200 focus:outline-none" required>
             </div>
 
+            <!-- Password Field -->
             <div>
-                <label class="block text-sm text-gray-800">รหัสผ่าน</label>
-                <input type="password" name="password" class="w-full h-14 p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-yellow-300 focus:outline-none" required>
+                <label class="block text-sm text-gray-700">รหัสผ่าน</label>
+                <input type="password" name="password" class="w-full h-12 px-4 mt-1 border border-gray-300 rounded-md focus:ring focus:ring-gray-200 focus:outline-none" required>
             </div>
 
-            <div class="flex justify-center">
-                <button class="w-full h-14 bg-yellow-500 text-black font-medium rounded-lg shadow-md hover:bg-yellow-600 transition-all duration-300">เข้าสู่ระบบ</button>
+            <!-- Submit Button -->
+            <div>
+                <button class="w-full h-12 bg-gray-800 text-white font-medium rounded-md shadow hover:bg-gray-700 transition-all duration-200">
+                    เข้าสู่ระบบ
+                </button>
             </div>
         </form>
 
         <!-- Forgot Password Link -->
         <div class="text-center mt-4">
-            <a href="{% url 'password_reset' %}" class="text-yellow-600 text-sm underline hover:text-yellow-700">ลืมรหัสผ่าน?</a>
+            <a href="{% url 'password_reset' %}" class="text-gray-600 text-sm underline hover:text-gray-800">ลืมรหัสผ่าน?</a>
         </div>
     </div>
 </section>

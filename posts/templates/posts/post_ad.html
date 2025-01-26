@@ -6,105 +6,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: "Lora", serif;
-        }
-
-        .category-button {
-            background-color: #f8fafc;
-            padding: 16px 20px;
-            margin: 10px 0;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.2rem;
-            color: #1d4ed8;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #d1d5db;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .category-button:hover {
-            background-color: #e5f3ff;
-            color: #1e40af;
-            transform: translateY(-3px);
-        }
-
-        .category-arrow {
-            font-size: 1.5rem;
-            color: #2563eb;
-        }
-
-        .disabled-button {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        body {
-            background-color: #f9fafb;
-            padding: 0;
-            margin: 0;
-        }
-
-        h1 {
-            color: #1d4ed8;
-            font-size: 2rem;
-            font-weight: bold;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-text {
-            color: #6b7280;
-            font-size: 1rem;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    </style>
     <title>ลงประกาศใหม่</title>
 </head>
 
-<body>
-
+<body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
 
     <!-- Main Content -->
-    <main class="main-container">
-        <h1 class="text-center text-3xl font-bold">ลงประกาศใหม่</h1>
-        <p class="header-text text-lg">เลือกหมวดหมู่ที่คุณต้องการ</p>
+    <main class="mt-16 max-w-lg mx-auto">
+        <div class="bg-white w-full p-10 rounded-lg shadow-md">
+            <!-- Header Section -->
+            <h1 class="text-center text-3xl font-bold text-gray-800 mb-4">ลงประกาศใหม่</h1>
+            <p class="text-center text-gray-600 mb-8 text-lg">เลือกหมวดหมู่ที่คุณต้องการ</p>
 
+            <!-- Category Buttons -->
+            <div class="space-y-6">
+                <a href="{% url 'sell_item' %}" class="block bg-gray-800 text-white text-center py-3 px-6 rounded-lg font-medium shadow hover:bg-gray-700 transition">
+                    ซื้อขายขยะ/ของเก่า
+                </a>
 
-        <!-- Category Buttons -->
-        <div class="space-y-4">
-            <a href="{% url 'sell_item' %}" class="category-button">
-                ซื้อขายขยะ/ของเก่า
-                <span class="category-arrow">&rarr;</span>
-            </a>
+                <a href="{% url 'donation_form' %}" class="block bg-gray-800 text-white text-center py-3 px-6 rounded-lg font-medium shadow hover:bg-gray-700 transition">
+                    การบริจาค
+                </a>
 
-            <a href="{% url 'donation_form' %}" class="category-button">
-                การบริจาค
-                <span class="category-arrow">&rarr;</span>
-            </a>
-
-            <a href="{% url 'general_announcement' %}" class="category-button">
-                กระทู้สอบถามทั่วไป
-                <span class="category-arrow">&rarr;</span>
-            </a>
+                <a href="{% url 'general_announcement' %}" class="block bg-gray-800 text-white text-center py-3 px-6 rounded-lg font-medium shadow hover:bg-gray-700 transition">
+                    กระทู้สอบถามทั่วไป
+                </a>
+            </div>
         </div>
     </main>
-
 </body>
 
 </html>

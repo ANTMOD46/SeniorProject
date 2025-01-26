@@ -10,5 +10,6 @@ urlpatterns = [
      path('start/<int:post_id>/<str:post_type>/', views.start_chat, name='start_chat'),
      
      
+     
     
 ]

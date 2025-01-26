@@ -431,8 +431,8 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def my_waste_details(request):
-    user_waste_images = WasteImage.objects.filter(added_by=request.user)  # ดึงข้อมูลเฉพาะของผู้ใช้ปัจจุบัน
-    return render(request, 'barcode_scanner/my_waste_details.html', {'waste_images': user_waste_images})
+    waste_images = WasteImage.objects.all().order_by('waste_item__barcode')
+    return render(request, 'barcode_scanner/my_waste_details.html', {'waste_images': waste_images})
 
 
 
@@ -482,15 +482,36 @@ def scan_result_guest(request):
 
     if barcode:
         try:
-            # ถ้าพบบาร์โค้ดในฐานข้อมูล
+            # ดึง WasteItem โดยใช้บาร์โค้ด
             waste_item = WasteItem.objects.get(barcode=barcode)
-            waste_images = waste_item.images.all()  # ดึงข้อมูล WasteImage
+            
+            # เตรียมข้อมูลสำหรับ Template พร้อมข้อมูลคนรับซื้อ
+            images_with_related_buyers = []
+            for image in waste_item.images.all():
+                waste_types = [image.waste_type] if image.waste_type else []
+                subtypes = [image.subtype] if image.subtype else []
+
+                query = Q()
+                for value in waste_types + subtypes:
+                    query |= Q(title__icontains=value) | Q(description__icontains=value)
+
+                # ค้นหา SellItem (คนรับซื้อ) ที่เกี่ยวข้อง
+                related_buyers = SellItem.objects.filter(
+                    post_type='buy'
+                ).filter(query).distinct()
+
+                images_with_related_buyers.append({
+                    'image': image,
+                    'related_buyers': related_buyers,
+                })
+
+            # ส่งข้อมูลไปยัง Template
             return render(request, 'barcode_scanner/waste_item_detail_guest.html', {
                 'waste_item': waste_item,
-                'waste_images': waste_images,  # ส่งข้อมูล WasteImage ไปที่ Template
+                'images_with_related_buyers': images_with_related_buyers,
             })
         except WasteItem.DoesNotExist:
-            # ถ้าไม่พบ ให้ส่งไปที่ Pop-up
+            # ถ้าไม่พบ WasteItem
             return render(request, 'barcode_scanner/guest_popup.html', {'barcode': barcode})
     else:
         return redirect('barcode_scanner:scan_camera_guest')

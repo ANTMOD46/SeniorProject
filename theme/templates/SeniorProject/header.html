@@ -18,9 +18,8 @@
             font-style: normal;
         }
 
-        /* ปรับขนาดของโลโก้ */
         .logo-img {
-            width: 60px; /* ลดขนาดโลโก้ลง */
+            width: 60px;
             height: auto;
         }
 
@@ -28,11 +27,27 @@
             padding: 0.625rem 1.25rem;
         }
 
-        /* Media queries สำหรับหน้าจอใหญ่ขึ้น */
+        .nav-buttons a.signup {
+            background-color: #34d399;
+        }
+
+        .nav-buttons a.signup:hover {
+            background-color: #059669;
+        }
+
+        .nav-buttons a.login {
+            background-color: #3b82f6;
+        }
+
+        .nav-buttons a.login:hover {
+            background-color: #2563eb;
+        }
+
         @media (min-width: 768px) {
             .logo-img {
-                width: 80px; /* เพิ่มขนาดโลโก้ในหน้าจอใหญ่ */
+                width: 80px;
             }
+
             .nav-buttons a {
                 padding: 0.75rem 1.5rem;
             }
@@ -41,27 +56,26 @@
     <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
 </head>
 
-<body class="bg-pink-50 overflow-x-hidden">
+<body class="bg-gray-50 overflow-x-hidden">
     <!-- Header -->
-    <header class="fixed w-full bg-white border-b border-gray-200 shadow-lg z-50">
-        <div class="flex items-center justify-between max-w-screen-xl mx-auto px-6 py-2">
+    <header class="fixed w-full bg-white border-b border-gray-200 shadow-md z-50">
+        <div class="flex items-center justify-between max-w-screen-xl mx-auto px-6 py-3">
+            <!-- Left Section (Logo) -->
             <div class="flex items-center">
-                <!-- Logo -->
                 <img class="logo-img object-cover rounded-full" src="{% static 'css/dist/Seniorproject/img/logo.png' %}" alt="Logo">
             </div>
+            <!-- Right Section (Buttons) -->
             <div class="flex items-center space-x-4 nav-buttons">
-                <!-- ปุ่มสมัครสมาชิก -->
-            <a href="{% url 'signup' %}" class="text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm text-center px-6 py-2.5">
-                สมัครสมาชิก
-            </a>
-
-            <!-- ปุ่มเข้าสู่ระบบ -->
-            <a href="{% url 'login' %}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm text-center px-6 py-2.5">
-                เข้าสู่ระบบ
-            </a>
-
-                
-                
+                <!-- Signup Button -->
+                <a href="{% url 'signup' %}" 
+                   class="text-white signup focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-6 py-2.5 shadow-md">
+                   สมัครสมาชิก
+                </a>
+                <!-- Login Button -->
+                <a href="{% url 'login' %}" 
+                   class="text-white login focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-6 py-2.5 shadow-md">
+                   เข้าสู่ระบบ
+                </a>
             </div>
         </div>
     </header>

@@ -8,10 +8,10 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import ProfileUpdateForm  # ฟอร์มสำหรับอัปเดตโปรไฟล์
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import ProfileUpdateForm
+
 
 def signup(request):
     if request.method == 'POST':
@@ -42,10 +42,24 @@ def login_view(request):
 def home_user(request):
     return render(request, 'accounts/home_user.html')  # ตรวจสอบให้แน่ใจว่าใช้ template ที่ถูกต้อง
 
+from .forms import ProfileEditForm  # สร้างฟอร์มสำหรับจัดการข้อมูลโปรไฟล์
+
 @login_required
 def profile_edit(request):
-    # การจัดการข้อมูลที่ใช้สำหรับแก้ไขโปรไฟล์
-    return render(request, 'accounts/profile_edit.html')  # เปลี่ยนเป็นชื่อ template ที่ต้องการ
+    user = request.user  # ผู้ใช้ปัจจุบัน
+
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว')
+            return redirect('home_user')  # เปลี่ยนเส้นทางกลับไปยังหน้าหลัก
+        else:
+            messages.error(request, 'เกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูล')
+    else:
+        form = ProfileEditForm(instance=user)  # โหลดข้อมูลเดิมมาแสดงในฟอร์ม
+
+    return render(request, 'accounts/profile_edit.html', {'form': form})
 
 
 
@@ -60,17 +74,7 @@ class CustomLogoutView(View):
         return redirect('home')
     
     
-@login_required
-def profile_edit(request):
-    if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')  # ตรวจสอบว่า 'profile' มีใน urls.py
-    else:
-        form = ProfileUpdateForm(instance=request.user)
 
-    return render(request, 'accounts/profile_edit.html', {'form': form})
 
 
 @login_required

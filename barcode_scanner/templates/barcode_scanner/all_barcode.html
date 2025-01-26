@@ -6,151 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>รายการบาร์โค้ดทั้งหมด</title>
-    <style>
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .product-card {
-            border: 2px solid #60a5fa;
-            border-radius: 12px;
-            padding: 16px;
-            background-color: #f9fafb;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #e0f2fe, #fff);
-        }
-        .product-card img {
-            max-width: 150px;
-            height: 150px;
-            object-fit: contain;
-            border-radius: 8px;
-            margin: 10px auto;
-        }
-        .detail-button {
-            text-align: center;
-            margin-top: 10px;
-        }
-        .detail-button a, .detail-button button {
-            display: inline-block;
-            padding: 8px 16px;
-            font-size: 0.875rem;
-            border-radius: 25px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .detail-button a {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            color: #fff;
-        }
-        .detail-button a:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 8px rgba(59, 130, 246, 0.5);
-        }
-        .detail-button button {
-            background: linear-gradient(135deg, #ef4444, #f87171);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        .detail-button button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 8px rgba(239, 68, 68, 0.5);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        .modal-buttons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .modal-buttons button {
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-            transition: all 0.3s ease-in-out;
-        }
-        .btn-confirm {
-            background: linear-gradient(135deg, #ef4444, #f87171);
-            color: white;
-        }
-        .btn-confirm:hover {
-            background: linear-gradient(135deg, #dc2626, #e11d48);
-        }
-        .btn-cancel {
-            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-            color: #374151;
-        }
-        .btn-cancel:hover {
-            background: linear-gradient(135deg, #d1d5db, #e5e7eb);
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-    </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
-    <div class="container">
-        <div class="header text-center">
-            <h1 class="text-2xl font-bold text-blue-600">รายการบาร์โค้ดทั้งหมด</h1>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-semibold text-gray-800">รายการบาร์โค้ดทั้งหมด</h1>
+            <p class="text-lg text-gray-600">
+                รายการบาร์โค้ดทั้งหมด สามารถดูรายละเอียดหรือลบรายการได้ที่นี่
+            </p>
         </div>
-        <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for waste_item in waste_items %}
-            <div class="product-card">
-                <p><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
-                <p><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
-                <p><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow hover:shadow-lg transition">
+                <p class="text-sm text-gray-700"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+                <p class="text-sm text-gray-700"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+                <p class="text-sm text-gray-700"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
                 {% if waste_item.product_image %}
-                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์">
+                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="w-full h-40 object-contain rounded-md mt-4">
                 {% else %}
-                <p>ไม่มีภาพผลิตภัณฑ์</p>
+                <p class="text-gray-500 text-center italic mt-4">ไม่มีภาพผลิตภัณฑ์</p>
                 {% endif %}
-                <div class="detail-button">
-                    <a href="{% url 'barcode_scanner:waste_item_detail' waste_item.id %}">
+
+                <!-- Buttons -->
+                <div class="flex justify-between items-center mt-4">
+                    <a href="{% url 'barcode_scanner:waste_item_detail' waste_item.id %}" 
+                       class="px-4 py-2 text-sm bg-gray-800 text-white rounded-md shadow hover:bg-gray-700 transition">
                         ดูรายละเอียด
                     </a>
-                    <button onclick="showDeleteModal({{ waste_item.id }})">
+                    <button onclick="showDeleteModal({{ waste_item.id }})" 
+                            class="px-4 py-2 text-sm bg-red-500 text-white rounded-md shadow hover:bg-red-600 transition">
                         ลบ
                     </button>
                 </div>
@@ -158,34 +47,40 @@
             {% endfor %}
         </div>
     </div>
-    <div id="deleteModal" class="modal hidden">
-        <div class="modal-content">
-            <h2 class="text-lg font-bold text-gray-700">ยืนยันการลบ</h2>
-            <p class="text-gray-500 mt-2">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?</p>
-            <div class="modal-buttons">
+
+    <!-- Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md text-center shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-800">ยืนยันการลบ</h2>
+            <p class="text-sm text-gray-600 mt-2">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?</p>
+            <div class="flex justify-center gap-4 mt-6">
                 <form id="deleteForm" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn-confirm">
+                    <button type="submit" class="px-6 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600 transition">
                         ยืนยัน
                     </button>
                 </form>
-                <button class="btn-cancel" onclick="hideDeleteModal()">
+                <button onclick="hideDeleteModal()" 
+                        class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md shadow hover:bg-gray-400 transition">
                     ยกเลิก
                 </button>
             </div>
         </div>
     </div>
-    
+
     <script>
         function showDeleteModal(id) {
             const modal = document.getElementById("deleteModal");
             const form = document.getElementById("deleteForm");
             form.action = `/scanner/delete/${id}/`;
-            modal.style.display = "flex";
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
         }
+
         function hideDeleteModal() {
             const modal = document.getElementById("deleteModal");
-            modal.style.display = "none";
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
         }
     </script>
 </body>
