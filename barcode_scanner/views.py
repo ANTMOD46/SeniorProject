@@ -1,10 +1,20 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from functools import reduce
+from operator import or_
+from collections import defaultdict
+
+from .models import WasteItem, WasteImage
+from .forms import WasteItemForm
+from posts.models import SellItem
+from barcode_generator.models import GeneratedBarcode
 from pyzbar.pyzbar import decode
 from PIL import Image
-from barcode_generator.models import GeneratedBarcode
-from django.shortcuts import render
-from django.http import JsonResponse
-from barcode_generator.models import GeneratedBarcode
-from django.http import HttpResponse
+
 
 def scan_barcode(request):
     if request.method == 'POST':
@@ -33,109 +43,10 @@ def form_view(request):
     return render(request, 'barcode_scanner/form.html', {'barcode': barcode})
 
 
-
 def scan_camera(request):
     return render(request, 'barcode_scanner/scan_camera.html')
 
-from django.shortcuts import render, redirect
-from .models import WasteItem
 
-
-
-def scan_result(request):
-    barcode_data = request.GET.get("barcode", None)
-
-    if barcode_data:
-        # ค้นหาข้อมูลในฐานข้อมูลที่ตรงกับ barcode
-        try:
-            waste_item = WasteItem.objects.get(barcode=barcode_data)
-            # ถ้ามีข้อมูลแล้ว จะส่งข้อมูลไปยังฟอร์มเพื่อแสดงให้ผู้ใช้
-            return render(request, 'barcode_scanner/form.html', {'waste_item': waste_item})
-        except WasteItem.DoesNotExist:
-            # ถ้าไม่พบข้อมูล ให้แสดงฟอร์มให้กรอกข้อมูลใหม่
-            return render(request, 'barcode_scanner/form.html', {'barcode': barcode_data})
-    else:
-        # ถ้าไม่มี barcode ที่กำหนด
-        return redirect('scanner:scan_barcode')
-
-
-
-from django.shortcuts import render, redirect
-from .forms import WasteItemForm
-from .models import WasteItem, WasteImage
-
-def submit_form(request):
-    if request.method == 'POST':
-        form = WasteItemForm(request.POST, request.FILES)
-        if form.is_valid():
-            waste_item = form.save(commit=False)
-            waste_item.save()  # บันทึกข้อมูล WasteItem
-            # บันทึกภาพผลิตภัณฑ์
-            if 'product_image' in request.FILES:
-                product_image = WasteImage.objects.create(image=request.FILES['product_image'])
-                waste_item.product_image.add(product_image)
-            # บันทึกภาพขยะ
-            if 'waste_image' in request.FILES:
-                waste_image = WasteImage.objects.create(image=request.FILES['waste_image'])
-                waste_item.waste_image.add(waste_image)
-            return redirect('success_url')  # แสดงหน้าสำเร็จ
-    else:
-        form = WasteItemForm()
-    return render(request, 'scanner/form.html', {'form': form})
-
-
-def submit_product_info(request):
-    if request.method == 'POST':
-        barcode = request.POST.get('barcode')
-        product_name = request.POST.get('product_name')
-        product_category = request.POST.get('product_category')
-        product_description = request.POST.get('product_description')
-
-        # สร้างหรืออัปเดตข้อมูลสินค้า
-        product = WasteItemForm.objects.create(
-            barcode=barcode,
-            product_name=product_name,
-            product_category=product_category,
-            product_description=product_description
-        )
-        return redirect('success')  # ปรับ URL ที่ต้องการไปต่อหลังจากบันทึกสำเร็จ
-
-    return HttpResponse("Bad Request", status=400)
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import WasteItem
-from .forms import WasteItemForm
-
-from .models import WasteImage
-
-from .models import WasteItem, WasteImage
-
-from .models import WasteItem, WasteImage
-from .forms import WasteItemForm
-
-from django.shortcuts import render, redirect
-from .models import WasteItem, WasteImage
-from .forms import WasteItemForm
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import WasteItemForm
-from .models import WasteItem, WasteImage
-
-from django.shortcuts import render, redirect
-from .models import WasteItem, WasteImage
-from .forms import WasteItemForm
-
-from django.shortcuts import render, redirect
-from .forms import WasteItemForm
-from .models import WasteItem, WasteImage
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import WasteItemForm
-from .models import WasteItem, WasteImage
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import WasteItem, WasteImage
-from .forms import WasteItemForm
 
 def add_waste_item(request):
     barcode = request.GET.get('barcode', None)  # ดึงข้อมูลบาร์โค้ดจาก URL
@@ -198,12 +109,7 @@ def handle_barcode_member(request):
         # ถ้าไม่มีบาร์โค้ด ให้ redirect กลับไปยังหน้าสแกน
         return redirect('barcode_scanner:scan_camera')
 
-from django.shortcuts import render, get_object_or_404
-from .models import WasteItem
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import WasteItem, WasteImage
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def add_waste_detail(request, barcode):
@@ -244,31 +150,6 @@ def add_waste_detail(request, barcode):
 
 
 
-
-from django.shortcuts import render, get_object_or_404
-from collections import defaultdict
-from .models import WasteItem
-
-from collections import defaultdict
-from django.shortcuts import render, get_object_or_404
-from .models import WasteItem
-from posts.models import SellItem
-
-from django.db.models import Q
-
-from functools import reduce
-from operator import or_
-
-from django.db.models import Q
-from functools import reduce
-from operator import or_
-
-from collections import defaultdict
-from django.db.models import Q
-from django.shortcuts import get_object_or_404, render
-from posts.models import SellItem
-from .models import WasteItem
-
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
 
@@ -297,31 +178,6 @@ def waste_item_detail(request, pk):
     })
 
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import WasteImage
-
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-from .models import WasteImage
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from barcode_scanner.models import WasteImage
-
-
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from .models import WasteImage
 
 @csrf_exempt
 @login_required
@@ -339,6 +195,7 @@ def vote_correct(request, image_id):
             'total_incorrect': image.total_incorrect_votes(),
         })
 
+
 @csrf_exempt
 @login_required
 def vote_incorrect(request, image_id):
@@ -355,6 +212,7 @@ def vote_incorrect(request, image_id):
             'total_incorrect': image.total_incorrect_votes(),
         })
 
+
 @login_required
 def update_votes(request, image_id):
     image = get_object_or_404(WasteImage, id=image_id)
@@ -368,82 +226,12 @@ def update_votes(request, image_id):
 
 
 
-from django.shortcuts import render
-
-def success(request):
-    return render(request, 'barcode_scanner/success.html', {'message': 'บันทึกข้อมูลสำเร็จ!'})
-
-
-
-
-
-def search_waste_item(request):
-    barcode = request.GET.get('barcode', None)
-    if barcode:
-        if not re.match(r'^\d{13}$', barcode):
-            # ถ้ารหัสบาร์โค้ดไม่ถูกต้อง ให้แสดงหน้าผลลัพธ์ไม่พบข้อมูล
-            return render(request, 'barcode_scanner/search_result.html', {'barcode': barcode, 'error': True})
-        try:
-            waste_item = WasteItem.objects.get(barcode=barcode)
-            # ถ้ามีข้อมูลแสดงรายละเอียด
-            return render(request, 'barcode_scanner/waste_item_detail.html', {'waste_item': waste_item})
-        except WasteItem.DoesNotExist:
-            # ถ้าไม่พบข้อมูล แสดงหน้าผลลัพธ์ที่แจ้งว่าพบปัญหาในการค้นหา
-            return render(request, 'barcode_scanner/search_result.html', {'barcode': barcode, 'error': True})
-    return redirect('add_waste_item')
-
-
-
-from django.shortcuts import redirect, get_object_or_404
-from .models import WasteItem
-
-def scan_barcode_redirect(request):
-    barcode = request.GET.get('barcode', None)
-
-    if barcode:
-        try:
-            # ตรวจสอบว่ามีบาร์โค้ดในฐานข้อมูลหรือไม่
-            waste_item = WasteItem.objects.get(barcode=barcode)
-            # หากเจอ ให้ redirect ไปยัง waste_item_detail
-            return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
-        except WasteItem.DoesNotExist:
-            # หากไม่เจอ ให้ redirect ไปยัง add_waste_item พร้อม query string
-            return redirect(f'/scanner/add/?barcode={barcode}')
-    else:
-        # หากไม่มีบาร์โค้ดใน query string ให้ redirect กลับไปยังหน้า scan
-        return redirect('barcode_scanner:scan_barcode_redirect')
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import WasteItem
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import WasteItem  # ดึง WasteItem จาก barcode_scanner.models
-from django.shortcuts import render
-from barcode_scanner.models import WasteImage
-
-from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import render
-from barcode_scanner.models import WasteImage
-from django.contrib.auth.decorators import login_required
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from .models import WasteItem, WasteImage
-
 @login_required
 def all_barcodes(request):
     waste_items = WasteItem.objects.all()
     return render(request, 'barcode_scanner/all_barcode.html', {'waste_items': waste_items})
 
-from django.shortcuts import render
-from .models import WasteImage
 
-from django.shortcuts import render
-from .models import WasteImage
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def my_waste_details(request):
@@ -453,15 +241,6 @@ def my_waste_details(request):
 
 
 
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from barcode_scanner.models import WasteItem
-
-
-from django.shortcuts import get_object_or_404, redirect
-from barcode_scanner.models import WasteItem
-
 @login_required
 def delete_waste_item(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)  # ตรวจสอบว่ามี WasteItem นี้อยู่ในฐานข้อมูล
@@ -470,10 +249,6 @@ def delete_waste_item(request, pk):
     return redirect('barcode_scanner:all_barcodes')  # เปลี่ยนเส้นทางกลับไปยังหน้ารายการบาร์โค้ดทั้งหมด
 
 
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import WasteImage
 
 @login_required
 def delete_waste_image(request, pk):
@@ -492,49 +267,7 @@ def delete_waste_image(request, pk):
 def scan_camera_guest(request):
     return render(request, 'barcode_scanner/scan_camera_guest.html')
 
-
-# def scan_result_guest(request):
-#     barcode = request.GET.get("barcode", None)
-
-#     if barcode:
-#         try:
-#             # ดึง WasteItem โดยใช้บาร์โค้ด
-#             waste_item = WasteItem.objects.get(barcode=barcode)
-            
-#             # เตรียมข้อมูลสำหรับ Template พร้อมข้อมูลคนรับซื้อ
-#             images_with_related_buyers = []
-#             for image in waste_item.images.all():
-#                 waste_types = [image.waste_type] if image.waste_type else []
-#                 subtypes = [image.subtype] if image.subtype else []
-
-#                 query = Q()
-#                 for value in waste_types + subtypes:
-#                     query |= Q(title__icontains=value) | Q(description__icontains=value)
-
-#                 # ค้นหา SellItem (คนรับซื้อ) ที่เกี่ยวข้อง
-#                 related_buyers = SellItem.objects.filter(
-#                     post_type='buy'
-#                 ).filter(query).distinct()
-
-#                 images_with_related_buyers.append({
-#                     'image': image,
-#                     'related_buyers': related_buyers,
-#                 })
-
-#             # ส่งข้อมูลไปยัง Template
-#             return render(request, 'barcode_scanner/waste_item_detail_guest.html', {
-#                 'waste_item': waste_item,
-#                 'images_with_related_buyers': images_with_related_buyers,
-#             })
-#         except WasteItem.DoesNotExist:
-#             # ถ้าไม่พบ WasteItem
-#             return render(request, 'barcode_scanner/guest_popup.html', {'barcode': barcode})
-#     else:
-#         return redirect('barcode_scanner:scan_camera_guest')
-
-    
-    
-
+   
 
 def handle_barcode_guest(request):
     """

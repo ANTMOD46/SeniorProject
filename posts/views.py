@@ -1,47 +1,29 @@
-from django.shortcuts import render, redirect
-from .models import SellItem  # สมมติว่าคุณมีโมเดลชื่อ SellItem
-from .forms import SellItemForm
-from .forms import DonationForm
-from .models import GeneralAnnouncement
-from .forms import GeneralAnnouncementForm  # เพิ่มบรรทัดนี้
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.views import View
-from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .forms import SellItemForm
-from .models import SellItem
-from django.views.generic import DeleteView
-from .models import SellItem
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views.generic import UpdateView, DeleteView
-from django.urls import reverse
-from django.views.generic import CreateView
-from .models import Donation
-from .forms import DonationForm  # สมมติว่าคุณมีฟอร์ม DonationForm
-from django.shortcuts import render, redirect
-from django.views import View
+from django.views.generic import View, DetailView, ListView, UpdateView, DeleteView, CreateView
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .forms import DonationForm
-from .models import Donation
-from django.views.generic import DetailView
-from django.views.generic import DeleteView
-from django.urls import reverse_lazy
-from .models import Donation
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import DeleteView
-from .models import GeneralAnnouncement
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import get_user_model
+from django.db import models
 
-from .models import GeneralAnnouncement
-from django.views.generic.edit import DeleteView
-from .models import GeneralAnnouncement
-from django.views.generic import ListView
-from .models import *
+
+from .models import (
+    SellItem,
+    Donation,
+    GeneralAnnouncement,
+    GeneralAnnouncementComment,
+    DonationComment,
+)
+from .forms import (
+    SellItemForm,
+    DonationForm,
+    GeneralAnnouncementForm,
+)
+
+User = get_user_model()  # ใช้โมเดล User ที่กำหนดเอง (ถ้ามี)
 
 
 
@@ -89,10 +71,6 @@ def sell_item_all(request):
     return render(request, 'posts/sell_item_all.html', context)
 
 
-
-
-
-
 class SellItemView(View):
     def get(self, request):
         form = SellItemForm()
@@ -113,10 +91,6 @@ class SellItemView(View):
             messages.error(request, 'เกิดข้อผิดพลาดในการลงประกาศ')
         return render(request, 'posts/sell_item.html', {'form': form})
 
-
-from django.http import HttpResponse
-
-from django.http import HttpResponse
 
 class SellItemDetailView(View):
     def get(self, request, item_id):
@@ -139,13 +113,6 @@ class SellItemDetailView(View):
         return redirect('sell_item_details', item_id=item_id)
 
 
-
-
-
-
-from django.urls import reverse_lazy
-
-from .models import SellItem
 
 class SellItemDeleteView(DeleteView):
     model = SellItem
@@ -176,6 +143,7 @@ def delete_item(request, item_id):
         return JsonResponse({'success': False, 'message': 'คำขอไม่ถูกต้อง'})
     return JsonResponse({'success': False, 'message': 'คุณไม่มีสิทธิ์ลบโพสต์นี้'})
 
+
 class EditItemView(UpdateView):
     model = SellItem
     fields = ['title', 'description', 'price', 'location', 'image']
@@ -194,13 +162,6 @@ class EditItemView(UpdateView):
         return reverse('sell_item_details', kwargs={'item_id': self.object.id})
 
 
-from django.http import JsonResponse
-from django.views import View
-
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.views import View
-from .models import SellItem  # ปรับให้ตรงกับโมเดลที่ใช้งาน
 
 class CloseSaleView(View):
     def post(self, request, item_id):
@@ -259,13 +220,6 @@ class DonationFormView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('donation_details', kwargs={'pk': self.object.pk})
         
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.detail import DetailView
-from .models import Donation
-
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from .models import DonationComment
 
 class DonationDetailView(LoginRequiredMixin, DetailView):
     model = Donation
@@ -288,6 +242,7 @@ class DonationDetailView(LoginRequiredMixin, DetailView):
                 content=content
             )
         return HttpResponseRedirect(reverse('donation_details', args=[self.object.id]))
+
 
 class DonationUpdateView(UpdateView):
     model = Donation
@@ -314,10 +269,6 @@ class DonationDeleteView(DeleteView):
     success_url = reverse_lazy('donation_all')  # เปลี่ยนตาม URL หลังลบเสร็จ
 
 
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.views import View
-from .models import Donation
 
 class CloseDonationView(View):
     def post(self, request, donation_id):
@@ -327,7 +278,6 @@ class CloseDonationView(View):
             donation.save()
             return JsonResponse({"success": True, "is_closed": donation.is_closed})
         return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการบริจาคนี้"})
-
 
 
     
@@ -350,7 +300,6 @@ def announcement_all(request):
     return render(request, 'posts/general_announcement_all.html', context)
 
 
-from django.shortcuts import render
 
 def general_announcement(request):
     # Logic สำหรับกระทู้สอบถามทั่วไป
@@ -377,14 +326,6 @@ class GeneralAnnouncementView(View):
             messages.error(request, 'เกิดข้อผิดพลาดในการลงประกาศ')
         return render(request, 'posts/general_announcement.html', {'form': form})
 
-from django.views.generic import DetailView
-from django.shortcuts import redirect
-from .models import GeneralAnnouncement, GeneralAnnouncementComment
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import GeneralAnnouncement, GeneralAnnouncementComment
 
 @login_required
 def general_announcement_details(request, announcement_id):
@@ -404,6 +345,7 @@ def general_announcement_details(request, announcement_id):
     }
     return render(request, 'posts/general_announcement_detail.html', context)
 
+
 class GeneralAnnouncementUpdateView(UpdateView):
     model = GeneralAnnouncement
     fields = ['title', 'content', 'location', 'image']
@@ -416,12 +358,6 @@ class GeneralAnnouncementUpdateView(UpdateView):
     
     
 
-    
-
-
-from django.urls import reverse_lazy
-from django.views.generic.edit import DeleteView
-from django.shortcuts import get_object_or_404, redirect
 
 class GeneralAnnouncementDeleteView(DeleteView):
     model = GeneralAnnouncement
@@ -440,14 +376,7 @@ class GeneralAnnouncementListView(ListView):
     template_name = 'posts/general_announcement_all.html'
     context_object_name = 'announcements'
     
-    
-from django.views.generic import ListView
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
-from django.db import models  # เพิ่มการนำเข้า models สำหรับ Value และ CharField
-from .models import GeneralAnnouncement, SellItem, Donation
 
-User = get_user_model()  # ดึงโมเดล User ที่กำหนดเอง (ถ้ามี)
 
 class UserStoreView(ListView):
     template_name = 'posts/user_store.html'
@@ -478,9 +407,6 @@ class UserStoreView(ListView):
         context['user_profile'] = get_object_or_404(User, username=self.kwargs['username'])
         return context
 
-from accounts.models import CustomUser  # ใช้ CustomUser โดยตรง
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def add_comment(request, post_id):
@@ -505,13 +431,6 @@ def add_comment(request, post_id):
 
 
 
-
-
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-
 @login_required
 def delete_comment(request, post_id, comment_id):
     comment = get_object_or_404(SellItemComment, id=comment_id, sell_item_id=post_id)
@@ -524,12 +443,6 @@ def delete_comment(request, post_id, comment_id):
     return HttpResponseForbidden("คุณไม่มีสิทธิ์ในการลบความคิดเห็นนี้")
 
 
-
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import DonationComment
 
 @login_required
 def delete_donation_comment(request, donation_id, comment_id):
@@ -546,10 +459,6 @@ def delete_donation_comment(request, donation_id, comment_id):
 
 
 
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
-from .models import GeneralAnnouncementComment
 
 @login_required
 def delete_announcement_comment(request, announcement_id, comment_id):

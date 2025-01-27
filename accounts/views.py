@@ -1,16 +1,10 @@
-from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm  # นำเข้าฟอร์มที่สร้างขึ้น
-from django.contrib.auth import login,authenticate
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.contrib.auth import logout
+from django.contrib import messages
 from django.views import View
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from .forms import CustomUserCreationForm, ProfileEditForm  # รวมฟอร์มที่ใช้
+from .models import CustomUser
 
 
 def signup(request):
@@ -23,6 +17,7 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -38,11 +33,11 @@ def login_view(request):
     else:
         return render(request, 'accounts/login.html')
     
+    
 @login_required
 def home_user(request):
     return render(request, 'accounts/home_user.html')  # ตรวจสอบให้แน่ใจว่าใช้ template ที่ถูกต้อง
 
-from .forms import ProfileEditForm  # สร้างฟอร์มสำหรับจัดการข้อมูลโปรไฟล์
 
 @login_required
 def profile_edit(request):
@@ -62,8 +57,6 @@ def profile_edit(request):
     return render(request, 'accounts/profile_edit.html', {'form': form})
 
 
-
-
 class CustomLogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
@@ -73,18 +66,11 @@ class CustomLogoutView(View):
         logout(request)
         return redirect('home')
     
-    
-
-
 
 @login_required
 def profile_view(request):
     return render(request, 'accounts/profile.html', {'user': request.user})
 
-
-
-from django.shortcuts import render
-from .models import CustomUser
 
 def admin_member_list(request):
     # ดึงข้อมูลสมาชิกทั้งหมด
@@ -93,17 +79,11 @@ def admin_member_list(request):
 
 
 
-
-from django.shortcuts import get_object_or_404, render
-from .models import CustomUser
-
 def view_member_detail(request, member_id):
     member = get_object_or_404(CustomUser, id=member_id)
     return render(request, 'accounts/view_member_detail.html', {'member': member})
 
 
-from django.shortcuts import get_object_or_404, redirect
-from .models import CustomUser
 
 def delete_member(request, member_id):
     member = get_object_or_404(CustomUser, id=member_id)

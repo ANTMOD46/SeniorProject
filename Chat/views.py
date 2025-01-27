@@ -1,15 +1,19 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
+from django.utils.timezone import now, make_aware
+from datetime import datetime
+from django.db.models import Max
+
+# นำเข้าโมเดล
 from .models import ChatRoom, Message
+from posts.models import GeneralAnnouncement, SellItem, Donation  # โมเดลที่เกี่ยวข้องกับโพสต์
+
+# นำเข้าโมเดล User
 from django.contrib.auth import get_user_model
-from posts.models import GeneralAnnouncement, SellItem, Donation  # เพิ่ม GeneralAnnouncement
-
-
 User = get_user_model()
 
-from django.http import HttpResponseBadRequest
-from posts.models import SellItem, Donation  # นำเข้าโมเดลที่เกี่ยวข้องกับโพสต์
+
 
 @login_required
 def start_chat(request, user_id=None, post_id=None, post_type=None):
@@ -41,17 +45,6 @@ def start_chat(request, user_id=None, post_id=None, post_type=None):
     return redirect('chat_room', chatroom_id=chatroom.id)
 
 
-from django.utils.timezone import make_aware
-from datetime import datetime
-
-from django.utils.timezone import now
-
-from django.shortcuts import get_object_or_404, render
-from django.http import JsonResponse, HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
-from django.utils.timezone import now, make_aware
-from datetime import datetime
-from .models import ChatRoom, Message
 
 @login_required
 def chat_room(request, chatroom_id):
@@ -120,14 +113,6 @@ def chat_room(request, chatroom_id):
         'other_user': other_user,  # คู่สนทนา
     })
 
-
-
-
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import ChatRoom
-
-from django.db.models import Max
 
 @login_required
 def chat_list(request):

@@ -7,26 +7,25 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>รายการแชท</title>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
 
     <style>
         * { font-family: 'Kanit', sans-serif; }
-        body { background-color: #f1f5f9; }
         .header-title {
             text-align: center;
             font-size: 36px;
             font-weight: bold;
-            color: #1e3a8a; /* สีหัวข้อโทนน้ำเงินเข้ม */
+            color: #1e3a8a; /* สีน้ำเงินเข้ม */
             margin-bottom: 20px;
-            border-bottom: 2px solid #2563eb;
             padding-bottom: 10px;
+            border-bottom: 2px solid #2563eb;
         }
         .chat-sidebar { 
-            background-color: #e2e8f0; /* สีเทาอ่อน */
+            background-color: #ffffff; 
             border-radius: 8px; 
-            max-width: 600px; 
-            margin: 0 auto; 
+            max-width: 640px; 
+            margin: 20px auto; 
             padding: 20px; 
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
         }
@@ -34,11 +33,15 @@
             display: flex; 
             align-items: center; 
             padding: 15px; 
-            cursor: pointer; 
-            border-bottom: 1px solid #cbd5e1; /* เส้นแบ่งสีเทา */
-            transition: background-color 0.3s ease;
+            border-radius: 8px; 
+            margin-bottom: 10px; 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+            border: 1px solid #e5e7eb; /* เส้นขอบสีเทาอ่อน */
         }
-        .chat-item:hover { background-color: #c7d2fe; /* สีพื้นหลังเมื่อ hover โทนฟ้าอ่อน */ }
+        .chat-item:hover { 
+            background-color: #f3f4f6; /* สีพื้นหลังเมื่อ hover */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+        }
         .chat-item img { 
             width: 50px; 
             height: 50px; 
@@ -46,11 +49,11 @@
             margin-right: 15px; 
             border: 2px solid #2563eb; /* สีกรอบรูปภาพ */
         }
-        .chat-info { flex-grow: 1; }
         .chat-info .chat-name { 
             font-weight: bold; 
-            color: #1e40af; /* สีชื่อโทนน้ำเงินเข้ม */
+            color: #1e40af; /* สีน้ำเงินเข้ม */
             margin-bottom: 2px; 
+            font-size: 16px;
         }
         .chat-info .chat-preview { 
             color: #475569; /* สีข้อความตัวอย่าง */
@@ -58,22 +61,20 @@
             overflow: hidden; 
             white-space: nowrap; 
             text-overflow: ellipsis; 
-            max-width: 200px; 
         }
         .chat-time { 
             font-size: 12px; 
             color: #64748b; /* สีเวลา */
-            text-align: right; 
         }
         .empty-chat {
             text-align: center;
-            color: #475569; /* สีข้อความเมื่อไม่มีแชท */
+            color: #64748b; /* สีข้อความเมื่อไม่มีแชท */
             font-size: 16px;
             margin-top: 20px;
         }
     </style>
 
-    <div class="container mx-auto py-8">
+    <div class="container mx-auto py-8 px-4">
         <!-- Header -->
         <h1 class="header-title">รายการแชท</h1>
 
@@ -81,13 +82,15 @@
         <div class="chat-sidebar">
             {% for chatroom in chatrooms %}
             <a href="{% url 'chat_room' chatroom_id=chatroom.id %}" class="chat-item">
-                <img src="{% if chatroom.user1 != request.user %}
+                <img src="{% if chatroom.user1 != request.user and chatroom.user1.profile_picture %}
                              {{ chatroom.user1.profile_picture.url }}
-                         {% else %}
+                         {% elif chatroom.user2.profile_picture %}
                              {{ chatroom.user2.profile_picture.url }}
+                         {% else %}
+                             {% static 'images/default_profile.png' %}
                          {% endif %}" 
-                     alt="User">
-                <div class="chat-info">
+                     alt="User Profile">
+                <div class="chat-info flex-grow">
                     <p class="chat-name">
                         {% if chatroom.user1 != request.user %}
                             {{ chatroom.user1.username }}
@@ -99,9 +102,9 @@
                         {{ chatroom.messages.last.content|default:"ไม่มีข้อความ" }}
                     </p>
                 </div>
-                <span class="chat-time">
+                <div class="chat-time">
                     {{ chatroom.messages.last.timestamp|date:"H:i" }}
-                </span>
+                </div>
             </a>
             {% empty %}
             <p class="empty-chat">ยังไม่มีแชท</p>
