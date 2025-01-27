@@ -8,7 +8,10 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import get_user_model
 from django.db import models
+from .models import SellItemComment
 
+
+CustomUser = get_user_model()  # ดึงโมเดล CustomUser ที่กำหนดเอง
 
 from .models import (
     SellItem,
