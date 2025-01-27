@@ -477,14 +477,61 @@ def scan_camera_guest(request):
     return render(request, 'barcode_scanner/scan_camera_guest.html')
 
 
-def scan_result_guest(request):
-    barcode = request.GET.get("barcode", None)
+# def scan_result_guest(request):
+#     barcode = request.GET.get("barcode", None)
+
+#     if barcode:
+#         try:
+#             # ดึง WasteItem โดยใช้บาร์โค้ด
+#             waste_item = WasteItem.objects.get(barcode=barcode)
+            
+#             # เตรียมข้อมูลสำหรับ Template พร้อมข้อมูลคนรับซื้อ
+#             images_with_related_buyers = []
+#             for image in waste_item.images.all():
+#                 waste_types = [image.waste_type] if image.waste_type else []
+#                 subtypes = [image.subtype] if image.subtype else []
+
+#                 query = Q()
+#                 for value in waste_types + subtypes:
+#                     query |= Q(title__icontains=value) | Q(description__icontains=value)
+
+#                 # ค้นหา SellItem (คนรับซื้อ) ที่เกี่ยวข้อง
+#                 related_buyers = SellItem.objects.filter(
+#                     post_type='buy'
+#                 ).filter(query).distinct()
+
+#                 images_with_related_buyers.append({
+#                     'image': image,
+#                     'related_buyers': related_buyers,
+#                 })
+
+#             # ส่งข้อมูลไปยัง Template
+#             return render(request, 'barcode_scanner/waste_item_detail_guest.html', {
+#                 'waste_item': waste_item,
+#                 'images_with_related_buyers': images_with_related_buyers,
+#             })
+#         except WasteItem.DoesNotExist:
+#             # ถ้าไม่พบ WasteItem
+#             return render(request, 'barcode_scanner/guest_popup.html', {'barcode': barcode})
+#     else:
+#         return redirect('barcode_scanner:scan_camera_guest')
+
+    
+    
+
+
+def handle_barcode_guest(request):
+    """
+    จัดการทั้งการค้นหาและการสแกนบาร์โค้ด
+    """
+    # รับค่าบาร์โค้ดจาก GET parameter
+    barcode = request.GET.get('barcode', '').strip()
 
     if barcode:
         try:
             # ดึง WasteItem โดยใช้บาร์โค้ด
             waste_item = WasteItem.objects.get(barcode=barcode)
-            
+
             # เตรียมข้อมูลสำหรับ Template พร้อมข้อมูลคนรับซื้อ
             images_with_related_buyers = []
             for image in waste_item.images.all():
@@ -505,16 +552,18 @@ def scan_result_guest(request):
                     'related_buyers': related_buyers,
                 })
 
-            # ส่งข้อมูลไปยัง Template
+            # หากเจอข้อมูล ให้แสดงรายละเอียดในหน้า waste_item_detail_guest.html
             return render(request, 'barcode_scanner/waste_item_detail_guest.html', {
                 'waste_item': waste_item,
                 'images_with_related_buyers': images_with_related_buyers,
             })
-        except WasteItem.DoesNotExist:
-            # ถ้าไม่พบ WasteItem
-            return render(request, 'barcode_scanner/guest_popup.html', {'barcode': barcode})
-    else:
-        return redirect('barcode_scanner:scan_camera_guest')
 
-    
-    
+        except WasteItem.DoesNotExist:
+            # ถ้าไม่เจอข้อมูล ให้แสดงข้อความใน guest_popup.html
+            return render(request, 'barcode_scanner/guest_popup.html', {
+                'barcode': barcode,
+                'message': 'ไม่มีข้อมูลสำหรับบาร์โค้ดนี้ในฐานข้อมูล',
+            })
+
+    # หากไม่มีการส่งบาร์โค้ดหรือข้อมูลไม่ครบ ให้ Redirect กลับไปยังหน้ากล้อง
+    return redirect('scanner:scan_camera_guest')
