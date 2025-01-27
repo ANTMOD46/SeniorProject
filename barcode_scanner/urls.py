@@ -32,7 +32,9 @@ urlpatterns = [
     path('scan-camera-guest/', views.scan_camera_guest, name='scan_camera_guest'),
     
  
-   
+   path('scan-member/', views.handle_barcode_member, name='handle_barcode_member'),
+    path('waste-item/<int:pk>/', views.waste_item_detail, name='waste_item_detail'),
+    path('add-item/', views.add_waste_item, name='add_waste_item'),
       
     
     # ใหม่

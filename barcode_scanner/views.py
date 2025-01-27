@@ -181,6 +181,22 @@ def add_waste_item(request):
 
 
 
+def handle_barcode_member(request):
+    # รับค่าบาร์โค้ดจาก GET parameter
+    barcode = request.GET.get('barcode', '').strip()
+
+    if barcode:
+        try:
+            # ตรวจสอบว่ามี WasteItem ในฐานข้อมูลหรือไม่
+            waste_item = WasteItem.objects.get(barcode=barcode)
+            # หากเจอข้อมูล ให้ไปที่ waste_item_detail
+            return redirect('barcode_scanner:waste_item_detail', pk=waste_item.pk)
+        except WasteItem.DoesNotExist:
+            # ถ้าไม่มีข้อมูล ให้ไปยัง add_waste_item เพื่อเพิ่มข้อมูล
+            return redirect(f"{reverse('barcode_scanner:add_waste_item')}?barcode={barcode}")
+    else:
+        # ถ้าไม่มีบาร์โค้ด ให้ redirect กลับไปยังหน้าสแกน
+        return redirect('barcode_scanner:scan_camera')
 
 from django.shortcuts import render, get_object_or_404
 from .models import WasteItem
