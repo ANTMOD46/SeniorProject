@@ -80,13 +80,19 @@
                 inputStream: {
                     type: "LiveStream",
                     constraints: {
-                        width: 640,
-                        height: 480,
-                        facingMode: "environment"
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: "environment",
+                        aspectRatio: { ideal: 1.7777777778 }
                     }
                 },
                 decoder: {
-                    readers: ["code_128_reader", "ean_reader", "upc_reader"]
+                    readers: ["code_128_reader", "ean_reader", "upc_reader"],
+                    debug: {
+                        drawBoundingBox: true,
+                        showFrequency: true,
+                        drawScanline: true
+                    }
                 },
                 locate: true
             }, function(err) {
@@ -109,10 +115,28 @@
             // ตรวจสอบการประมวลผล
             Quagga.onProcessed(function(result) {
                 const errorElement = document.getElementById("error-message");
-                if (!result || !result.codeResult || !result.codeResult.code) {
-                    errorElement.classList.add("active");
+                const ctx = Quagga.canvas.ctx.overlay;
+                const canvas = Quagga.canvas.dom.overlay;
+
+                if (result) {
+                    if (result.boxes) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        result.boxes.filter(box => box !== result.box).forEach(box => {
+                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, ctx, { color: "green", lineWidth: 2 });
+                        });
+                    }
+
+                    if (result.box) {
+                        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, ctx, { color: "#00F", lineWidth: 2 });
+                    }
+
+                    if (result.codeResult && result.codeResult.code) {
+                        errorElement.classList.remove("active");
+                    } else {
+                        errorElement.classList.add("active");
+                    }
                 } else {
-                    errorElement.classList.remove("active");
+                    errorElement.classList.add("active");
                 }
             });
         });
