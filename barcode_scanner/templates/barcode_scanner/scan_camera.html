@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>สแกนบาร์โค้ด</title>
     <style>
@@ -18,18 +18,7 @@
             border: 2px dashed #3b82f6;
             border-radius: 8px;
             overflow: hidden;
-        }
-
-        .scanner-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80%;
-            height: 30%;
-            transform: translate(-50%, -50%);
-            border: 2px solid #1d4ed8;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(29, 78, 216, 0.5);
+            display: none;
         }
 
         .error-message {
@@ -43,13 +32,18 @@
 </head>
 <body class="bg-gray-50 font-sans h-screen">
     {% include 'accounts/header_logged_in.html' %}
+
     <div class="pt-20 h-full flex flex-col items-center justify-start bg-gray-50">
         <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">สแกนบาร์โค้ด</h1>
         
+        <!-- ปุ่มเปิด/ปิดกล้อง -->
+        <button id="startScanner" class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-green-600">
+            เริ่มสแกนบาร์โค้ด
+        </button>
+
         <!-- กล้องและกรอบ -->
-        <div class="scanner-container mb-6">
-            <div id="interactive" class="viewport"></div>
-            <div class="scanner-overlay"></div>
+        <div id="scanner-container" class="scanner-container mt-4">
+            <video id="video" width="100%" height="100%"></video>
         </div>
 
         <!-- ข้อความแสดงข้อผิดพลาด -->
@@ -74,71 +68,34 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // เริ่มต้น Quagga.js
-            Quagga.init({
-                inputStream: {
-                    type: "LiveStream",
-                    constraints: {
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
-                        facingMode: "environment",
-                        aspectRatio: { ideal: 1.7777777778 }
-                    }
-                },
-                decoder: {
-                    readers: ["code_128_reader", "ean_reader", "upc_reader"],
-                    debug: {
-                        drawBoundingBox: true,
-                        showFrequency: true,
-                        drawScanline: true
-                    }
-                },
-                locate: true
-            }, function(err) {
-                if (err) {
-                    console.error("Quagga init error:", err);
-                    alert("เกิดข้อผิดพลาดในการสแกน กรุณาลองใหม่");
-                    return;
-                }
-                Quagga.start();
-            });
+        let codeReader = new ZXing.BrowserMultiFormatReader();
+        let videoElement = document.getElementById("video");
+        let scannerContainer = document.getElementById("scanner-container");
+        let startScannerBtn = document.getElementById("startScanner");
+        let isScanning = false;
 
-            // ตรวจจับบาร์โค้ด
-            Quagga.onDetected(function(data) {
-                const barcode = data.codeResult.code;
-                console.log("Barcode detected:", barcode);
-                window.location.href = `/scanner/scan-member/?barcode=${barcode}`;
-                Quagga.stop();
-            });
+        startScannerBtn.addEventListener("click", function() {
+            if (!isScanning) {
+                startScannerBtn.textContent = "หยุดสแกน";
+                scannerContainer.style.display = "block";
+                isScanning = true;
 
-            // ตรวจสอบการประมวลผล
-            Quagga.onProcessed(function(result) {
-                const errorElement = document.getElementById("error-message");
-                const ctx = Quagga.canvas.ctx.overlay;
-                const canvas = Quagga.canvas.dom.overlay;
-
-                if (result) {
-                    if (result.boxes) {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        result.boxes.filter(box => box !== result.box).forEach(box => {
-                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, ctx, { color: "green", lineWidth: 2 });
-                        });
+                codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
+                    if (result) {
+                        console.log("บาร์โค้ดที่พบ:", result.text);
+                        window.location.href = `/scanner/scan-member/?barcode=${result.text}`;
+                        codeReader.reset();
+                        isScanning = false;
+                        scannerContainer.style.display = "none";
+                        startScannerBtn.textContent = "เริ่มสแกนบาร์โค้ด";
                     }
-
-                    if (result.box) {
-                        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, ctx, { color: "#00F", lineWidth: 2 });
-                    }
-
-                    if (result.codeResult && result.codeResult.code) {
-                        errorElement.classList.remove("active");
-                    } else {
-                        errorElement.classList.add("active");
-                    }
-                } else {
-                    errorElement.classList.add("active");
-                }
-            });
+                });
+            } else {
+                codeReader.reset();
+                isScanning = false;
+                scannerContainer.style.display = "none";
+                startScannerBtn.textContent = "เริ่มสแกนบาร์โค้ด";
+            }
         });
     </script>
 </body>
