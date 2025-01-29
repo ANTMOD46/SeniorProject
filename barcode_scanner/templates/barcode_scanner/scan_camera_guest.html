@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>สแกนบาร์โค้ด (Guest)</title>
     <style>
@@ -49,7 +49,8 @@
 <body class="bg-gray-50 font-sans h-screen">
     <div class="pt-20 h-full flex flex-col items-center justify-start">
         <h1 class="text-4xl font-bold text-gray-700 text-center mb-6">สแกนบาร์โค้ด</h1>
-        <div id="interactive" class="viewport relative">
+        <div class="viewport relative">
+            <video id="video" class="viewport w-full h-full" autoplay></video>
             <div class="scan-frame"></div>
             <p class="scan-guide">โปรดวางบาร์โค้ดในกรอบนี้</p>
         </div>
@@ -70,42 +71,38 @@
             </button>
         </form>
     </div>
+
     <script>
-        function startQuagga() {
-            Quagga.init({
-                inputStream: {
-                    type: "LiveStream",
-                    constraints: {
-                        width: 640,
-                        height: 360,
-                        facingMode: "environment"
-                    },
-                },
-                decoder: {
-                    readers: ["code_128_reader", "ean_reader", "upc_reader"]
-                }
-            }, function(err) {
-                if (err) {
-                    console.error(err);
-                    alert("เกิดข้อผิดพลาดในการเริ่มต้นกล้อง");
+        document.addEventListener("DOMContentLoaded", function () {
+            const videoElement = document.getElementById("video");
+            const errorMessage = document.getElementById("error-message");
+        
+            const codeReader = new ZXing.BrowserMultiFormatReader();
+        
+            codeReader.getVideoInputDevices().then(videoInputDevices => {
+                if (videoInputDevices.length === 0) {
+                    console.error("ไม่พบกล้องในอุปกรณ์");
+                    alert("ไม่พบกล้องบนอุปกรณ์ของคุณ");
                     return;
                 }
-                Quagga.start();
+        
+                const selectedDeviceId = videoInputDevices[0].deviceId; // ใช้กล้องตัวแรก
+        
+                codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, (result, err) => {
+                    if (result) {
+                        console.log("✅ บาร์โค้ดที่พบ:", result.text);
+                        window.location.href = '/scanner/handle-barcode/?barcode=' + result.text;
+                    } else if (err) {
+                        console.error("❌ ข้อผิดพลาด:", err);
+                        errorMessage.classList.remove("hidden");
+                    }
+                });
+            }).catch(err => {
+                console.error("❌ เกิดข้อผิดพลาดในการเข้าถึงกล้อง:", err);
+                alert("ไม่สามารถเข้าถึงกล้องได้ กรุณาตรวจสอบสิทธิ์");
             });
-            Quagga.onDetected(function(data) {
-                const barcode = data.codeResult.code;
-                window.location.href = '/scanner/handle-barcode/?barcode=' + barcode;
-                Quagga.stop();
-            });
-            Quagga.onProcessed(function(result) {
-                if (!result || !result.codeResult || !result.codeResult.code) {
-                    document.getElementById("error-message").classList.remove("hidden");
-                }
-            });
-        }
-        document.addEventListener("DOMContentLoaded", function() {
-            startQuagga();
         });
+        
     </script>
 </body>
 </html>
