@@ -28,7 +28,9 @@ SECRET_KEY = "django-insecure-031_@d&vo!rd9ou#k@d2#3*m4-4!5y5ncsxe86(*ujfmo-u&07
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['*']
 
 LOGIN_URL = '/accounts/login/'  # URL สำหรับหน้า login
 LOGIN_REDIRECT_URL = 'home_user'  # URL ที่จะเปลี่ยนไปหลังจากล็อกอินสำเร็จ
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django_browser_reload",
     'daphne',
     "django.contrib.staticfiles",
     "tailwind",
