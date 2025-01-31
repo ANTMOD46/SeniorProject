@@ -37,7 +37,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             text-align: center;
             width: 90%;
-            max-width: 400px;
+            max-width: 100px;
         }
 
         .btn-blue {
@@ -190,6 +190,14 @@
             background-color: #9ca3af;
             color: white;
         }
+        .menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            width: 100%;
+            max-width: 180px;
+        }
+        
         
     </style>
     <title>รายละเอียดการบริจาค</title>
@@ -202,7 +210,7 @@
         <div class="relative">
             <!-- ภาพประกาศ -->
             {% if donation.image %}
-                <img src="{{ donation.image.url }}" alt="ภาพการบริจาค" class="donation-image">
+            <img src="{{ donation.image.url }}" alt="ภาพการบริจาค" class="w-full h-auto object-cover rounded-md mb-4">
             {% else %}
                 <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="donation-image">
             {% endif %}
@@ -266,7 +274,7 @@
         </div>
 
         <!-- ผู้โพสต์ -->
-        <div class="flex items-center justify-center mt-6 space-x-4">
+        <div class="flex items-center justify-center mt-6 space-x-4 gap-4">
             <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ donation.user.username }}</span></p>
             <a href="{% url 'user_store' donation.user.username %}" class="flex items-center text-blue-500 hover:underline">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store mr-1">
@@ -463,3 +471,6 @@
 </body>
 
 </html>
+
+
+

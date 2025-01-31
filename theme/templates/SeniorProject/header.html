@@ -1,30 +1,30 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
-
+    <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
     <style>
         * {
             font-family: "Lora", serif;
-            font-optical-sizing: auto;
-            font-style: normal;
         }
 
+        /* ปรับขนาดโลโก้ให้เหมาะสมกับทุกจอ */
         .logo-img {
-            width: 60px;
+            width: 50px; /* ค่าเริ่มต้น */
             height: auto;
         }
 
+        /* ปรับปุ่มให้แสดงผลดีขึ้น */
         .nav-buttons a {
-            padding: 0.625rem 1.25rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            white-space: nowrap;
         }
 
         .nav-buttons a.signup {
@@ -43,9 +43,25 @@
             background-color: #2563eb;
         }
 
-        @media (min-width: 768px) {
+        /* ปรับให้ปุ่มอยู่ข้างๆ โลโก้ */
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 640px) {
             .logo-img {
-                width: 80px;
+                width: 60px; /* สำหรับจอใหญ่ขึ้น */
+            }
+
+            .nav-buttons a {
+                padding: 0.625rem 1.25rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .logo-img {
+                width: 80px; /* สำหรับจอใหญ่มาก */
             }
 
             .nav-buttons a {
@@ -53,10 +69,9 @@
             }
         }
     </style>
-    <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
 </head>
 
-<body class="bg-gray-50 overflow-x-hidden">
+<body class="bg-gray-50 overflow-x-hidden pt-16">
     <!-- Header -->
     <header class="fixed w-full bg-white border-b border-gray-200 shadow-md z-50">
         <div class="flex items-center justify-between max-w-screen-xl mx-auto px-6 py-3">
@@ -64,20 +79,22 @@
             <div class="flex items-center">
                 <img class="logo-img object-cover rounded-full" src="{% static 'css/dist/Seniorproject/img/logo.png' %}" alt="Logo">
             </div>
+
             <!-- Right Section (Buttons) -->
-            <div class="flex items-center space-x-4 nav-buttons">
+            <div class="flex items-center gap-2 nav-buttons">
                 <!-- Signup Button -->
                 <a href="{% url 'signup' %}" 
-                   class="text-white signup focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-6 py-2.5 shadow-md">
+                   class="text-white signup focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-4 py-2 shadow-md w-auto">
                    สมัครสมาชิก
                 </a>
                 <!-- Login Button -->
                 <a href="{% url 'login' %}" 
-                   class="text-white login focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-6 py-2.5 shadow-md">
+                   class="text-white login focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 shadow-md w-auto">
                    เข้าสู่ระบบ
                 </a>
             </div>
         </div>
     </header>
 </body>
+
 </html>

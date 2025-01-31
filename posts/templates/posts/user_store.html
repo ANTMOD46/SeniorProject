@@ -23,33 +23,42 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .post-item {
-            background-color: #ffffff;
-            border: 1px solid #fde047;
+            background-color: #ECF2FF;
+            border: 1px solid #3B82F6;
             border-radius: 12px;
             padding: 16px;
+            transition: all 0.3s ease; /* เพิ่ม transition ให้การเปลี่ยนแปลงนุ่มนวล */
         }
+        
+        /* Hover effect */
+        .post-item:hover {
+            background-color: #B2A5FF; /* เปลี่ยนสีพื้นหลัง */
+            border-color: #3B82F6; /* เปลี่ยนสีขอบ */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเมื่อ hover */
+        }
+        
         h1, h2 {
-            color: #4b5563;
+            color: #474E93;
         }
         .filter-button {
-            background-color: #fef9c3;
-            border: 1px solid #fde047;
+            background-color:#E3DFFD;
+            border: 1px solid #E5D1FA;
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 14px;
             font-weight: bold;
         }
         .filter-button.active {
-            background-color: #f59e0b;
-            color: white;
+            background-color: #F9F6E6;
+            color: purple;
             border-color: #d97706;
         }
         .view-more-link {
             display: inline-block;
             margin-top: 8px;
             padding: 6px 12px;
-            border: 2px solid #16a34a;
-            color: #16a34a;
+            border: 2px solid #E5D1FA;
+            color: #441752;
             font-weight: bold;
             border-radius: 8px;
             text-align: center;
@@ -57,8 +66,8 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         .view-more-link:hover {
-            background-color: #16a34a;
-            color: white;
+            background-color: #FFF4D2;
+            color: purple;
         }
         .username {
             color: #2563eb;
@@ -72,9 +81,9 @@
 
     <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-6">
         <div class="text-center">
-            <h1 class="text-3xl font-bold mb-4">หน้าร้านของ <span class="text-gray-600">{{ user_profile.username }}</span></h1>
+            <h1 class="text-3xl font-bold mb-4">หน้าร้านของ <span class="text-gray-800">{{ user_profile.username }}</span></h1>
             <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url }}{% else %}{% static 'css/dist/Seniorproject/img/default-profile.png' %}{% endif %}" alt="Profile Image" class="profile-img">
-            <p class="mt-3 text-gray-700 text-lg">
+            <p class="mt-3 text-[#69247C] text-lg">
                 ชื่อผู้ใช้: <span class="username">{{ user_profile.username }}</span>
             </p>
         </div>
@@ -90,7 +99,7 @@
         </div>
 
         <!-- Posts Section -->
-        <h2 class="text-2xl font-semibold mt-8">การประกาศทั้งหมด</h2>
+        <h2 class="text-3xl text-gray-800 font-semibold mt-8">การประกาศทั้งหมด</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
             {% for post in posts %}
                 <div class="post-item" data-type="{{ post.model_name }}"> <!-- เพิ่ม data-type -->

@@ -1,5 +1,3 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="th">
 
@@ -7,106 +5,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
-
-    <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>รักษาโลกให้สะอาดและแบ่งปัน</title>
 
     <style>
-        /* เพิ่มภาพพื้นหลัง */
+        body {
+            background-color: #FFFFF
+            font-family: 'Prompt', sans-serif;
+            overflow-x: hidden;
+        }
+
         .header-image {
             background-image: url('https://s359.kapook.com/r/600/auto/pagebuilder/27ce773b-8f44-4e6e-b6e2-90226933d208.jpg');
             background-position: center;
-            height: 350px;
+            background-size: cover;
+            height: 300px;
             width: 100%;
-            border-radius: 10px;
+            border-radius: 12px;
+            position: relative;
+           
+        }
+        
+        @media (min-width: 768px) {
+            .header-image {
+                height: 450px;
+                border-radius: 20px;
+            }
+        }
+        
+        
+
+        .header-content {
+            margin-top: 1rem; /* เพิ่มระยะห่างจากรูปภาพ */
+            text-align: center;
+            color: #000957; /* เปลี่ยนสีข้อความให้โดดเด่น */
+            padding: 0 1rem;
         }
 
-        /* เพิ่มขนาดเต็มหน้าจอให้กับ Swiper */
-        .swiper-container {
-            width: 100%;
-            height: 100vh;
-            margin: auto;
-            border-radius: 0;
-            overflow: hidden;
+        @media (min-width: 768px) {
+            .header-content {
+                margin-top: 2rem;
+            }
         }
 
-        .swiper-slide img {
-            width: 100%;
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             height: 100%;
-            object-fit: cover;
         }
 
-        /* ปรับรูปแบบข้อความที่มีการจัดเรียง */
-        .content-section {
-            max-width: 900px;
-            margin: 0 auto;
-            line-height: 1.6;
+        @media (hover: hover) {
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
         }
 
-        .section-title {
-            color: #1e3a8a;
-            font-weight: 700;
-            font-size: 2rem; /* เพิ่มขนาดตัวหนังสือ */
-            margin-bottom: 1rem;
+        .content-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            height: 100%;
         }
 
-        .section-content {
-            margin-top: 1rem;
-            color: #333;
-            font-size: 1.1rem;
-            text-align: justify;
-        }
+        @media (max-width: 640px) {
+            .nav-buttons {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                width: 100%;
+            }
 
-        .button {
-            background-color: #38bdf8;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .button:hover {
-            background-color: #22d3ee;
+            .nav-button {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 
-<body class="bg-white">
+<body class ="jh bg-white">
 
-
-    <!-- รวม header_logged_in.html -->
     {% include 'accounts/header_logged_in.html' %}
 
-    <!-- เพิ่มรูปภาพที่ด้านบน -->
-    <div class="header-image"></div>
+    <main class="container bg-white mx-auto px-4 py-4 sm:py-8 max-w-7xl">
+        <!-- Hero Section -->
+        <div class="relative header-image mb-8 sm:mb-12"></div>
 
-    <!-- Main Content -->
-    <main class="bg-white-50 p-6">
-        <!-- ชื่อเว็บไซต์ -->
-        <h1 class="text-4xl font-bold text-center text-sky-600 mt-4">Keep the world clean and share</h1>
-        <p class="text-center text-xl text-sky-500 mt-2">รักษาโลกให้สะอาดและแบ่งปัน</p>
-        
-        
+        <!-- Header Content (Moved below the image) -->
+        <div class="header-content mt-6 sm:mt-12 mb-6 sm:mb-12">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4">Keep the world clean and share</h1>
+            <p class="text-lg sm:text-xl">รักษาโลกให้สะอาดและแบ่งปัน</p>
+        </div>
 
-        <!-- ปุ่มอยู่ใต้ข้อความนี้ -->
-        <div class="text-center mt-6 space-x-4">
-            <a href="{% url 'separate_waste' %}">
-                <button class="button">การแยกขยะ</button>
+        <!-- Navigation Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-16">
+            <a href="{% url 'separate_waste' %}" class="feature-card bg-white rounded-xl p-4 sm:p-6 text-center shadow-lg">
+                <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">🗑️</div>
+                <h3 class="text-lg sm:text-xl font-semibold text-sky-600">การแยกขยะ</h3>
+                <p class="text-sm sm:text-base text-gray-600 mt-2">จัดการขยะอย่างถูกวิธี</p>
             </a>
-            <a href="{% url 'sell_item_all' %}">
-                <button class="button bg-red-400 hover:bg-red-500">การซื้อ-ขาย</button>
+
+            <a href="{% url 'sell_item_all' %}" class="feature-card bg-white rounded-xl p-4 sm:p-6 text-center shadow-lg">
+                <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">💰</div>
+                <h3 class="text-lg sm:text-xl font-semibold text-red-400">การซื้อ-ขาย</h3>
+                <p class="text-sm sm:text-base text-gray-600 mt-2">แปลงขยะเป็นรายได้</p>
             </a>
-            <a href="{% url 'donation_all' %}" class="button bg-yellow-400 hover:bg-yellow-500">
-                การบริจาค
+
+            <a href="{% url 'donation_all' %}" class="feature-card bg-white rounded-xl p-4 sm:p-6 text-center shadow-lg">
+                <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">🎁</div>
+                <h3 class="text-lg sm:text-xl font-semibold text-yellow-400">การบริจาค</h3>
+                <p class="text-sm sm:text-base text-gray-600 mt-2">ส่งต่อสิ่งดีๆ สู่ผู้อื่น</p>
             </a>
-            <a href="{% url 'announcement_all' %}" class="button bg-purple-400 hover:bg-purple-500">
-                กระทู้สอบถามทั่วไป
+
+            <a href="{% url 'announcement_all' %}" class="feature-card bg-white rounded-xl p-4 sm:p-6 text-center shadow-lg">
+                <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">💭</div>
+                <h3 class="text-lg sm:text-xl font-semibold text-purple-400">กระทู้สอบถาม</h3>
+                <p class="text-sm sm:text-base text-gray-600 mt-2">แลกเปลี่ยนความรู้</p>
             </a>
         </div>
 
+        <!-- Main Content Section -->
         <div class="content-section mt-6 p-8 bg-[#ECF2FF] rounded-xl shadow-lg max-w-7xl mx-auto">
             <h2 class="text-3xl font-bold text-center text-[#000957] mb-8">
                 รู้หรือไม่? การแยกขยะ, การซื้อขายขยะของเก่า, การบริจาคแล้วได้อะไร
@@ -181,28 +199,6 @@
         </div>
         
     </main>
-
-    <!-- JavaScript for Swiper -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var swiper = new Swiper('.swiper-container', {
-                loop: true,
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-            });
-        });
-    </script>
-
 </body>
 
 </html>

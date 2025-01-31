@@ -12,8 +12,8 @@
 <body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="flex justify-center items-center min-h-screen mt-6">
-        <div class="bg-white w-full max-w-lg p-8 rounded-lg shadow-lg">
+    <main class="flex justify-center items-center min-h-screen sm:mt-12 md:mt-16 lg:mt-20 ">
+        <div class="bg-white w-full max-w-lg md:max-w-xl lg:max-w-2xl p-8 pt-10 rounded-xl shadow-2xl">
             <!-- Header Section -->
             <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">สร้างกระทู้ใหม่</h1>
             <p class="text-center text-gray-600 mb-6">แสดงความคิดเห็นหรือสอบถามเรื่องราวที่คุณสนใจ</p>
@@ -64,12 +64,12 @@
                 </div>
 
                 <!-- ปุ่มส่งฟอร์ม -->
-                <div class="flex justify-between items-center mt-4">
+                <div class="flex flex-wrap sm:flex-nowrap justify-between items-center mt-4 gap-4">
                     <button type="submit"
-                        class="py-3 px-6 bg-blue-600 text-white font-medium rounded-md shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition-all">
+                        class="bg-purple-600 text-white px-6 py-3 w-full sm:w-auto rounded-lg shadow-lg hover:bg-green-500 transition-all duration-300 transform hover:scale-105 focus:ring-2 focus:ring-blue-400">
                         ลงประกาศกระทู้
                     </button>
-                    <a href="{% url 'post_ad' %}" class="text-blue-600 font-medium hover:underline">ยกเลิก</a>
+                    <a href="{% url 'post_ad' %}"class="text-red-600 font-medium hover:underline mt-2 sm:mt-0">ยกเลิก</a>
                 </div>
             </form>
         </div>

@@ -169,6 +169,7 @@ def waste_item_detail(request, pk):
 
         images_with_related_buyers.append({
             'image': image,
+            
             'related_buyers': related_buyers,
         })
 

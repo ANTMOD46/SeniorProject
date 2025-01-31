@@ -14,14 +14,14 @@
     <div class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">รายละเอียดผลิตภัณฑ์</h1>
+            <h1 class="text-3xl font-bold text-purple-900">รายละเอียดผลิตภัณฑ์</h1>
         </div>
 
         <!-- Product Information -->
         <div class="text-center mb-10">
-            <p class="text-gray-700 font-medium"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
-            <p class="text-gray-700 font-medium"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
-            <p class="text-gray-700 font-medium"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+            <p class="text-blue-700 font-medium"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+            <p class="text-pink-700 font-medium"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+            <p class="text-green-700 font-medium"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
             {% if waste_item.product_image %}
             <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="mx-auto mt-4 w-40 h-40 object-cover rounded-lg shadow">
             {% endif %}
@@ -31,9 +31,9 @@
         <div>
             {% regroup images_with_related_buyers by image.added_by as grouped_images %}
             {% for user_group in grouped_images %}
-            <div class="bg-gray-100 p-4 mb-6 rounded-lg shadow">
+            <div class="bg-purple-100 p-4 mb-6 rounded-lg shadow border border-blue-300">
                 <!-- User Header -->
-                <div class="flex items-center gap-4 mb-4">
+                <div class="flex items-center gap-4 mb-4 border-b pb-4 border-gray-200">
                     {% if user_group.grouper.profile_picture %}
                     <img src="{{ user_group.grouper.profile_picture.url }}" alt="โปรไฟล์ผู้ใช้" class="w-12 h-12 object-cover rounded-full shadow">
                     {% else %}
@@ -44,7 +44,7 @@
 
                 <!-- Waste Items -->
                 {% for item in user_group.list %}
-                <div class="bg-white p-4 mb-4 rounded-lg shadow">
+                <div class="bg-white p-4 mb-4 rounded-lg shadow border border-pink-300">
                     <div class="flex items-center gap-4">
                         {% if item.image.image %}
                         <img src="{{ item.image.image.url }}" alt="รูปภาพขยะ" class="w-24 h-24 object-cover rounded-lg shadow">
@@ -66,7 +66,7 @@
                         <!-- จัด layout -->
                         <div class="flex flex-wrap justify-start gap-2">
                             {% for buyer in item.related_buyers %}
-                            <div class="bg-white border border-gray-300 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center justify-between w-28 h-36 p-3">
+                            <div class="bg-white border border-green-300 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center justify-between w-28 h-36 p-3">
                                 <a href="{% url 'user_store' buyer.user.username %}" class="block text-center w-full">
                                     <!-- รูปโปรไฟล์ -->
                                     <div class="flex justify-center items-center h-20 w-20 mx-auto mb-2">
@@ -76,7 +76,7 @@
                                     <!-- ชื่อผู้ใช้ -->
                                     <p class="text-sm font-medium text-gray-700 truncate">{{ buyer.user.username }}</p>
                                     <!-- title -->
-                                    <p class="text-xs text-purple-500 truncate">{{ buyer.title }}</p>
+                                    {% comment %} <p class="text-xs text-purple-500 truncate">{{ buyer.description }}</p> {% endcomment %}
                                 </a>
                             </div>
                             {% endfor %}

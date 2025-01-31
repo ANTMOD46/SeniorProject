@@ -2,23 +2,25 @@
 
 {% block main %}
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+{% comment %} <main class="bg-gradient-to-b from-blue-50 to-purple-70 min-h-screen p-4"> {% endcomment %}
 <!-- Main Image responsive with Swiper -->
-<div class="swiper-container mySwiper mt-28">
+<div class="swiper-container mySwiper mt-20 sm:mt-24 md:mt-28">
     <div class="swiper-wrapper">
         <!-- Slide 1 -->
         <div class="swiper-slide">
             <img src="https://s359.kapook.com/pagebuilder/54ddd684-5b71-43c4-b093-51c7d128e93e.jpg" 
-                 class="rounded-lg w-full h-96 object-contain" alt="Image 1">
+            class="rounded-lg w-full h-64 sm:h-80 md:h-96 object-contain" alt="Image 1">
         </div>
         <!-- Slide 2 -->
         <div class="swiper-slide">
             <img src="https://s3.ap-southeast-1.amazonaws.com/members.project.cover/ee8604c4-5d22-475f-af67-61dcfab023df/eacbd98c-11f1-4775-b184-19cff7bab344.jpg" 
-                 class="rounded-lg w-full h-96 object-contain" alt="Image 2">
+            class="rounded-lg w-full h-64 sm:h-80 md:h-96 object-contain" alt="Image 2">
         </div>
         <!-- Slide 3 -->
         <div class="swiper-slide">
             <img src="https://png.pngtree.com/background/20210710/original/pngtree-garbage-classification-green-travel-minimalist-background-picture-image_1062842.jpg" 
-                 class="rounded-lg w-full h-96 object-contain" alt="Image 3">
+            class="rounded-lg w-full h-64 sm:h-80 md:h-96 object-contain" alt="Image 3">
         </div>
     </div>
     <!-- Add Pagination -->
@@ -29,16 +31,11 @@
 <main class="p-4 text-center flex-grow">
     <h2 class="text-gray-700 text-4xl font-semibold mt-3">
         Keep the world clean and share (รักษาโลกให้สะอาดและแบ่งปัน)
-    </h2>
-    
-    
-    
-    
-    
+    </h2>   
 </main>
 
 <!-- Scrollable Image Slider Section -->
-<section class="mt-6 overflow-x-auto">
+<section class="mt-6 overflow-x-auto px-4">
     <div class="flex justify-center space-x-12">
         <!-- การแยกขยะ -->
         <div class="min-w-max text-center">
@@ -96,23 +93,31 @@
 </section>
 
 <!-- Button for QR Scanning -->
+<!-- Button for QR Scanning -->
 <section class="mt-6 text-center">
     <button 
     onclick="window.location.href='/scanner/scan-camera-guest/'" 
-    class="bg-pink-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md text-lg">
+    class="bg-pink-600 hover:bg-green-700 text-white font-bold py-3 sm:py-4 px-6 sm:px-10 rounded-md text-base sm:text-lg w-auto max-w-sm inline-block text-center">
     ดูการแยกขยะได้ตรงนี้
-</button>
-
+    </button>
 </section>
+
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
-    var swiper = new Swiper(".mySwiper", {
-        loop: true, // ให้สไลด์วนลูป
-        autoplay: {
-            delay: 3000, // เลื่อนอัตโนมัติทุก 3 วินาที
-            disableOnInteraction: false,
-        },
-        pagination: false, // ปิดการแสดงผล Pagination
+    document.addEventListener("DOMContentLoaded", function() {
+        var swiper = new Swiper(".mySwiper", {
+            loop: true,
+            autoplay: {
+                delay: 3000, // เลื่อนอัตโนมัติทุก 3 วินาที
+                disableOnInteraction: false,
+            },
+            
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
     });
 </script>
+
 {% endblock main %}

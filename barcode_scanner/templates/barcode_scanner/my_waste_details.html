@@ -10,6 +10,46 @@
         .modal-bg {
             background-color: rgba(0, 0, 0, 0.5);
         }
+        
+        .waste-group {
+            background-color: #E6E6FA; /* สีพาสเทลม่วงอ่อน */
+            transition: all 0.3s ease;
+        }
+        
+        
+        .waste-item-card {
+            background-color: #FFF0F5; /* สีพาสเทลชมพูอ่อน */
+            transition: all 0.3s ease;
+        }
+        
+        .waste-item-card:hover {
+            background-color: #E5D1FA; /* สีชมพูเข้มเมื่อ hover */
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .delete-btn {
+            background-color: #FFB6C1; /* สีชมพูอ่อน */
+            transition: all 0.2s ease;
+        }
+        
+        .delete-btn:hover {
+            background-color: #FF69B4; /* สีชมพูเข้ม */
+            transform: scale(1.05);
+        }
+        
+        .view-details-btn {
+            background-color: #500073; /* สีเขียวอ่อน */
+            transition: all 0.3s ease;
+        }
+        
+        .view-details-btn:hover {
+            background-color: #2A004E; /* สีเขียวเข้ม */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+      
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -24,8 +64,8 @@
         <div class="space-y-6 mt-6">
             {% regroup waste_images by waste_item.barcode as grouped_waste_images %}
             {% for group in grouped_waste_images %}
-            <div class="waste-group bg-gray-100 p-6 rounded-lg shadow-md">
-                <div class="barcode-header  text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">
+            <div class="waste-group p-6 rounded-lg shadow-md">
+                <div class="barcode-header text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">
                     รหัสบาร์โค้ด: {{ group.grouper }}
                 </div>
 
@@ -34,42 +74,38 @@
                 <div class="text-center mt-4">
                     {% if waste_item.product_image %}
                     <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" 
-                         class="w-32 h-32 object-cover rounded-lg mx-auto mb-2 shadow">
+                         class="w-32 h-32 object-cover rounded-lg mx-auto mb-2 shadow hover:shadow-lg transition-shadow duration-300">
                     {% endif %}
-                    <p class=" text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
-
+                    <p class="text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
                 </div>
                 {% endif %}
                 {% endwith %}
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                     {% for image in group.list %}
-                   <div class="relative border border-gray-300 rounded-lg p-4 bg-white shadow-sm flex flex-col items-center">
+                    <div class="waste-item-card relative rounded-lg p-4 flex flex-col items-center">
                         {% if image.image %}
-                        <!-- รูปภาพขยะ -->
                         <img src="{{ image.image.url }}" alt="รูปภาพขยะ" 
-                             class="w-24 h-24 object-contain rounded-lg mb-4 shadow float-left mr-4">
+                             class="w-24 h-24 object-contain rounded-lg mb-4 shadow hover:shadow-lg transition-shadow duration-300">
                         {% endif %}
-                        <!-- รายละเอียดของขยะ -->
-                        <div>
+                        <div class="text-gray-700">
                             <p class="text-sm"><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
                             <p class="text-sm"><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
                             <p class="text-sm"><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
                             <p class="text-sm"><strong>วิธีการแยก:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
                         </div>
                         <button type="button" onclick="openModal({{ image.id }})" 
-                        class="delete-btn mt-4 w-auto px-4 bg-red-500 text-white rounded-lg py-2 text-sm hover:bg-red-700">
-                    ลบขยะชิ้นนี้
+                                class="delete-btn mt-4 w-auto px-4 text-white rounded-lg py-2 text-sm">
+                            ลบขยะชิ้นนี้
                         </button>
                     </div>
                     {% endfor %}
                 </div>
-                
 
                 {% if group.list.0.waste_item and group.list.0.waste_item.id %}
                 <div class="text-center mt-6">
                     <a href="{% url 'barcode_scanner:waste_item_detail' pk=group.list.0.waste_item.id %}" 
-                       class="bg-yellow-500 text-white font-medium py-2 px-6 rounded-lg shadow-lg hover:bg-green-600 hover:shadow-xl transition duration-300">
+                       class="view-details-btn inline-block text-white font-medium py-2 px-6 rounded-lg shadow-lg">
                         ดูการแยกขยะ
                     </a>
                 </div>
@@ -89,7 +125,7 @@
             <p class="text-gray-600 mb-6">คุณแน่ใจหรือไม่ว่าต้องการลบขยะชิ้นนี้?</p>
             <form id="delete-form" method="post">
                 {% csrf_token %}
-                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700">ลบ</button>
+                <button type="submit" class="delete-btn px-4 py-2 rounded-lg text-white">ลบ</button>
                 <button type="button" onclick="closeModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 ml-4">ยกเลิก</button>
             </form>
         </div>

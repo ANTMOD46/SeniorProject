@@ -40,6 +40,7 @@
             border-radius: 4px;
             display: block;
             cursor: pointer;
+            width: 100%;
         }
 
         .menu-item:hover {
@@ -75,7 +76,7 @@
             border-radius: 10px;
             text-align: center;
             width: 90%;
-            max-width: 400px;
+            max-width: 100px;
         }
 
         .show-modal {
@@ -157,7 +158,7 @@
                 {% endif %}
             </div>
             {% if post_ad.image %}
-                <img src="{{ post_ad.image.url }}" alt="Product Image" class="w-full h-72 object-cover rounded-md mb-4">
+            <img src="{{ post_ad.image.url }}" alt="Product Image" class="w-full h-auto max-h-72 object-cover rounded-md mb-4">
             {% else %}
                 <img src="{% static 'path_to_default_image.jpg' %}" alt="No Product Image" class="w-full h-72 object-cover rounded-md mb-4">
             {% endif %}

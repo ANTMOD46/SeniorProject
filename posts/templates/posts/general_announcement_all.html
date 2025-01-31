@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายการประกาศทั่วไป</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-    <title>รายการประกาศทั่วไป</title>
     <style>
         * {
             font-family: "Kanit", serif;
@@ -34,7 +34,7 @@
         <h1 class="text-4xl font-semibold text-gray-800 mb-8 text-center">รายการกระทู้ทั้งหมด</h1>
 
         <!-- ฟอร์มค้นหา -->
-        <form method="get" class="mb-8 flex justify-center items-center space-x-4">
+        <form method="get" class="mb-8 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <input 
                 type="text" 
                 name="title" 
@@ -44,16 +44,16 @@
             >
             <button 
                 type="submit" 
-                class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transition duration-300">
+                class="bg-gray-700 hover:bg-blue-800 text-white px-6 py-3 rounded-lg shadow-lg transition duration-300">
                 ค้นหา
             </button>
         </form>
 
         <!-- Post Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {% for announcement in announcements %}
                 <!-- Post Card -->
-                <div class="bg-gray-50 rounded-lg overflow-hidden post-shadow transition duration-300 border border-gray-200">
+                <div class="bg-gray-50 p-6 shadow-lg rounded-lg hover:shadow-xl hover:bg-purple-200 transition-all duration-300 border border-blue-300">
                     <div class="relative">
                         {% if announcement.image %}
                             <img src="{{ announcement.image.url }}" alt="{{ announcement.title }}" class="w-full h-48 object-cover">
@@ -71,7 +71,7 @@
                             <p>📅 {{ announcement.created_at|date:"d F Y, H:i" }}</p>
                         </div>
                         <a href="{% url 'general_announcement_detail' announcement.id %}" 
-                           class="block mt-6 bg-gray-700 text-white py-2 px-4 rounded-lg text-center font-semibold hover:bg-gray-800 transition duration-300">
+                           class="block mt-6 bg-gray-700 text-white py-2 px-4 rounded-lg text-center font-semibold hover:bg-blue-400 transition duration-300">
                             ดูรายละเอียด
                         </a>
                     </div>

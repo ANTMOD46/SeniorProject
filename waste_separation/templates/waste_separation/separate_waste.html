@@ -4,18 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>แสกนเพื่อดูการแยกขยะ</title>
 </head>
-<body class="bg-gray-50 font-sans h-screen">
+<body class="bg-gray-50 font-[Chakra Petch] min-h-screen">
+
 
     {% include 'accounts/header_logged_in.html' %}
-    <div class="h-full flex flex-col items-center justify-center">
-        <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">แสกนเพื่อดูการแยกขยะ</h1>
+    <div class="min-h-screen flex flex-col items-center justify-start sm:justify-center lg:justify-start px-4 sm:pt-0 lg:pt-16">
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-[Chakra Petch] text-gray-900 text-center mb-6  mt-8 sm:mt-12 lg:mt-16">
+            แสกนเพื่อดูการแยกขยะ</h1>
         <p class="text-lg text-gray-700 mb-6 text-center">
             การแยกขยะง่าย ๆ ด้วยการสแกน QR Code เพียงทำตามขั้นตอนดังนี้:
         </p>
-        <ol class="list-decimal text-lg text-gray-700 mb-6">
+        <ol class="list-decimal text-lg  text-gray-700 mb-6  pl-6">
             <li class="mb-2">เข้าสู่หน้าสแกน QR Code บนแอปพลิเคชัน</li>
             <li>ใช้โทรศัพท์มือถือส่องไปที่ QR Code บนสิ่งที่ระบุ</li>
         </ol>
@@ -26,11 +30,15 @@
             <img src="https://static9.depositphotos.com/1674252/1149/v/450/depositphotos_11494322-stock-illustration-barcode-stickers.jpg" alt="QR Code" class="w-64 h-64 rounded-lg shadow-lg">
         </div>
         
-        <div>
-            <a href="/scanner/scan-camera/" class="bg-gray-900 text-white px-10 py-4 text-lg rounded-lg shadow-lg hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-300">
+        <div class="pt-8 w-full flex justify-center">
+            <a href="/scanner/scan-camera/" 
+               class="bg-gray-900 text-white px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg md:text-xl rounded-lg shadow-lg 
+                      hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-300 
+                      w-full max-w-xs sm:max-w-sm flex justify-center items-center">
                 สแกนดูการแยกขยะได้ตรงนี้
             </a>
-        </div>
+        </div>        
+        
     </div>
 </body>
 </html>

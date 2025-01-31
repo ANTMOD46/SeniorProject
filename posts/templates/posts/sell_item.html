@@ -13,10 +13,10 @@
 <body class="bg-gray-100 font-sans">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="flex justify-center items-center min-h-screen mt-6">
-        <div class="bg-white w-full max-w-lg p-8 pt-10 rounded-lg shadow-lg">
+    <main class="flex justify-center items-center min-h-screen sm:mt-12 md:mt-16 lg:mt-20 ">
+        <div class="bg-white w-full max-w-lg md:max-w-xl lg:max-w-2xl p-8 pt-10 rounded-xl shadow-2xl">
             <!-- Header Section -->
-            <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">ลงประกาศสินค้า</h1>
+            <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">ลงประกาศซื้อ-ขาย</h1>
 
             <!-- Form Section -->
             <form action="{% url 'sell_item' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
@@ -84,9 +84,9 @@
                 </div>
 
                 <!-- ปุ่มส่งฟอร์ม -->
-                <div class="flex justify-between items-center mt-4">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-500 focus:ring-2 focus:ring-blue-400 transition-all">ลงประกาศ</button>
-                    <a href="{% url 'post_ad' %}" class="text-blue-600 font-medium hover:underline">ยกเลิก</a>
+                <div class="flex flex-wrap sm:flex-nowrap justify-between items-center mt-4 gap-4">
+                    <button type="submit" class="bg-purple-600 text-white px-6 py-3 w-full sm:w-auto rounded-lg shadow-lg hover:bg-green-500 transition-all duration-300 transform hover:scale-105 focus:ring-2 focus:ring-blue-400">ลงประกาศ</button>
+                    <a href="{% url 'post_ad' %}" class="text-red-600 font-medium hover:underline mt-2 sm:mt-0">ยกเลิก</a>
                 </div>
             </form>
         </div>

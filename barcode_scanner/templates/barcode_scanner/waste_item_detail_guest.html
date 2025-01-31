@@ -15,12 +15,14 @@
 
     <!-- Main Content -->
     <div class="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-16">
-        <!-- Product Information -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">รายละเอียดผลิตภัณฑ์</h1>
-            <p class="text-gray-700 font-medium"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
-            <p class="text-gray-700 font-medium"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
-            <p class="text-gray-700 font-medium"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
+            <h1 class="text-3xl font-bold text-purple-900">รายละเอียดผลิตภัณฑ์</h1>
+        </div>
+        <!-- Product Information -->
+        <div class="text-center mb-10">
+            <p class="text-blue-700 font-medium"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
+            <p class="text-pink-700 font-medium"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
+            <p class="text-green-700 font-medium"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
             {% if waste_item.product_image %}
             <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="mx-auto mt-4 w-40 h-40 object-cover rounded-lg shadow">
             {% endif %}
@@ -30,9 +32,9 @@
         <div class="space-y-6">
             {% regroup images_with_related_buyers by image.added_by as grouped_users %}
             {% for group in grouped_users %}
-            <div class="bg-gray-100 border border-gray-300 rounded-lg shadow p-4">
+            <div class="bg-purple-100 p-4 mb-6 rounded-lg shadow border border-blue-300">
                 <!-- User Header -->
-                <div class="flex items-center gap-4 mb-4">
+                <div class="flex items-center gap-4 mb-4 border-b pb-4 border-gray-200">
                     {% if group.grouper.profile_picture %}
                     <img src="{{ group.grouper.profile_picture.url }}" alt="โปรไฟล์ผู้ใช้" class="w-12 h-12 object-cover rounded-full shadow">
                     {% else %}
@@ -46,7 +48,7 @@
                 <!-- Waste Items -->
                 <div class="space-y-4">
                     {% for entry in group.list %}
-                    <div class="bg-white border border-gray-200 rounded-lg shadow p-4">
+                    <div class="bg-white p-4 mb-4 rounded-lg shadow border border-pink-300">
                         <div class="flex items-center gap-4 mb-2">
                             {% if entry.image.image %}
                             <img src="{{ entry.image.image.url }}" alt="รูปภาพขยะ" class="w-24 h-24 object-cover rounded-lg shadow">
@@ -75,11 +77,11 @@
                             <h3 class="text-sm font-bold text-green-600">ผู้รับซื้อที่เกี่ยวข้อง:</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
                                 {% for buyer in entry.related_buyers %}
-                                <div class="bg-white border border-gray-300 rounded-lg shadow p-3 flex flex-col items-center hover:shadow-lg transition">
+                                <div class="bg-white border border-green-300 rounded-lg shadow p-3 flex flex-col items-center hover:shadow-lg transition">
                                     <img src="{% if buyer.user.profile_picture %}{{ buyer.user.profile_picture.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
                                         alt="โปรไฟล์ผู้รับซื้อ" class="w-16 h-16 object-cover rounded-full shadow mb-2">
                                     <p class="text-sm font-semibold text-gray-800 text-center">{{ buyer.user.username }}</p>
-                                    <p class="text-xs text-gray-500 text-center">{{ buyer.title }}</p>
+                                    {% comment %} <p class="text-xs text-gray-500 text-center">{{ buyer.title }}</p> {% endcomment %}
                                 </div>
                                 {% endfor %}
                             </div>
