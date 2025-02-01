@@ -16,22 +16,17 @@
             width: 100%;
             max-width: 640px;
             height: 360px;
-            border: 2px dashed #3b82f6;
-            border-radius: 10px;
+            border: 2px dashed #3b82f6; /* เส้นประสีฟ้า */
+            border-radius: 10px; /* มุมโค้งมน */
             overflow: hidden;
             background-color: #f0f8ff;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); /* เอฟเฟกต์เงานุ่ม */
         }
-        .scan-frame {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            height: 50%;
-            border: 4px solid #1e40af;
-            box-shadow: 0 0 10px rgba(30, 64, 175, 0.5);
-            z-index: 10;
-            pointer-events: none;
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ขยายให้เต็มพื้นที่ */
+            border-radius: 10px; /* มุมโค้งให้วิดีโอตรงกับกรอบ */
         }
         .scan-guide {
             position: absolute;
@@ -49,10 +44,8 @@
 <body class="bg-gray-50 font-sans h-screen">
     <div class="pt-20 h-full flex flex-col items-center justify-start">
         <h1 class="text-4xl font-bold text-gray-700 text-center mb-6">สแกนบาร์โค้ด</h1>
-        <div class="viewport relative">
-            <video id="video" class="viewport w-full h-full" autoplay></video>
-            <div class="scan-frame"></div>
-            <p class="scan-guide">โปรดวางบาร์โค้ดในกรอบนี้</p>
+        <div class="viewport">
+            <video id="video" autoplay playsinline></video>
         </div>
         <div id="error-message" class="hidden bg-red-100 text-red-700 px-4 py-2 rounded-lg mt-6">
             ไม่สามารถตรวจจับบาร์โค้ดได้ กรุณาลองใหม่อีกครั้ง หรือกรอกรหัสบาร์โค้ดด้านล่าง
@@ -102,7 +95,6 @@
                 alert("ไม่สามารถเข้าถึงกล้องได้ กรุณาตรวจสอบสิทธิ์");
             });
         });
-        
     </script>
 </body>
 </html>

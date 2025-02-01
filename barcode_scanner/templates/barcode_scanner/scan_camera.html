@@ -18,11 +18,16 @@
             border: 2px dashed #3b82f6;
             border-radius: 8px;
             overflow: hidden;
-            display: none;
         }
 
         .error-message {
             display: none;
+            text-align: center;
+            color: red;
+            background: #ffe5e5;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
         }
 
         .error-message.active {
@@ -35,20 +40,15 @@
 
     <div class="pt-20 h-full flex flex-col items-center justify-start bg-gray-50">
         <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">สแกนบาร์โค้ด</h1>
-        
-        <!-- ปุ่มเปิด/ปิดกล้อง -->
-        <button id="startScanner" class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-green-600">
-            เริ่มสแกนบาร์โค้ด
-        </button>
 
         <!-- กล้องและกรอบ -->
         <div id="scanner-container" class="scanner-container mt-4">
-            <video id="video" width="100%" height="100%"></video>
+            <video id="video" width="100%" height="100%" autoplay playsinline></video>
         </div>
 
         <!-- ข้อความแสดงข้อผิดพลาด -->
-        <div id="error-message" class="error-message text-red-500 bg-red-100 border border-red-300 rounded-lg px-4 py-2 mt-4 text-center">
-            ไม่สามารถตรวจจับบาร์โค้ดได้ กรุณาลองใหม่อีกครั้ง หรือกรอกรหัสบาร์โค้ดด้านล่าง
+        <div id="error-message" class="error-message">
+            ไม่สามารถเปิดกล้องได้ กรุณาตรวจสอบการอนุญาต
         </div>
 
         <!-- ฟอร์มกรอกรหัสบาร์โค้ด -->
@@ -68,33 +68,54 @@
     </div>
 
     <script>
-        let codeReader = new ZXing.BrowserMultiFormatReader();
-        let videoElement = document.getElementById("video");
-        let scannerContainer = document.getElementById("scanner-container");
-        let startScannerBtn = document.getElementById("startScanner");
-        let isScanning = false;
+        document.addEventListener("DOMContentLoaded", async function () {
+            let codeReader = new ZXing.BrowserMultiFormatReader();
+            let videoElement = document.getElementById("video");
+            let errorMessage = document.getElementById("error-message");
 
-        startScannerBtn.addEventListener("click", function() {
-            if (!isScanning) {
-                startScannerBtn.textContent = "หยุดสแกน";
-                scannerContainer.style.display = "block";
-                isScanning = true;
+            try {
+                // ดึงรายการกล้องทั้งหมด
+                let videoInputDevices = await codeReader.getVideoInputDevices();
+                if (videoInputDevices.length === 0) {
+                    throw new Error("ไม่พบกล้องในอุปกรณ์");
+                }
 
-                codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
+                // ตรวจสอบว่ามีหลายกล้องหรือไม่
+                let backCamera = videoInputDevices.find(device => device.label.toLowerCase().includes("back"))?.deviceId;
+                let frontCamera = videoInputDevices.find(device => device.label.toLowerCase().includes("front"))?.deviceId;
+
+                let selectedDeviceId = backCamera || videoInputDevices[0].deviceId; // ใช้กล้องหลัง ถ้าไม่มีให้ใช้ตัวแรก
+
+                console.log("📸 ใช้กล้อง:", selectedDeviceId);
+
+                // เริ่มต้นสแกน
+                codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, (result, err) => {
                     if (result) {
-                        console.log("บาร์โค้ดที่พบ:", result.text);
+                        console.log("✅ บาร์โค้ดที่พบ:", result.text);
                         window.location.href = `/scanner/scan-member/?barcode=${result.text}`;
-                        codeReader.reset();
-                        isScanning = false;
-                        scannerContainer.style.display = "none";
-                        startScannerBtn.textContent = "เริ่มสแกนบาร์โค้ด";
+                    } else if (err) {
+                        console.warn("⛔️ ไม่พบบาร์โค้ด:", err);
                     }
                 });
-            } else {
-                codeReader.reset();
-                isScanning = false;
-                scannerContainer.style.display = "none";
-                startScannerBtn.textContent = "เริ่มสแกนบาร์โค้ด";
+
+                // เพิ่ม Event ให้กดที่กล้องเพื่อเปลี่ยนกล้อง (ถ้ามีหลายตัว)
+                videoElement.addEventListener("click", function () {
+                    if (backCamera && frontCamera) {
+                        selectedDeviceId = selectedDeviceId === backCamera ? frontCamera : backCamera;
+                        console.log("🔄 เปลี่ยนกล้องเป็น:", selectedDeviceId);
+                        codeReader.reset();
+                        codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, (result, err) => {
+                            if (result) {
+                                console.log("✅ บาร์โค้ดที่พบ:", result.text);
+                                window.location.href = `/scanner/scan-member/?barcode=${result.text}`;
+                            }
+                        });
+                    }
+                });
+
+            } catch (err) {
+                console.error("❌ เกิดข้อผิดพลาด:", err);
+                errorMessage.classList.add("active");
             }
         });
     </script>

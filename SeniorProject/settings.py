@@ -44,7 +44,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'juntarisil55@gmail.com'  # ใส่อีเมลของคุณ
 EMAIL_HOST_PASSWORD = 'sywswjuxfliphcra'  # รหัสผ่านของอีเมลคุณ
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://a19b-2001-fb1-148-900-9472-36cb-9bb7-2694.ngrok-free.app'  # URL ของ ngrok ของคุณ
+    
+]
 
 # Application definition
 
