@@ -153,7 +153,9 @@ def add_waste_detail(request, barcode):
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
 
-    # เตรียมข้อมูลสำหรับ Template
+    # ใช้ `set()` เพื่อป้องกันรายชื่อผู้รับซื้อซ้ำ
+    unique_buyers = set()
+
     images_with_related_buyers = []
     for image in waste_item.images.all():
         waste_types = [image.waste_type] if image.waste_type else []
@@ -167,16 +169,23 @@ def waste_item_detail(request, pk):
             post_type='buy'
         ).filter(query).distinct()
 
+        # **กรองผู้รับซื้อไม่ให้ซ้ำ**
+        filtered_buyers = []
+        for buyer in related_buyers:
+            if buyer.user.username not in unique_buyers:
+                unique_buyers.add(buyer.user.username)  # เพิ่ม username เข้าไปใน `set()`
+                filtered_buyers.append(buyer)
+
         images_with_related_buyers.append({
             'image': image,
-            
-            'related_buyers': related_buyers,
+            'related_buyers': filtered_buyers,  # ใช้ list ที่ไม่มีซ้ำ
         })
 
     return render(request, 'barcode_scanner/waste_item_detail.html', {
         'waste_item': waste_item,
         'images_with_related_buyers': images_with_related_buyers,
     })
+
 
 
 

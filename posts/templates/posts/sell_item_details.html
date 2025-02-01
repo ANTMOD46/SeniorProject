@@ -7,13 +7,14 @@
         * {
             font-family: "Kanit", serif;
         }
-
+        
         body {
             min-height: 100vh;
             margin: 0;
             padding: 0;
         }
-
+        
+        /* Menu Styles */
         .menu {
             display: none;
             position: absolute;
@@ -26,12 +27,12 @@
             width: 160px;
             padding: 10px 0;
         }
-
+        
         .menu.show {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
         }
-
+        
         .menu-item {
             padding: 10px 15px;
             font-size: 16px;
@@ -42,11 +43,11 @@
             cursor: pointer;
             width: 100%;
         }
-
+        
         .menu-item:hover {
             background-color: #f0f0f0;
         }
-
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -57,7 +58,8 @@
                 transform: translateY(0);
             }
         }
-
+        
+        /* Modal Base Styles */
         .modal {
             display: none;
             position: fixed;
@@ -68,72 +70,176 @@
             background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease-in-out;
+            z-index: 1050;
         }
-
+        
         .modal-content {
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 90%;
-            max-width: 100px;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            width: auto;
+            min-width: 320px;
+            max-width: 400px;
         }
-
+        
         .show-modal {
             display: flex;
         }
-
+        
+        .show-modal .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        /* Modal Components */
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+        }
+        
+        .modal-title {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-message {
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background-color: #dc2626;
+        }
+        
+        .btn-close {
+            background-color: #22c55e;
+            color: white;
+        }
+        
+        .btn-close:hover {
+            background-color: #16a34a;
+        }
+        
+        .btn-cancel {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #d1d5db;
+        }
+        
+        /* Announcement Type Styles */
         .announcement-type {
             padding: 8px 16px;
             font-size: 1rem;
             font-weight: bold;
-            border: 2px solid #3b82f6; /* สีฟ้า */
-            background-color: #dbeafe; /* พื้นหลังฟ้าอ่อน */
-            color: #1d4ed8; /* สีฟ้าตัวอักษร */
+            border: 2px solid #3b82f6;
+            background-color: #dbeafe;
+            color: #1d4ed8;
             border-radius: 8px;
             text-align: center;
             display: inline-block;
         }
+        
         .announcement-type.sell {
             background-color: #d1fae5;
             color: #065f46;
+            border-color: #065f46;
         }
-
+        
         .announcement-type.buy {
             background-color: #e0f2fe;
             color: #0369a1;
+            border-color: #0369a1;
         }
-
+        
         .announcement-type.closed {
             background-color: #fee2e2;
             color: #b91c1c;
+            border-color: #b91c1c;
         }
-
+        
+        /* Container Styles */
         .announcement-container {
             display: flex;
             justify-content: flex-start;
             align-items: center;
         }
+        
         .date-container {
             display: flex;
             align-items: center;
-            color: #f59e0b; /* สีเหลือง */
+            color: #f59e0b;
             font-size: 0.9rem;
-            margin-bottom: 8px; /* ระยะห่างจากด้านล่าง */
-            margin-top: 12px; /* ระยะห่างด้านบน */
+            margin-bottom: 8px;
+            margin-top: 12px;
         }
+        
+        /* Field Styles */
         .field-label {
             color: #1f2937;
             font-weight: bold;
         }
-
+        
         .field-value {
             color: #4b5563;
         }
-        .announcement-type.closed {
-            background-color: #fee2e2; /* พื้นหลังสีแดงอ่อน */
-            color: #b91c1c; /* สีตัวอักษรสีแดงเข้ม */
-            border-color: #b91c1c; /* สีขอบแดง */
+        
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 1rem;
+                min-width: auto;
+                width: calc(100% - 2rem);
+            }
+        
+            .modal-buttons {
+                flex-direction: column;
+            }
+        
+            .btn {
+                width: 100%;
+            }
         }
         
         
@@ -261,21 +367,43 @@
         <!-- Modal สำหรับลบโพสต์ -->
         <div id="deletePostModal" class="modal">
             <div class="modal-content">
-                <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้?</h2>
-                <div class="flex justify-center space-x-4">
-                    <button id="confirmDeletePost" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md">ลบ</button>
-                    <button id="cancelDeletePost" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-md">ยกเลิก</button>
+                <svg class="modal-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#ef4444">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <h2 class="modal-title">ยืนยันการลบโพสต์</h2>
+                <p class="modal-message">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+                <div class="modal-buttons">
+                    <button id="confirmDeletePost" class="btn btn-delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        ลบโพสต์
+                    </button>
+                    <button id="cancelDeletePost" class="btn btn-cancel">ยกเลิก</button>
                 </div>
             </div>
         </div>
+        
 
         <!-- Modal สำหรับปิดการขาย -->
         <div id="closeSaleModal" class="modal">
             <div class="modal-content">
-                <h2 class="text-xl font-bold text-gray-700 mb-4">คุณแน่ใจหรือไม่ว่าต้องการปิดการขายนี้?</h2>
-                <div class="flex justify-center space-x-4">
-                    <button id="confirmCloseSale" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-md">ปิดการขาย</button>
-                    <button id="cancelCloseSale" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-md">ยกเลิก</button>
+                <svg class="modal-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#22c55e">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h2 class="modal-title">ยืนยันการปิดการขาย</h2>
+                <p class="modal-message">คุณแน่ใจหรือไม่ว่าต้องการปิดการขายนี้?</p>
+                <div class="modal-buttons">
+                    <button id="confirmCloseSale" class="btn btn-close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                        ปิดการขาย
+                    </button>
+                    <button id="cancelCloseSale" class="btn btn-cancel"ร>ยกเลิก</button>
                 </div>
             </div>
         </div>
