@@ -76,7 +76,7 @@
             border-radius: 10px;
             text-align: center;
             width: 90%;
-            max-width: 100px;
+            max-width: 400px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
@@ -162,16 +162,20 @@
 
             <div class="action-menu-container">
                 {% if request.user == announcement.user or request.user.is_staff %}
-                    <button id="menuToggle" class="text-gray-600 hover:text-gray-800 focus:outline-none">
-                        ⋮
+                    <button id="menuToggle" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-md shadow-md transition flex items-center gap-2">
+                        <i class="fas fa-ellipsis-h"></i>
                     </button>
                     <div id="actionMenu" class="menu">
-                        <a href="{% url 'edit_announcement' announcement.id %}" class="menu-item text-blue-600">แก้ไขโพสต์</a>
-                        <button type="button" id="deleteButton" class="menu-item text-red-500">ลบโพสต์</button>
+                        <a href="{% url 'edit_announcement' announcement.id %}" class="menu-item text-blue-600 flex items-center gap-2">
+                            <i class="fas fa-edit"></i> แก้ไขโพสต์
+                        </a>
+                        <button type="button" id="deleteButton" class="menu-item text-red-500 flex items-center gap-2">
+                            <i class="fas fa-trash-alt"></i> ลบโพสต์
+                        </button>
                     </div>
                 {% endif %}
             </div>
-        </div>
+            
 
         <div class="mt-6">
             <!-- วันที่ -->
@@ -238,11 +242,40 @@
         
         <div id="deleteModal" class="modal">
             <div class="modal-content">
-                <p class="text-lg font-bold mb-4">คุณต้องการลบโพสต์นี้หรือไม่?</p>
-                <form action="{% url 'delete_announcement' announcement.id %}" method="POST">
+                <!-- ไอคอนเตือน -->
+                <div class="flex justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle mb-6">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+        
+                <!-- หัวข้อ -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">ยืนยันการลบโพสต์</h2>
+        
+                <!-- ข้อความอธิบาย -->
+                <p class="text-gray-600 mb-8">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+        
+                <!-- ปุ่มยืนยันและยกเลิก -->
+                <form action="{% url 'delete_announcement' announcement.id %}" method="POST" class="flex justify-center space-x-6">
                     {% csrf_token %}
-                    <button type="submit" class="btn-confirm">ยืนยัน</button>
-                    <button type="button" id="cancelDelete" class="btn-cancel">ยกเลิก</button>
+                    <!-- ปุ่มยืนยัน -->
+                    <button type="submit" class="btn-confirm flex items-center px-6 py-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check mr-2">
+                            <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                        ยืนยัน
+                    </button>
+        
+                    <!-- ปุ่มยกเลิก -->
+                    <button type="button" id="cancelDelete" class="btn-cancel flex items-center px-6 py-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x mr-2">
+                            <path d="M18 6 6 18"/>
+                            <path d="m6 6 12 12"/>
+                        </svg>
+                        ยกเลิก
+                    </button>
                 </form>
             </div>
         </div>
