@@ -229,13 +229,26 @@ button:active {
             <!-- เมนูการจัดการ -->
             {% if request.user == donation.user or request.user.is_staff %}
             <div class="absolute top-4 right-4">
-                <button id="menuToggle" class="text-gray-600 hover:text-gray-800">
-                    ⋮
+                <button id="menuToggle" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg shadow-md flex items-center justify-center w-10 h-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="19" cy="12" r="1"></circle>
+                        <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
                 </button>
-                <div id="actionMenu" class="hidden bg-white shadow-md rounded-md border py-2">
-                    <a href="{% url 'edit_donation' donation.id %}" class="block px-4 py-2 text-blue-600 hover:bg-gray-100">แก้ไขโพสต์</a>
-                    <button type="button" id="deleteButton" class="block px-4 py-2 text-red-500 hover:bg-gray-100">ลบโพสต์</button>
-                    <button type="button" id="closeDonationModalButton" class="block px-4 py-2 text-yellow-500 hover:bg-gray-100">ปิดการบริจาค</button>
+                
+                <!-- เมนู Dropdown -->
+                <div id="actionMenu" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg border py-2 w-48">
+                    <a href="{% url 'edit_donation' donation.id %}" class="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-100 rounded-md">
+                        <i class="fas fa-edit"></i> แก้ไขโพสต์
+                    </a>
+                    <button type="button" id="deleteButton" class="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-100 rounded-md">
+                        <i class="fas fa-trash-alt"></i> ลบโพสต์
+                    </button>
+                    <button type="button" id="closeDonationModalButton" class="flex items-center gap-2 px-4 py-2 text-yellow-500 hover:bg-yellow-100 rounded-md">
+                        <i class="fas fa-hand-holding-heart"></i> ปิดการบริจาค
+                    </button>
+                
                 </div>
                 
                     
