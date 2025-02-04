@@ -245,7 +245,7 @@ def all_barcodes(request):
 
 @login_required
 def my_waste_details(request):
-    waste_images = WasteImage.objects.all().order_by('waste_item__barcode')
+    waste_images = WasteImage.objects.filter(added_by=request.user).order_by('waste_item__barcode')
     return render(request, 'barcode_scanner/my_waste_details.html', {'waste_images': waste_images})
 
 
