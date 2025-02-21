@@ -59,13 +59,9 @@
                         </div>
                     </div>
 
-                    <!-- Related Buyers -->
-                    {% if item.related_buyers %}
-                    <div class="mt-4">
-                        <h2 class="text-lg font-bold text-green-600">แนะนำผู้รับซื้อสำหรับขยะชิ้นนี้</h2>
-                        <!-- จัด layout -->
-                        <div class="flex flex-wrap justify-start gap-2">
-                            {% for buyer in item.related_buyers %}
+                    <!-- ในส่วนนี้เป็นการกรองผู้รับซื้อที่ไม่ซ้ำ -->
+                    <div class="flex flex-wrap justify-start gap-2">
+                        {% for buyer in item.related_buyers %}
                             <div class="bg-white border border-green-300 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center justify-between w-28 h-36 p-3">
                                 <a href="{% url 'user_store' buyer.user.username %}" class="block text-center w-full">
                                     <!-- รูปโปรไฟล์ -->
@@ -75,20 +71,12 @@
                                     </div>
                                     <!-- ชื่อผู้ใช้ -->
                                     <p class="text-sm font-medium text-gray-700 truncate">{{ buyer.user.username }}</p>
-                                    
                                 </a>
                             </div>
-                            {% endfor %}
-                        </div>
+                        {% endfor %}
                     </div>
-                    {% else %}
-                    <p class="text-red-500 italic mt-6">ไม่มีผู้รับซื้อที่เกี่ยวข้อง</p>
-                    {% endif %}
 
-
-
-                  
-                    <!-- Vote Buttons -->
+                   <!-- Vote Buttons -->
                     <div class="flex gap-4 mt-4 justify-end">
                         <button type="button" class="py-2 px-4 text-gray-700 hover:text-green-600 transition" onclick="voteCorrect({{ item.image.id }})">
                             👍 (<span id="correct-count-{{ item.image.id }}">{{ item.image.total_correct_votes }}</span>)
@@ -97,7 +85,6 @@
                             👎 (<span id="incorrect-count-{{ item.image.id }}">{{ item.image.total_incorrect_votes }}</span>)
                         </button>
                     </div>
-                    
                 </div>
                 {% endfor %}
             </div>
@@ -163,7 +150,6 @@
                 alert('ไม่สามารถโหวตได้ โปรดลองใหม่อีกครั้ง');
             });
         }
-        
     </script>
 </body>
 </html>

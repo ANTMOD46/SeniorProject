@@ -44,10 +44,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'juntarisil55@gmail.com'  # ใส่อีเมลของคุณ
 EMAIL_HOST_PASSWORD = 'sywswjuxfliphcra'  # รหัสผ่านของอีเมลคุณ
 
-CSRF_TRUSTED_ORIGINS = [
-    ''  # URL ของ ngrok ของคุณ
+# CSRF_TRUSTED_ORIGINS = [
+#     ''  # URL ของ ngrok ของคุณ
     
-]
+# ]
 
 # Application definition
 
@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "Chat",
     "barcode_generator",
     "barcode_scanner",
+    "dashbord",
     
 ]
 

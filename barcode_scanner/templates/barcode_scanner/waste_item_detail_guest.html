@@ -81,7 +81,6 @@
                                     <img src="{% if buyer.user.profile_picture %}{{ buyer.user.profile_picture.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
                                         alt="โปรไฟล์ผู้รับซื้อ" class="w-16 h-16 object-cover rounded-full shadow mb-2">
                                     <p class="text-sm font-semibold text-gray-800 text-center">{{ buyer.user.username }}</p>
-                                    {% comment %} <p class="text-xs text-gray-500 text-center">{{ buyer.title }}</p> {% endcomment %}
                                 </div>
                                 {% endfor %}
                             </div>

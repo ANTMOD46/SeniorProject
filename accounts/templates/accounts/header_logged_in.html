@@ -97,6 +97,14 @@
                         <a href="{% url 'admin_member_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">หน้าสมาชิกทั้งหมด</a>
                         {% endif %} 
 
+                        {% if user.is_superuser %}
+                        <a href="{% url 'dashboard_today' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ข้อมูลวันนี้</a>
+                        {% endif %} 
+
+                        {% if user.is_superuser %}
+                        <a href="{% url 'dashboard_all' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100">ข้อมูลทั้งหมด</a>
+                        {% endif %} 
+
                         <a href="{% url 'profile_edit' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">ดูและแก้ไขข้อมูลส่วนตัว</a>
                         <form method="post" action="{% url 'logout' %}" style="display: inline;">
                             {% csrf_token %}

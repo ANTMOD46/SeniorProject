@@ -153,8 +153,7 @@ def add_waste_detail(request, barcode):
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
 
-    # ใช้ `set()` เพื่อป้องกันรายชื่อผู้รับซื้อซ้ำ
-    unique_buyers = set()
+    all_related_buyers = set()
 
     images_with_related_buyers = []
     for image in waste_item.images.all():
@@ -165,26 +164,32 @@ def waste_item_detail(request, pk):
         for value in waste_types + subtypes:
             query |= Q(title__icontains=value) | Q(description__icontains=value)
 
-        related_buyers = SellItem.objects.filter(
-            post_type='buy'
-        ).filter(query).distinct()
+        related_buyers = SellItem.objects.filter(post_type='buy').filter(query).distinct()
 
-        # **กรองผู้รับซื้อไม่ให้ซ้ำ**
-        filtered_buyers = []
+        # กรองผู้รับซื้อที่ไม่ซ้ำ
+        unique_buyers = []
+        seen_users = set()  # ใช้ set เพื่อป้องกันไม่ให้ชื่อผู้รับซื้อซ้ำ
         for buyer in related_buyers:
-            if buyer.user.username not in unique_buyers:
-                unique_buyers.add(buyer.user.username)  # เพิ่ม username เข้าไปใน `set()`
-                filtered_buyers.append(buyer)
+            if buyer.user.username not in seen_users:
+                seen_users.add(buyer.user.username)
+                unique_buyers.append(buyer)
 
         images_with_related_buyers.append({
             'image': image,
-            'related_buyers': filtered_buyers,  # ใช้ list ที่ไม่มีซ้ำ
+            'related_buyers': unique_buyers,  # ส่งเฉพาะผู้รับซื้อที่ไม่ซ้ำ
         })
 
+        all_related_buyers.update(seen_users)
+
+    # ส่งข้อมูลทั้งหมดไปยัง template
     return render(request, 'barcode_scanner/waste_item_detail.html', {
         'waste_item': waste_item,
         'images_with_related_buyers': images_with_related_buyers,
+        'all_related_buyers': all_related_buyers,
     })
+
+
+
 
 
 
@@ -306,9 +311,18 @@ def handle_barcode_guest(request):
                     post_type='buy'
                 ).filter(query).distinct()
 
+                # ใช้ set เพื่อกรองคนรับซื้อที่ไม่ซ้ำ
+                unique_buyers = []
+                seen_buyers = set()  # ใช้ set สำหรับเก็บชื่อผู้รับซื้อที่ไม่ซ้ำ
+                for buyer in related_buyers:
+                    if buyer.user.username not in seen_buyers:
+                        seen_buyers.add(buyer.user.username)
+                        unique_buyers.append(buyer)
+
+                # เพิ่มข้อมูลภาพและผู้รับซื้อที่ไม่ซ้ำ
                 images_with_related_buyers.append({
                     'image': image,
-                    'related_buyers': related_buyers,
+                    'related_buyers': unique_buyers,
                 })
 
             # หากเจอข้อมูล ให้แสดงรายละเอียดในหน้า waste_item_detail_guest.html
@@ -326,3 +340,4 @@ def handle_barcode_guest(request):
 
     # หากไม่มีการส่งบาร์โค้ดหรือข้อมูลไม่ครบ ให้ Redirect กลับไปยังหน้ากล้อง
     return redirect('scanner:scan_camera_guest')
+

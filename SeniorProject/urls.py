@@ -32,6 +32,7 @@ urlpatterns = [
     path('Chat/', include('Chat.urls')),
     path('generator/', include('barcode_generator.urls')),
     path('scanner/', include(('barcode_scanner.urls', 'scanner'), namespace='scanner')), 
+    path('dashbord/', include('dashbord.urls')),
    
     
     

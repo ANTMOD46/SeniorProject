@@ -1,0 +1,460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ข้อมูลวันนี้</title>
+</head>
+<body class="bg-gray-100 font-sans">
+    {% include 'accounts/header_logged_in.html' %}
+<style>
+  body {
+    font-family: 'Prompt', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .header {
+    position: relative;
+    background: linear-gradient(135deg, #4a6bff 0%, #2541b2 100%);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header h1 {
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .header:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    border-radius: 1rem;
+    opacity: 0.6;
+  }
+  
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .dash-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-buy-sell {
+    background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    color: white;
+  }
+  
+  .btn-donation {
+    background: linear-gradient(135deg, #4daf54 0%, #1e8e3e 100%);
+    color: white;
+  }
+  
+  .btn-general {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+  }
+  
+  .dash-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-container {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    max-width: 900px;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }
+  
+  .chart-container:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+  }
+  
+  .chart-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .chart-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+  }
+  
+  .chart-wrapper {
+    height: 350px;
+    position: relative;
+  }
+  
+  @media (max-width: 768px) {
+    .btn-group {
+      flex-direction: column;
+    }
+    
+    .dash-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="dashboard-container">
+  <div class="header">
+    <h1 class="text-center text-3xl font-bold">📊 Dashboard - ข้อมูลวันนี้</h1>
+  </div>
+
+  <!-- ปุ่มเลือกข้อมูล -->
+  <div class="btn-group">
+    <button onclick="showChart('buySellChart')" class="dash-btn btn-buy-sell">
+      <span>🛒</span> การประกาศซื้อ-ขาย
+    </button>
+    <button onclick="showChart('donationChart')" class="dash-btn btn-donation">
+      <span>💝</span> การประกาศบริจาค-รับบริจาค
+    </button>
+    <button onclick="showChart('generalAnnouncementChart')" class="dash-btn btn-general">
+      <span>📢</span> การประกาศทั่วไป
+    </button>
+  </div>
+
+  <!-- การประกาศซื้อ-ขาย -->
+  <div id="buySellChartDiv" class="chart-container" style="display:none;">
+    <div class="chart-header">
+      <h2 class="chart-title">📌 การประกาศซื้อ-ขาย</h2>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="buySellChart"></canvas>
+    </div>
+  </div>
+
+  <!-- การประกาศบริจาค-รับบริจาค -->
+  <div id="donationChartDiv" class="chart-container" style="display:none;">
+    <div class="chart-header">
+      <h2 class="chart-title">💝 การประกาศบริจาค-รับบริจาค</h2>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="donationChart"></canvas>
+    </div>
+  </div>
+
+  <!-- การประกาศทั่วไป -->
+  <div id="generalAnnouncementChartDiv" class="chart-container" style="display:none;">
+    <div class="chart-header">
+      <h2 class="chart-title">📰 การประกาศทั่วไป</h2>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="generalAnnouncementChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+  // แสดงกราฟแรกอัตโนมัติเมื่อโหลดหน้า
+  window.onload = function() {
+    showChart('buySellChart');
+  };
+
+  // ฟังก์ชั่นเพื่อแสดงกราฟที่เลือก
+  function showChart(chartId) {
+    document.getElementById('buySellChartDiv').style.display = 'none';
+    document.getElementById('donationChartDiv').style.display = 'none';
+    document.getElementById('generalAnnouncementChartDiv').style.display = 'none';
+
+    document.getElementById(chartId + 'Div').style.display = 'block';
+  }
+
+  // ฟังก์ชั่นสำหรับตั้งค่ากราฟ Chart.js
+  Chart.defaults.font.family = "'Prompt', 'Helvetica', 'Arial', sans-serif";
+  Chart.defaults.font.size = 14;
+  Chart.defaults.color = '#555';
+  
+  // สร้างกราฟการประกาศซื้อ-ขาย
+  var buySellChart = new Chart(document.getElementById('buySellChart'), {
+    type: 'bar',
+    data: {
+      labels: ['ประกาศซื้อ', 'ประกาศขาย', 'ปิดการซื้อขาย'],
+      datasets: [{
+        label: 'จำนวนประกาศ',
+        data: [
+          {{ buy_sales_today.count }},
+          {{ sell_sales_today.count }},
+          {{ buy_sales_closed_today.count|add:sell_sales_closed_today.count }}
+        ],
+        backgroundColor: [
+          'rgba(52, 152, 219, 0.85)',
+          'rgba(46, 204, 113, 0.85)',
+          'rgba(231, 76, 60, 0.85)'
+        ],
+        borderColor: [
+          'rgba(41, 128, 185, 1)',
+          'rgba(39, 174, 96, 1)',
+          'rgba(192, 57, 43, 1)'
+        ],
+        borderWidth: 2,
+        borderRadius: 8,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          bodyFont: {
+            size: 14
+          },
+          titleFont: {
+            size: 16,
+            weight: 'bold'
+          },
+          callbacks: {
+            title: function(context) {
+              return context[0].label;
+            },
+            label: function(context) {
+              return 'จำนวน: ' + context.raw + ' รายการ';
+            }
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeOutQuart',
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            lineWidth: 1
+          },
+          ticks: {
+            precision: 0,
+            font: {
+              size: 12
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // สร้างกราฟการประกาศบริจาค-รับบริจาค
+  var donationChart = new Chart(document.getElementById('donationChart'), {
+    type: 'bar',
+    data: {
+      labels: ['ประกาศบริจาค', 'ประกาศรับบริจาค', 'ปิดการรับ-บริจาค'],
+      datasets: [{
+        label: 'จำนวนประกาศ',
+        data: [
+          {{ donations_donors_today.count }},
+          {{ donations_receivers_today.count }},
+          {{ donations_closed_today.count }}
+        ],
+        backgroundColor: [
+          'rgba(241, 196, 15, 0.85)',
+          'rgba(155, 89, 182, 0.85)',
+          'rgba(230, 126, 34, 0.85)'
+        ],
+        borderColor: [
+          'rgba(243, 156, 18, 1)',
+          'rgba(142, 68, 173, 1)',
+          'rgba(211, 84, 0, 1)'
+        ],
+        borderWidth: 2,
+        borderRadius: 8,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          bodyFont: {
+            size: 14
+          },
+          titleFont: {
+            size: 16,
+            weight: 'bold'
+          },
+          callbacks: {
+            title: function(context) {
+              return context[0].label;
+            },
+            label: function(context) {
+              return 'จำนวน: ' + context.raw + ' รายการ';
+            }
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeOutQuart',
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            lineWidth: 1
+          },
+          ticks: {
+            precision: 0,
+            font: {
+              size: 12
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // สร้างกราฟการประกาศทั่วไป
+  var generalAnnouncementChart = new Chart(document.getElementById('generalAnnouncementChart'), {
+    type: 'bar',
+    data: {
+      labels: ['ประกาศทั่วไป'],
+      datasets: [{
+        label: 'จำนวนประกาศ',
+        data: [{{ general_announcements_today.count }}],
+        backgroundColor: ['rgba(142, 68, 173, 0.85)'],
+        borderColor: ['rgba(108, 52, 131, 1)'],
+        borderWidth: 2,
+        borderRadius: 8,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          bodyFont: {
+            size: 14
+          },
+          titleFont: {
+            size: 16,
+            weight: 'bold'
+          },
+          callbacks: {
+            title: function(context) {
+              return context[0].label;
+            },
+            label: function(context) {
+              return 'จำนวน: ' + context.raw + ' รายการ';
+            }
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeOutQuart',
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            lineWidth: 1
+          },
+          ticks: {
+            precision: 0,
+            font: {
+              size: 12
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
