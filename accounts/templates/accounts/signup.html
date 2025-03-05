@@ -3,7 +3,6 @@
 {% block main %}
 <section class="flex w-full min-h-screen items-center justify-center mt-28 bg-white">
     <div class="bg-gray-100 w-full max-w-4xl p-8 shadow-lg rounded-lg">
-        <!-- SIGN-UP Header -->
         <div class="text-center mb-8">
             <p class="text-5xl font-semibold text-gray-900 mb-6">สมัครสมาชิก</p>
             <span class="block text-2xl font-light text-gray-700">สร้างบัญชีใหม่และเข้าร่วมกับเรา!</span>
@@ -12,11 +11,10 @@
             </span>
         </div>   
 
-        <!-- Form Fields -->
         <form method="post" class="space-y-8" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <!-- Profile Image Upload Section -->
+            <!-- Profile Image Upload -->
             <div class="flex flex-col items-center justify-center mb-8 relative">
                 <label for="profile_image" class="cursor-pointer">
                     <div class="relative">
@@ -26,86 +24,57 @@
                         </div>
                     </div>
                 </label>
-                <input type="file" name="profile_picture" id="profile_image" class="input-file" accept="image/*" onchange="previewImage(event)" required>
+                <input type="file" name="profile_picture" id="profile_image" class="input-file" accept="image/*" onchange="previewImage(event)">
             </div>
 
-            <!-- JavaScript to Update Image Preview -->
-            <script>
-                function previewImage(event) {
-                    const reader = new FileReader();
-                    const image = document.getElementById('profile_preview');
-                    reader.onload = function() {
-                        if (reader.readyState === 2) {
-                            image.src = reader.result;
-                        }
-                    }
-                    reader.readAsDataURL(event.target.files[0]);
-                }
-            </script>
-
-            <!-- Other Fields -->
             <div class="flex space-x-4">
                 <div class="w-1/2">
                     <label class="block text-sm text-gray-700">ชื่อ</label>
-                    <input type="text" name="first_name" id="first_name" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                    <input type="text" name="first_name" class="input-field" required>
                 </div>
                 <div class="w-1/2">
                     <label class="block text-sm text-gray-700">นามสกุล</label>
-                    <input type="text" name="last_name" id="last_name" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                    <input type="text" name="last_name" class="input-field" required>
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-700">ที่อยู่</label>
-                <input type="text" name="address" id="address" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                <input type="text" name="address" id="address" class="input-field" required>
+                <p id="address-error" class="text-red-500 text-sm hidden">กรุณากรอกที่อยู่</p>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-700">เบอร์โทรศัพท์</label>
-                <input type="text" name="phone_number" id="phone_number" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                <input type="text" name="phone_number" id="phone_number" class="input-field" required>
+                <p id="phone-error" class="text-red-500 text-sm hidden">เบอร์โทรศัพท์ต้องมี 10 หลัก</p>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-700">อีเมล</label>
-                <input type="email" name="email" id="email" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" placeholder="abcd@efg.com" required>
+                <input type="email" name="email" id="email" class="input-field" required>
+                <p id="email-error" class="text-red-500 text-sm hidden"></p>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-700">ชื่อผู้ใช้</label>
-                <input type="text" name="username" id="username" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" required>
+                <input type="text" name="username" id="username" class="input-field" required>
+                <p id="username-error" class="text-red-500 text-sm hidden"></p>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-700">รหัสผ่าน</label>
-                <input type="password" name="password1" id="password1" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" placeholder="•••••••••" required>
-                {% if form.password1.errors %}
-                    <p class="text-red-500 text-xs italic">{{ form.password1.errors.as_text }}</p>
-                {% endif %}
+                <input type="password" name="password1" id="password1" class="input-field" required>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-700">ยืนยันรหัสผ่าน</label>
-                <input type="password" name="password2" id="password2" class="w-full h-14 p-2 mt-1 bg-blue-50 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200" placeholder="•••••••••" required>
-                {% if form.password2.errors %}
-                    <p class="text-red-500 text-xs italic">{{ form.password2.errors.as_text }}</p>
-                {% endif %}
+                <input type="password" name="password2" id="password2" class="input-field" required>
+                <p id="password-match-error" class="text-red-500 text-sm hidden">รหัสผ่านไม่ตรงกัน</p>
             </div>
 
-            <!-- Form Error Messages -->
-            {% if form.errors %}
-                <div class="text-red-500 text-sm">
-                    <ul>
-                        {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                                <li>{{ field|capfirst }}: {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
             <div class="flex justify-center">
-                <button class="w-80 h-14 bg-gray-900 text-white font-medium rounded-lg shadow-lg hover:bg-gray-800 transition-all duration-300">สมัครสมาชิก</button>
+                <button type="submit" class="w-80 h-14 bg-gray-900 text-white font-medium rounded-lg shadow-lg hover:bg-gray-800 transition-all duration-300">สมัครสมาชิก</button>
             </div>
         </form>
     </div>
@@ -116,6 +85,71 @@
         visibility: hidden;
         position: absolute;
     }
+    .input-field {
+        width: 100%;
+        height: 3.5rem;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        background-color: #f0f9ff;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    }
 </style>
+
+<script>
+    document.getElementById('phone_number').addEventListener('input', function () {
+        const phone = this.value;
+        const errorMsg = document.getElementById('phone-error');
+        
+        if (!/^\d{10}$/.test(phone)) {
+            errorMsg.classList.remove('hidden');
+        } else {
+            errorMsg.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('password2').addEventListener('input', function () {
+        const password1 = document.getElementById('password1').value;
+        const password2 = this.value;
+        const errorMsg = document.getElementById('password-match-error');
+        
+        if (password1 !== password2) {
+            errorMsg.classList.remove('hidden');
+        } else {
+            errorMsg.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('username').addEventListener('blur', function () {
+        const username = this.value;
+        fetch(`/check-username/?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                const errorMsg = document.getElementById('username-error');
+                if (data.exists) {
+                    errorMsg.textContent = "ชื่อผู้ใช้ถูกใช้ไปแล้ว";
+                    errorMsg.classList.remove('hidden');
+                } else {
+                    errorMsg.classList.add('hidden');
+                }
+            });
+    });
+
+    document.getElementById('email').addEventListener('blur', function () {
+        const email = this.value;
+        fetch(`/check-email/?email=${email}`)
+            .then(response => response.json())
+            .then(data => {
+                const errorMsg = document.getElementById('email-error');
+                if (data.exists) {
+                    errorMsg.textContent = "อีเมลถูกใช้ไปแล้ว";
+                    errorMsg.classList.remove('hidden');
+                } else {
+                    errorMsg.classList.add('hidden');
+                }
+            });
+    });
+</script>
 
 {% endblock main %}

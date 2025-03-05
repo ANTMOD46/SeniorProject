@@ -17,29 +17,31 @@
         </div>
 
         <!-- Sign In Form -->
-        <form method="post" class="space-y-6">
+        <form method="post" class="space-y-6" onsubmit="return validateForm()">
             {% csrf_token %}
 
             <!-- Error Message -->
             {% if error_message %}
-                <p class="text-red-500 text-sm text-center">{{ error_message }}</p>
+                <p class="text-red-500 text-sm text-center" id="form-error">{{ error_message }}</p>
             {% endif %}
 
             <!-- Username Field -->
             <div>
                 <label class="block text-sm text-gray-700">ชื่อผู้ใช้</label>
-                <input type="text" name="username" class="w-full h-12 px-4 mt-1 border border-gray-300 rounded-md focus:ring focus:ring-gray-200 focus:outline-none" required>
+                <input type="text" name="username" id="username" class="w-full h-12 px-4 mt-1 border border-gray-300 rounded-md focus:ring focus:ring-gray-200 focus:outline-none">
+                <p id="username-error" class="text-red-500 text-sm hidden">กรุณากรอกชื่อผู้ใช้</p>
             </div>
 
             <!-- Password Field -->
             <div>
                 <label class="block text-sm text-gray-700">รหัสผ่าน</label>
-                <input type="password" name="password" class="w-full h-12 px-4 mt-1 border border-gray-300 rounded-md focus:ring focus:ring-gray-200 focus:outline-none" required>
+                <input type="password" name="password" id="password" class="w-full h-12 px-4 mt-1 border border-gray-300 rounded-md focus:ring focus:ring-gray-200 focus:outline-none">
+                <p id="password-error" class="text-red-500 text-sm hidden">กรุณากรอกรหัสผ่าน</p>
             </div>
 
             <!-- Submit Button -->
             <div>
-                <button class="w-full h-12 bg-gray-800 text-white font-medium rounded-md shadow hover:bg-gray-700 transition-all duration-200">
+                <button type="submit" class="w-full h-12 bg-gray-800 text-white font-medium rounded-md shadow hover:bg-gray-700 transition-all duration-200">
                     เข้าสู่ระบบ
                 </button>
             </div>
@@ -51,4 +53,33 @@
         </div>
     </div>
 </section>
+
+<script>
+    function validateForm() {
+        let valid = true;
+
+        // Username validation
+        const username = document.getElementById('username').value.trim();
+        const usernameError = document.getElementById('username-error');
+        if (username === "") {
+            usernameError.classList.remove('hidden');
+            valid = false;
+        } else {
+            usernameError.classList.add('hidden');
+        }
+
+        // Password validation
+        const password = document.getElementById('password').value.trim();
+        const passwordError = document.getElementById('password-error');
+        if (password === "") {
+            passwordError.classList.remove('hidden');
+            valid = false;
+        } else {
+            passwordError.classList.add('hidden');
+        }
+
+        return valid;
+    }
+</script>
+
 {% endblock main %}

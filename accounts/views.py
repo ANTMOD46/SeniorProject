@@ -88,7 +88,7 @@ def view_member_detail(request, member_id):
 def delete_member(request, member_id):
     member = get_object_or_404(CustomUser, id=member_id)
     member.delete()
-    return redirect('accounts/admin_member_list')  # กลับไปยังหน้ารายชื่อสมาชิก
+    return redirect('accounts/admin_member_list')  
 
 
 

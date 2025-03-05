@@ -124,13 +124,13 @@ class SellItemDeleteView(DeleteView):
 
     
     
-class EditItemView(UserPassesTestMixin, UpdateView):
-    model = SellItem
-    template_name = 'posts/edit_item.html'
+# class EditItemView(UserPassesTestMixin, UpdateView):
+#     model = SellItem
+#     template_name = 'posts/edit_item.html'
     
-    def test_func(self):
-        post_ad = self.get_object()
-        return self.request.user == post_ad.user or self.request.user.is_staff
+#     def test_func(self):
+#         post_ad = self.get_object()
+#         return self.request.user == post_ad.user or self.request.user.is_staff
 
 
     
