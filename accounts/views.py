@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.views import View
 from .forms import CustomUserCreationForm, ProfileEditForm  # รวมฟอร์มที่ใช้
 from .models import CustomUser
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def signup(request):
     if request.method == 'POST':
@@ -57,10 +57,10 @@ def profile_edit(request):
     return render(request, 'accounts/profile_edit.html', {'form': form})
 
 
-class CustomLogoutView(View):
+class CustomLogoutView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect('home')  # เปลี่ยน 'home' เป็น URL ที่คุณต้องการ
+        return redirect('home')  
 
     def post(self, request, *args, **kwargs):
         logout(request)
@@ -71,20 +71,20 @@ class CustomLogoutView(View):
 def profile_view(request):
     return render(request, 'accounts/profile.html', {'user': request.user})
 
-
+@login_required
 def admin_member_list(request):
     # ดึงข้อมูลสมาชิกทั้งหมด
     members = CustomUser.objects.all()
     return render(request, 'accounts/admin_member_list.html', {'members': members})
 
 
-
+@login_required
 def view_member_detail(request, member_id):
     member = get_object_or_404(CustomUser, id=member_id)
     return render(request, 'accounts/view_member_detail.html', {'member': member})
 
 
-
+@login_required
 def delete_member(request, member_id):
     member = get_object_or_404(CustomUser, id=member_id)
     member.delete()

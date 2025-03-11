@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.db import models
 from .models import SellItemComment
@@ -33,12 +33,12 @@ User = get_user_model()  # ใช้โมเดล User ที่กำหน�
 def home(request):
     return render(request, 'SeniorProject/home.html')  # ชี้ไปยังตำแหน่งเทมเพลต home.html
 
-
+@login_required
 def post_ad_view(request):
     # คุณสามารถเพิ่มการจัดการสำหรับการโพสต์โฆษณาที่นี่
     return render(request, 'posts/post_ad.html')  # เปลี่ยนเป็นชื่อ template ที่ต้องการ
 
-
+@login_required
 def sell_item_all(request):
     # ดึงข้อมูลทั้งหมดจาก SellItem
     items = SellItem.objects.all()
@@ -74,7 +74,7 @@ def sell_item_all(request):
     return render(request, 'posts/sell_item_all.html', context)
 
 
-class SellItemView(View):
+class SellItemView(LoginRequiredMixin, View):
     def get(self, request):
         form = SellItemForm()
         return render(request, 'posts/sell_item.html', {'form': form})
@@ -95,7 +95,7 @@ class SellItemView(View):
         return render(request, 'posts/sell_item.html', {'form': form})
 
 
-class SellItemDetailView(View):
+class SellItemDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, item_id):
         post_ad = get_object_or_404(SellItem, id=item_id)
         context = {
@@ -117,7 +117,7 @@ class SellItemDetailView(View):
 
 
 
-class SellItemDeleteView(DeleteView):
+class SellItemDeleteView(LoginRequiredMixin, DeleteView):
     model = SellItem
     template_name = 'posts/sell_item_confirm_delete.html'  # ชื่อไฟล์ที่ใช้ในการยืนยันการลบ
     success_url = reverse_lazy('sell_item_all')  # URL ที่จะนำไปหลังจากลบเสร็จ
@@ -147,7 +147,7 @@ def delete_item(request, item_id):
     return JsonResponse({'success': False, 'message': 'คุณไม่มีสิทธิ์ลบโพสต์นี้'})
 
 
-class EditItemView(UpdateView):
+class EditItemView(LoginRequiredMixin, View):
     model = SellItem
     fields = ['title', 'description', 'price', 'location', 'image']
     template_name = 'posts/edit_item.html'
@@ -166,7 +166,7 @@ class EditItemView(UpdateView):
 
 
 
-class CloseSaleView(View):
+class CloseSaleView(LoginRequiredMixin, View):
     def post(self, request, item_id):
         # ตรวจสอบว่าไอเท็มมีอยู่หรือไม่
         post_ad = get_object_or_404(SellItem, id=item_id)
@@ -185,7 +185,7 @@ class CloseSaleView(View):
 
     
 
-
+@login_required
 def donation_all(request):
     role = request.GET.get('role')
     status = request.GET.get('status')
@@ -207,7 +207,6 @@ def donation_all(request):
         'selected_title': title,
     }
     return render(request, 'posts/donation_all.html', context)
-
 
 
 class DonationFormView(LoginRequiredMixin, CreateView):
@@ -247,7 +246,7 @@ class DonationDetailView(LoginRequiredMixin, DetailView):
         return HttpResponseRedirect(reverse('donation_details', args=[self.object.id]))
 
 
-class DonationUpdateView(UpdateView):
+class DonationUpdateView(LoginRequiredMixin, UpdateView):
     model = Donation
     fields = ['title', 'description', 'location', 'phone', 'image']
     template_name = 'posts/edit_donation.html'
@@ -265,15 +264,15 @@ class DonationUpdateView(UpdateView):
         return reverse('donation_details', kwargs={'pk': self.object.id})
     
 
-    
-class DonationDeleteView(DeleteView):
+
+class DonationDeleteView(LoginRequiredMixin,DeleteView):
     model = Donation
     template_name = 'posts/donation_confirm_delete.html'  # ไฟล์เทมเพลตที่ใช้ยืนยันการลบ
     success_url = reverse_lazy('donation_all')  # เปลี่ยนตาม URL หลังลบเสร็จ
 
 
 
-class CloseDonationView(View):
+class CloseDonationView(LoginRequiredMixin,View):
     def post(self, request, donation_id):
         donation = get_object_or_404(Donation, id=donation_id)
         if request.user == donation.user or request.user.is_staff:
@@ -283,7 +282,7 @@ class CloseDonationView(View):
         return JsonResponse({"success": False, "message": "คุณไม่มีสิทธิ์ปิดการบริจาคนี้"})
 
 
-    
+@login_required
 def announcement_all(request):
     # ดึงข้อมูลการประกาศทั้งหมดจากฐานข้อมูล
     announcements = GeneralAnnouncement.objects.all()
@@ -303,13 +302,13 @@ def announcement_all(request):
     return render(request, 'posts/general_announcement_all.html', context)
 
 
-
+@login_required
 def general_announcement(request):
     # Logic สำหรับกระทู้สอบถามทั่วไป
     return render(request, 'posts/general_announcement.html')
 
 
-class GeneralAnnouncementView(View):
+class GeneralAnnouncementView(LoginRequiredMixin,View):
     def get(self, request):
         form = GeneralAnnouncementForm()
         return render(request, 'posts/general_announcement.html', {'form': form})
@@ -348,8 +347,7 @@ def general_announcement_details(request, announcement_id):
     }
     return render(request, 'posts/general_announcement_detail.html', context)
 
-
-class GeneralAnnouncementUpdateView(UpdateView):
+class GeneralAnnouncementUpdateView(LoginRequiredMixin,UpdateView):
     model = GeneralAnnouncement
     fields = ['title', 'content', 'location', 'image']
     template_name = 'posts/edit_general_announcement.html'
@@ -361,8 +359,7 @@ class GeneralAnnouncementUpdateView(UpdateView):
     
     
 
-
-class GeneralAnnouncementDeleteView(DeleteView):
+class GeneralAnnouncementDeleteView(LoginRequiredMixin,DeleteView):
     model = GeneralAnnouncement
     template_name = 'posts/gen_confirm_delete.html'  # เทมเพลตยืนยันการลบ
     success_url = reverse_lazy('general_announcement_all')  # ไปหน้ารายการโพสต์ทั่วไปหลังลบ
@@ -374,14 +371,13 @@ class GeneralAnnouncementDeleteView(DeleteView):
 
 
 
-class GeneralAnnouncementListView(ListView):
+class GeneralAnnouncementListView(LoginRequiredMixin,ListView):
     model = GeneralAnnouncement
     template_name = 'posts/general_announcement_all.html'
     context_object_name = 'announcements'
     
 
-
-class UserStoreView(ListView):
+class UserStoreView(LoginRequiredMixin,View):
     template_name = 'posts/user_store.html'
     context_object_name = 'posts'
     paginate_by = 10
@@ -475,6 +471,3 @@ def delete_announcement_comment(request, announcement_id, comment_id):
     
     # หากไม่มีสิทธิ์
     return HttpResponseForbidden("คุณไม่มีสิทธิ์ในการลบความคิดเห็นนี้")
-
-
-

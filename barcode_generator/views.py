@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from barcode import Code39
 from barcode.writer import ImageWriter
 from .models import GeneratedBarcode
-
+from django.contrib.auth.decorators import login_required
+@login_required
 def generate_barcode(request, code):
     code_obj = Code39(code, writer=ImageWriter())
     buffer = io.BytesIO()

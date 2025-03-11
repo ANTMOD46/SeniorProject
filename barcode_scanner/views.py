@@ -12,10 +12,9 @@ from .models import WasteItem, WasteImage
 from .forms import WasteItemForm
 from posts.models import SellItem
 from barcode_generator.models import GeneratedBarcode
-from pyzbar.pyzbar import decode
 from PIL import Image
 
-
+@login_required
 def scan_barcode(request):
     if request.method == 'POST':
         try:
@@ -36,18 +35,17 @@ def scan_barcode(request):
         return render(request, 'barcode_scanner/scan.html')
 
 
-from django.shortcuts import render
-
+@login_required
 def form_view(request):
     barcode = request.GET.get('barcode')  # ดึงบาร์โค้ดจาก query string
     return render(request, 'barcode_scanner/form.html', {'barcode': barcode})
 
-
+@login_required
 def scan_camera(request):
     return render(request, 'barcode_scanner/scan_camera.html')
 
 
-
+@login_required
 def add_waste_item(request):
     barcode = request.GET.get('barcode', None)  # ดึงข้อมูลบาร์โค้ดจาก URL
     
@@ -91,7 +89,7 @@ def add_waste_item(request):
     return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
 
 
-
+@login_required
 def handle_barcode_member(request):
     # รับค่าบาร์โค้ดจาก GET parameter
     barcode = request.GET.get('barcode', '').strip()
@@ -149,7 +147,7 @@ def add_waste_detail(request, barcode):
     })
 
 
-
+@login_required
 def waste_item_detail(request, pk):
     waste_item = get_object_or_404(WasteItem, pk=pk)
 

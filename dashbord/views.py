@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.utils import timezone
 from posts.models import SellItem, Donation, GeneralAnnouncement
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def dashboard_today(request):
     today = timezone.now().date()
 
@@ -38,7 +40,7 @@ def dashboard_today(request):
     })
 
 
-
+@login_required
 def dashboard_all(request):
     # ข้อมูลประกาศซื้อขายทั้งหมด
     buy_sales_all = SellItem.objects.filter(post_type='buy')
