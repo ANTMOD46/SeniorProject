@@ -72,22 +72,22 @@
             let codeReader = new ZXing.BrowserMultiFormatReader();
             let videoElement = document.getElementById("video");
             let errorMessage = document.getElementById("error-message");
-
+        
             try {
                 // ดึงรายการกล้องทั้งหมด
                 let videoInputDevices = await codeReader.getVideoInputDevices();
                 if (videoInputDevices.length === 0) {
                     throw new Error("ไม่พบกล้องในอุปกรณ์");
                 }
-
+        
                 // ตรวจสอบว่ามีหลายกล้องหรือไม่
                 let backCamera = videoInputDevices.find(device => device.label.toLowerCase().includes("back"))?.deviceId;
                 let frontCamera = videoInputDevices.find(device => device.label.toLowerCase().includes("front"))?.deviceId;
-
+        
                 let selectedDeviceId = backCamera || videoInputDevices[0].deviceId; // ใช้กล้องหลัง ถ้าไม่มีให้ใช้ตัวแรก
-
+        
                 console.log("📸 ใช้กล้อง:", selectedDeviceId);
-
+        
                 // เริ่มต้นสแกน
                 codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, (result, err) => {
                     if (result) {
@@ -95,9 +95,11 @@
                         window.location.href = `/scanner/scan-member/?barcode=${result.text}`;
                     } else if (err) {
                         console.warn("⛔️ ไม่พบบาร์โค้ด:", err);
+                        errorMessage.textContent = "ไม่สามารถตรวจจับบาร์โค้ดได้ กรุณาลองใหม่อีกครั้ง หรือกรอกรหัสบาร์โค้ดด้านล่าง";
+                        errorMessage.classList.add("active");
                     }
                 });
-
+        
                 // เพิ่ม Event ให้กดที่กล้องเพื่อเปลี่ยนกล้อง (ถ้ามีหลายตัว)
                 videoElement.addEventListener("click", function () {
                     if (backCamera && frontCamera) {
@@ -108,16 +110,22 @@
                             if (result) {
                                 console.log("✅ บาร์โค้ดที่พบ:", result.text);
                                 window.location.href = `/scanner/scan-member/?barcode=${result.text}`;
+                            } else if (err) {
+                                console.warn("⛔️ ไม่พบบาร์โค้ด:", err);
+                                errorMessage.textContent = "ไม่สามารถตรวจจับบาร์โค้ดได้ กรุณาลองใหม่อีกครั้ง หรือกรอกรหัสบาร์โค้ดด้านล่าง";
+                                errorMessage.classList.add("active");
                             }
                         });
                     }
                 });
-
+        
             } catch (err) {
                 console.error("❌ เกิดข้อผิดพลาด:", err);
                 errorMessage.classList.add("active");
+                errorMessage.textContent = "ไม่สามารถเปิดกล้องได้ กรุณาตรวจสอบการอนุญาต";
             }
         });
+        
     </script>
 </body>
 </html>

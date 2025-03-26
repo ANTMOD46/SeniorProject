@@ -11,8 +11,6 @@ from django.db import models
 from .models import SellItemComment
 
 
-CustomUser = get_user_model()  # ดึงโมเดล CustomUser ที่กำหนดเอง
-
 from .models import (
     SellItem,
     Donation,
@@ -38,15 +36,18 @@ def post_ad_view(request):
     # คุณสามารถเพิ่มการจัดการสำหรับการโพสต์โฆษณาที่นี่
     return render(request, 'posts/post_ad.html')  # เปลี่ยนเป็นชื่อ template ที่ต้องการ
 
+
 @login_required
 def sell_item_all(request):
     # ดึงข้อมูลทั้งหมดจาก SellItem
     items = SellItem.objects.all()
     
+    
     # รับค่าจาก query parameters
     role = request.GET.get('role')  # ?role=buyer หรือ seller
     status = request.GET.get('status')  # ?status=open หรือ closed
     title = request.GET.get('title')  # ?title=ข้อความค้นหา
+    post_type = request.GET.get('post_type')  # ?post_type=sell หรือ buy
     
     # กรองข้อมูลตามบทบาท
     if role:
@@ -63,12 +64,17 @@ def sell_item_all(request):
     if title:
         items = items.filter(title__icontains=title)  # ค้นหาแบบไม่สนใจตัวพิมพ์ใหญ่-เล็ก
     
+    # กรองข้อมูลตามประเภทประกาศ
+    if post_type:
+        items = items.filter(post_type=post_type)
+    
     # ส่งข้อมูลไปยัง template
     context = {
         'items': items,
         'selected_role': role,
         'selected_status': status,
         'selected_title': title,
+        'selected_post_type': post_type,
     }
     
     return render(request, 'posts/sell_item_all.html', context)
@@ -147,9 +153,9 @@ def delete_item(request, item_id):
     return JsonResponse({'success': False, 'message': 'คุณไม่มีสิทธิ์ลบโพสต์นี้'})
 
 
-class EditItemView(LoginRequiredMixin, View):
+class EditItemView(LoginRequiredMixin, UpdateView):
     model = SellItem
-    fields = ['title', 'description', 'price', 'location', 'image']
+    fields = ['title', 'description', 'price', 'location', 'image','phone']
     template_name = 'posts/edit_item.html'
 
     def get_object(self, queryset=None):
@@ -192,6 +198,7 @@ def donation_all(request):
     title = request.GET.get('title')
 
     donations = Donation.objects.all()
+    
 
     if role:
         donations = donations.filter(role=role)
@@ -250,7 +257,7 @@ class DonationUpdateView(LoginRequiredMixin, UpdateView):
     model = Donation
     fields = ['title', 'description', 'location', 'phone', 'image']
     template_name = 'posts/edit_donation.html'
-
+    
     def get_object(self, queryset=None):
         # ดึงวัตถุ Donation ตาม id ที่ระบุใน URL
         return get_object_or_404(Donation, id=self.kwargs['donation_id'])
@@ -332,7 +339,7 @@ class GeneralAnnouncementView(LoginRequiredMixin,View):
 @login_required
 def general_announcement_details(request, announcement_id):
     announcement = get_object_or_404(GeneralAnnouncement, id=announcement_id)
-
+    
     if request.method == 'POST':
         content = request.POST.get('content')
         GeneralAnnouncementComment.objects.create(
@@ -377,7 +384,7 @@ class GeneralAnnouncementListView(LoginRequiredMixin,ListView):
     context_object_name = 'announcements'
     
 
-class UserStoreView(LoginRequiredMixin,View):
+class UserStoreView(LoginRequiredMixin,ListView):
     template_name = 'posts/user_store.html'
     context_object_name = 'posts'
     paginate_by = 10
@@ -417,7 +424,7 @@ def add_comment(request, post_id):
         print("Sell Item:", sell_item)
 
         # ตรวจสอบว่าผู้ใช้งานที่ล็อกอินอยู่เป็น CustomUser
-        user = get_object_or_404(CustomUser, id=request.user.id)
+        user = get_object_or_404(User, id=request.user.id)
 
         SellItemComment.objects.create(
             sell_item=sell_item,

@@ -35,7 +35,7 @@ Table session {
 
 Table sellitem {
   id integer
-  user_role varchar
+  post_type varchar
   title varchar
   description text
   location varchar
@@ -104,15 +104,6 @@ Table customuser {
   email varchar
 }
 
-Table wasteitem {
-  id varchar
-  barcode varchar
-  name varchar
-  waste_type varchar
-  disposal_method text
-  created_at timestamp
-}
-
 Table chatroom {
   id integer
   user1_id integer [note: 'foreign key to customuser']
@@ -133,6 +124,24 @@ Table generatedbarcode {
   code varchar
 }
 
+Table wasteimage {
+  id integer
+  waste_type varchar
+  subtype varchar
+  category varchar
+  separation_method text
+  added_by_id integer [note: 'foreign key to customuser']
+  waste_item_id integer [note: 'foreign key to wasteitem']
+}
+
+Table wasteitem {
+  id integer
+  barcode varchar
+  brand_name varchar
+  product_name varchar
+  created_by_id integer [note: 'foreign key to customuser']
+}
+
 Ref: logentry.user_id > customuser.id // many-to-one
 Ref: logentry.content_type_id > contenttype.id // many-to-one
 Ref: permission.content_type_id > contenttype.id // many-to-one
@@ -149,3 +158,6 @@ Ref: chatroom.user1_id > customuser.id // many-to-one
 Ref: chatroom.user2_id > customuser.id // many-to-one
 Ref: message.chatroom_id > chatroom.id // many-to-one
 Ref: message.sender_id > customuser.id // many-to-one
+Ref: wasteimage.added_by_id > customuser.id // many-to-one
+Ref: wasteimage.waste_item_id > wasteitem.id // many-to-one
+Ref: wasteitem.created_by_id > customuser.id // many-to-one

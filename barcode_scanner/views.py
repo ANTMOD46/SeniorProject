@@ -88,11 +88,11 @@ def add_waste_item(request):
 
     return render(request, 'barcode_scanner/form.html', {'form': item_form, 'barcode': barcode})
 
-
+# ทำหน้าที่จัดการกับการ สแกนหรือรับข้อมูลจาก barcode ที่ผู้ใช้ส่งมาผ่าน GET parameter และทำการตรวจสอบข้อมูลในฐานข้อมูลเพื่อไปยังหน้าที่เหมาะสมตามสถานการณ์ที่เกิดขึ้น: ประมวลผลเลขบาร์โค้ดที่มาจากาการสแกน
 @login_required
 def handle_barcode_member(request):
-    # รับค่าบาร์โค้ดจาก GET parameter
-    barcode = request.GET.get('barcode', '').strip()
+    # รับค่าบาร์โค้ดจาก GET parameter strip()  ขจัดช่องว่าง 
+    barcode = request.GET.get('barcode', '').strip()  
 
     if barcode:
         try:
@@ -149,22 +149,29 @@ def add_waste_detail(request, barcode):
 
 @login_required
 def waste_item_detail(request, pk):
+    # ดึงข้อมูล WasteItem ที่มี pk ตรงกับพารามิเตอร์ pk ถ้าไม่เจอจะส่ง 404
     waste_item = get_object_or_404(WasteItem, pk=pk)
 
+    # สร้าง set สำหรับเก็บผู้รับซื้อทั้งหมดที่เกี่ยวข้อง
     all_related_buyers = set()
 
+    # สร้างลิสต์สำหรับเก็บข้อมูลภาพและผู้รับซื้อที่เกี่ยวข้อง
     images_with_related_buyers = []
+    # ลูปผ่านแต่ละภาพของ waste_item
     for image in waste_item.images.all():
+        # เก็บประเภทขยะ (waste_type) และซับประเภท (subtype) ของภาพนั้นๆ
         waste_types = [image.waste_type] if image.waste_type else []
         subtypes = [image.subtype] if image.subtype else []
 
+        # สร้างคำค้นหาจากประเภทขยะและซับประเภท
         query = Q()
         for value in waste_types + subtypes:
             query |= Q(title__icontains=value) | Q(description__icontains=value)
 
+        # ค้นหาผู้รับซื้อที่ตรงกับประเภทขยะหรือซับประเภทในคำอธิบายหรือชื่อ
         related_buyers = SellItem.objects.filter(post_type='buy').filter(query).distinct()
 
-        # กรองผู้รับซื้อที่ไม่ซ้ำ
+        # กรองผู้รับซื้อที่ไม่ซ้ำ (ตรวจสอบโดยใช้ชื่อผู้ใช้)
         unique_buyers = []
         seen_users = set()  # ใช้ set เพื่อป้องกันไม่ให้ชื่อผู้รับซื้อซ้ำ
         for buyer in related_buyers:
@@ -172,23 +179,21 @@ def waste_item_detail(request, pk):
                 seen_users.add(buyer.user.username)
                 unique_buyers.append(buyer)
 
+        # เก็บข้อมูลภาพและผู้รับซื้อที่ไม่ซ้ำในลิสต์
         images_with_related_buyers.append({
             'image': image,
             'related_buyers': unique_buyers,  # ส่งเฉพาะผู้รับซื้อที่ไม่ซ้ำ
         })
 
+        # เพิ่มผู้รับซื้อทั้งหมดที่เกี่ยวข้องเข้าใน set เพื่อเก็บข้อมูลทั้งหมด
         all_related_buyers.update(seen_users)
 
-    # ส่งข้อมูลทั้งหมดไปยัง template
+    # ส่งข้อมูลทั้งหมดไปยัง template เพื่อแสดงผล
     return render(request, 'barcode_scanner/waste_item_detail.html', {
-        'waste_item': waste_item,
-        'images_with_related_buyers': images_with_related_buyers,
-        'all_related_buyers': all_related_buyers,
+        'waste_item': waste_item,  # ข้อมูล WasteItem ที่เลือก
+        'images_with_related_buyers': images_with_related_buyers,  # ข้อมูลภาพและผู้รับซื้อที่เกี่ยวข้อง
+        'all_related_buyers': all_related_buyers,  # ผู้รับซื้อทั้งหมดที่เกี่ยวข้อง
     })
-
-
-
-
 
 
 

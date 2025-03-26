@@ -15,7 +15,7 @@ from .models import CustomUser
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'profile_picture']
+        fields = ['username', 'email',  'phone_number', 'address', 'profile_picture']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'w-full p-3 border border-gray-300 rounded-lg'}),
             'email': forms.EmailInput(attrs={'class': 'w-full p-3 border border-gray-300 rounded-lg'}),
@@ -28,10 +28,10 @@ class ProfileEditForm(forms.ModelForm):
 
 
 
-from django import forms
-from .models import CustomUser
+# from django import forms
+# from .models import CustomUser
 
-class MemberForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'first_name', 'last_name', 'email', ]  # เพิ่มฟิลด์ตามต้องการ
+# class MemberForm(forms.ModelForm):
+#     class Meta:
+#         model = CustomUser
+#         fields = ['username', 'first_name', 'last_name', 'email', ]  # เพิ่มฟิลด์ตามต้องการ

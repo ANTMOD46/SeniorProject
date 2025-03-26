@@ -39,7 +39,8 @@
                     {% else %}
                     <img src="{% static 'images/default_profile.png' %}" alt="โปรไฟล์ผู้ใช้" class="w-12 h-12 object-cover rounded-full shadow">
                     {% endif %}
-                    <p class="text-lg font-semibold text-blue-600">เพิ่มโดย: {{ user_group.grouper.get_full_name|default:user_group.grouper.username }}</p>
+                    <p class="text-lg font-semibold text-blue-600">เพิ่มโดย: {{ user_group.grouper.username }}</p>
+
                 </div>
 
                 <!-- Waste Items -->
