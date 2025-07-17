@@ -48,7 +48,7 @@ def profile_edit(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว')
-            return redirect('home_user')  # เปลี่ยนเส้นทางกลับไปยังหน้าหลัก
+            return redirect('profile') 
         else:
             messages.error(request, 'เกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูล')
     else:

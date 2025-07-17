@@ -1,101 +1,333 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>การแยกขยะของฉัน</title>
     <style>
-        .modal-bg {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         
+        * {
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #e8f5e8 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+            border-radius: 2px;
+        }
+
         .waste-group {
-            background-color: #E6E6FA; /* สีพาสเทลม่วงอ่อน */
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
+            border: 1px solid rgba(76, 175, 80, 0.1);
         }
-        
-        
-        .waste-item-card {
-            background-color: #FFF0F5; /* สีพาสเทลชมพูอ่อน */
+
+        .waste-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4caf50 0%, #2196f3 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .waste-group:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .barcode-header {
+            background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            border: 2px solid rgba(76, 175, 80, 0.2);
         }
-        
-        .waste-item-card:hover {
-            background-color: #E5D1FA; /* สีชมพูเข้มเมื่อ hover */
-            transform: translateY(-2px);
-            box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .delete-btn {
-            background-color: #FFB6C1; /* สีชมพูอ่อน */
-            transition: all 0.2s ease;
-        }
-        
-        .delete-btn:hover {
-            background-color: #FF69B4; /* สีชมพูเข้ม */
+
+        .product-image:hover {
             transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
-        
-        .view-details-btn {
-            background-color: #500073; /* สีเขียวอ่อน */
+
+        .product-name {
+            background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .waste-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .waste-item-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
+            border: 1px solid rgba(76, 175, 80, 0.1);
         }
-        
-        .view-details-btn:hover {
-            background-color: #2A004E; /* สีเขียวเข้ม */
+
+        .waste-item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .waste-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .waste-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .waste-info p {
+            margin: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+
+        .waste-info strong {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #f44336 0%, #ff9800 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(244, 67, 54, 0.3);
+        }
+
+        .delete-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 12px rgba(244, 67, 54, 0.4);
         }
-        
-      
+
+        .view-details-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+
+        .modal-bg {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+
+        .modal-title {
+            background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .no-waste-message {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .cancel-btn {
+            background: rgba(156, 163, 175, 0.9);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(156, 163, 175, 1);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .waste-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .product-image {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .waste-image {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-image {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .waste-image {
+                width: 80px;
+                height: 80px;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+
+<body>
     {% include 'accounts/header_logged_in.html' %}
-    <div class="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
+
+    <div class="container mx-auto mt-8 p-8">
         <div class="header">
-            <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">การแยกขยะของฉัน</h1>
+            <h1 class="text-5xl font-bold">การแยกขยะของฉัน</h1>
         </div>
 
         {% with waste_images|length as total_images %}
         {% if total_images > 0 %}
-        <div class="space-y-6 mt-6">
+        <div class="space-y-8 mt-8">
             {% regroup waste_images by waste_item.barcode as grouped_waste_images %}
             {% for group in grouped_waste_images %}
-            <div class="waste-group p-6 rounded-lg shadow-md">
-                <div class="barcode-header text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">
+            <div class="waste-group p-8">
+                <div class="barcode-header text-center">
                     รหัสบาร์โค้ด: {{ group.grouper }}
                 </div>
 
                 {% with group.list.0.waste_item as waste_item %}
                 {% if waste_item %}
-                <div class="text-center mt-4">
+                <div class="product-info text-center">
                     {% if waste_item.product_image %}
-                    <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" 
-                         class="w-32 h-32 object-cover rounded-lg mx-auto mb-2 shadow hover:shadow-lg transition-shadow duration-300">
+                    <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์"
+                         class="product-image mx-auto object-cover">
                     {% endif %}
-                    <p class="text-blue-900 text-center py-2 rounded-lg font-bold text-2xl">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
+                    <p class="product-name">{{ waste_item.product_name|default_if_none:'ไม่มีชื่อผลิตภัณฑ์' }}</p>
                 </div>
                 {% endif %}
                 {% endwith %}
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <div class="waste-grid">
                     {% for image in group.list %}
-                    <div class="waste-item-card relative rounded-lg p-4 flex flex-col items-center">
+                    <div class="waste-item-card flex flex-col items-center">
                         {% if image.image %}
-                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ" 
-                             class="w-24 h-24 object-contain rounded-lg mb-4 shadow hover:shadow-lg transition-shadow duration-300">
+                        <img src="{{ image.image.url }}" alt="รูปภาพขยะ"
+                             class="waste-image object-contain mb-4">
                         {% endif %}
-                        <div class="text-gray-700">
-                            <p class="text-sm"><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
-                            <p class="text-sm"><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
-                            <p class="text-sm"><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
-                            <p class="text-sm"><strong>วิธีการแยก:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
+                        <div class="waste-info w-full">
+                            <p><strong>ประเภทขยะ:</strong> {{ image.waste_type|default_if_none:'-' }}</p>
+                            <p><strong>หมวดหมู่ย่อย:</strong> {{ image.subtype|default_if_none:'-' }}</p>
+                            <p><strong>หมวดหมู่:</strong> {{ image.category|default_if_none:'-' }}</p>
+                            <p><strong>วิธีการแยก:</strong> {{ image.separation_method|default_if_none:'-' }}</p>
                         </div>
-                        <button type="button" onclick="openModal({{ image.id }})" 
-                                class="delete-btn mt-4 w-auto px-4 text-white rounded-lg py-2 text-sm">
+                        <button type="button" onclick="openModal({{ image.id }})" class="delete-btn mt-4">
                             ลบขยะชิ้นนี้
                         </button>
                     </div>
@@ -103,9 +335,8 @@
                 </div>
 
                 {% if group.list.0.waste_item and group.list.0.waste_item.id %}
-                <div class="text-center mt-6">
-                    <a href="{% url 'barcode_scanner:waste_item_detail' pk=group.list.0.waste_item.id %}" 
-                       class="view-details-btn inline-block text-white font-medium py-2 px-6 rounded-lg shadow-lg">
+                <div class="text-center mt-8">
+                    <a href="{% url 'barcode_scanner:waste_item_detail' pk=group.list.0.waste_item.id %}" class="view-details-btn">
                         ดูการแยกขยะ
                     </a>
                 </div>
@@ -114,19 +345,21 @@
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-center text-gray-500 mt-6">ยังไม่มีการแยกขยะของคุณในขณะนี้</p>
+        <div class="no-waste-message">
+            ยังไม่มีการแยกขยะของคุณในขณะนี้
+        </div>
         {% endif %}
         {% endwith %}
     </div>
 
     <div id="delete-modal" class="fixed inset-0 hidden z-50 flex items-center justify-center modal-bg">
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center w-80">
-            <h2 class="text-lg font-bold text-gray-700 mb-4">ยืนยันการลบ</h2>
+        <div class="modal-content text-center w-96">
+            <h2 class="modal-title">ยืนยันการลบ</h2>
             <p class="text-gray-600 mb-6">คุณแน่ใจหรือไม่ว่าต้องการลบขยะชิ้นนี้?</p>
             <form id="delete-form" method="post">
                 {% csrf_token %}
-                <button type="submit" class="delete-btn px-4 py-2 rounded-lg text-white">ลบ</button>
-                <button type="button" onclick="closeModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 ml-4">ยกเลิก</button>
+                <button type="submit" class="delete-btn">ลบ</button>
+                <button type="button" onclick="closeModal()" class="cancel-btn">ยกเลิก</button>
             </form>
         </div>
     </div>
@@ -143,6 +376,12 @@
             const modal = document.getElementById('delete-modal');
             modal.classList.add('hidden');
         }
+
+        // Simple interaction effects
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Waste separation page loaded');
+        });
     </script>
 </body>
+
 </html>

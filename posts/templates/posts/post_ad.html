@@ -1,40 +1,62 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>ลงประกาศใหม่</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>ลงประกาศใหม่</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Kanit', sans-serif;
+    }
+    .fade-in {
+      animation: fadeInUp 0.5s ease-out;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 
-<body class="bg-gray-100 font-sans">
-    {% include 'accounts/header_logged_in.html' %}
+<body class="bg-white text-gray-800">
+  {% include 'accounts/header_logged_in.html' %}
 
-    <!-- Main Content -->
-    <main class="mt-16 max-w-lg mx-auto">
-        <div class="bg-white w-full p-10 rounded-lg shadow-md">
-            <!-- Header Section -->
-            <h1 class="text-center text-3xl font-bold text-gray-800 mb-4">ลงประกาศใหม่</h1>
-            <p class="text-center text-gray-600 mb-8 text-lg">เลือกหมวดหมู่ที่คุณต้องการ</p>
+  <main class="pt-24 max-w-lg mx-auto px-6 fade-in">
+    <div class="bg-white w-full p-10 rounded-2xl shadow-xl border border-gray-200">
+      
+      <!-- 🔲 หัวข้อหลัก -->
+      <h1 class="text-3xl font-extrabold text-center text-black mb-2">ลงประกาศใหม่</h1>
+      <p class="text-lg text-center text-gray-600 mb-8">เลือกหมวดหมู่ที่คุณต้องการ</p>
 
-            <!-- Category Buttons -->
-            <div class="space-y-6">
-                <a href="{% url 'sell_item' %}" class="block bg-gray-800 text-white text-center py-3 px-6 rounded-lg font-medium shadow hover:bg-gray-700 transition">
-                    ซื้อขายขยะ/ของเก่า
-                </a>
+      <!-- ✅ ปุ่มหมวดหมู่ -->
+      <div class="space-y-5">
+        <a href="{% url 'sell_item' %}"
+           class="block w-full text-center py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition duration-300 ease-in-out">
+          🛒 ซื้อขายขยะ / ของเก่า
+        </a>
 
-                <a href="{% url 'donation_form' %}" class="block bg-gray-800 text-white text-center py-3 px-6 rounded-lg font-medium shadow hover:bg-gray-700 transition">
-                    การบริจาค
-                </a>
+        <a href="{% url 'donation_form' %}"
+           class="block w-full text-center py-3 px-6 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold shadow-lg transition duration-300 ease-in-out">
+          💚 การบริจาค
+        </a>
 
-                <a href="{% url 'general_announcement' %}" class="block bg-gray-800 text-white text-center py-3 px-6 rounded-lg font-medium shadow hover:bg-gray-700 transition">
-                    กระทู้สอบถามทั่วไป
-                </a>
-            </div>
-        </div>
-    </main>
+        <a href="{% url 'general_announcement' %}"
+           class="block w-full text-center py-3 px-6 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow-lg transition duration-300 ease-in-out">
+          💬 กระทู้สอบถามทั่วไป
+        </a>
+
+  
+      </div>
+    </div>
+  </main>
 </body>
-
 </html>

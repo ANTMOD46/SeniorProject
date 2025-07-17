@@ -1,88 +1,213 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แก้ไขข้อมูลส่วนตัว</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             font-family: "Kanit", sans-serif;
         }
+
+        body {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
         .profile-img {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 4px solid #e5e7eb;
+            transition: all 0.3s ease;
+            border: 5px solid #ffffff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
+
         .profile-img:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
+
         .error-message {
-            color: red;
+            color: #e53e3e;
             font-size: 14px;
             margin-top: 5px;
             display: none;
+            font-weight: 500;
+        }
+
+        .form-container {
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            background: #ffffff;
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: #ffffff;
+        }
+
+        .form-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            border: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .text-link {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .text-link:hover {
+            color: #764ba2;
+        }
+
+        .profile-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 20px;
         }
     </style>
 </head>
-<body class="bg-gray-100">
 
+<body>
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-lg mx-auto p-8 mt-12 bg-white shadow-xl rounded-lg">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">แก้ไขข้อมูลส่วนตัว</h1>
+    <main class="form-container">
+        <h1 class="text-4xl font-bold text-center mb-8">แก้ไขข้อมูลส่วนตัว</h1>
 
         <form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             {% csrf_token %}
-            
+
             <!-- รูปโปรไฟล์ -->
-            <div class="text-center mb-8">
+            <div class="profile-section text-center">
                 <label for="profile_picture">
-                    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" 
-                         alt="โปรไฟล์" class="profile-img mx-auto" id="profile-preview">
+                    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="โปรไฟล์" class="profile-img mx-auto" id="profile-preview">
                 </label>
                 <input type="file" name="profile_picture" id="profile_picture" accept="image/*" onchange="previewProfileImage(event)" class="hidden">
-                <p class="text-sm text-gray-500 mt-2">คลิกที่รูปเพื่อเปลี่ยนรูปโปรไฟล์</p>
+                <p class="text-sm text-gray-600 mt-4 font-medium">คลิกที่รูปเพื่อเปลี่ยนรูปโปรไฟล์</p>
             </div>
 
             <!-- ชื่อผู้ใช้ -->
-            <div class="mb-6">
-                <label for="username" class="block text-lg font-semibold text-gray-700 mb-2">ชื่อผู้ใช้</label>
-                <input type="text" name="username" id="username" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.username }}" required>
+            <div class="form-group">
+                <label for="username">👤 ชื่อผู้ใช้</label>
+                <div class="input-group">
+                    <input type="text" name="username" id="username" class="form-input" value="{{ user.username }}" required>
+                </div>
                 <p class="error-message" id="username-error">กรุณากรอกชื่อผู้ใช้</p>
             </div>
 
             <!-- อีเมล -->
-            <div class="mb-6">
-                <label for="email" class="block text-lg font-semibold text-gray-700 mb-2">อีเมล</label>
-                <input type="email" name="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.email }}" required>
+            <div class="form-group">
+                <label for="email">📧 อีเมล</label>
+                <div class="input-group">
+                    <input type="email" name="email" id="email" class="form-input" value="{{ user.email }}" required>
+                </div>
                 <p class="error-message" id="email-error">รูปแบบอีเมลไม่ถูกต้อง</p>
             </div>
 
             <!-- เบอร์โทร -->
-            <div class="mb-6">
-                <label for="phone_number" class="block text-lg font-semibold text-gray-700 mb-2">เบอร์โทรศัพท์</label>
-                <input type="tel" name="phone_number" id="phone_number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.phone_number }}">
+            <div class="form-group">
+                <label for="phone_number">📱 เบอร์โทรศัพท์</label>
+                <div class="input-group">
+                    <input type="tel" name="phone_number" id="phone_number" class="form-input" value="{{ user.phone_number }}">
+                </div>
                 <p class="error-message" id="phone-error">กรุณากรอกเบอร์โทร 10 หลัก</p>
             </div>
 
-            <div class="mb-6">
-                <label for="address" class="block text-lg font-semibold text-gray-700 mb-2">ที่อยู่</label>
-                <input type="text" name="address" id="address" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ user.address }}">
+            <!-- ที่อยู่ -->
+            <div class="form-group">
+                <label for="address">🏠 ที่อยู่</label>
+                <div class="input-group">
+                    <input type="text" name="address" id="address" class="form-input" value="{{ user.address }}">
+                </div>
                 <p class="error-message" id="address-error">กรุณากรอกที่อยู่</p>
             </div>
 
-            <!-- ปุ่มบันทึก -->
-            <div class="text-center">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-lg">บันทึก</button>
-                <a href="{% url 'home_user' %}" class="ml-4 text-gray-600 hover:text-gray-900 underline">ยกเลิก</a>
+        <!-- ปุ่มบันทึก -->
+        <div class="text-center">
+            <button type="submit" class="form-button">💾 บันทึกข้อมูล</button>
+            <a href="{% url 'profile' %}" class="text-emerald-600 text-lg mt-6 block text-center hover:underline">
+            
+            </a>
+        </div>
+
+
             </div>
         </form>
     </main>
@@ -141,6 +266,6 @@
             return isValid;
         }
     </script>
-
 </body>
+
 </html>

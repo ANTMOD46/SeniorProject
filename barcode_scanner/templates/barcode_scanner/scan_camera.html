@@ -19,6 +19,15 @@
             border-radius: 8px;
             overflow: hidden;
         }
+         @keyframes scan-line {
+            0% { transform: translateY(-50%) scaleY(1); opacity: 0.1; }
+            50% { transform: translateY(-50%) scaleY(1.2); opacity: 0.7; }
+            100% { transform: translateY(-50%) scaleY(1); opacity: 0.1; }
+        }
+
+        .animate-pulse {
+            animation: scan-line 1.5s infinite ease-in-out;
+        }
 
         .error-message {
             display: none;
@@ -41,10 +50,22 @@
     <div class="pt-20 h-full flex flex-col items-center justify-start bg-gray-50">
         <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">สแกนบาร์โค้ด</h1>
 
-        <!-- กล้องและกรอบ -->
-        <div id="scanner-container" class="scanner-container mt-4">
-            <video id="video" width="100%" height="100%" autoplay playsinline></video>
-        </div>
+    <div class="relative mt-4 w-full max-w-md h-[360px] rounded-xl overflow-hidden shadow-lg border-4 border-emerald-400 bg-gray-100">
+    <!-- กล้อง -->
+    <video id="video" class="w-full h-full object-cover" autoplay playsinline></video>
+
+    <!-- เส้นกรอบสี่มุม -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-500 rounded-tl-xl"></div>
+        <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-500 rounded-tr-xl"></div>
+        <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-500 rounded-bl-xl"></div>
+        <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-500 rounded-br-xl"></div>
+    </div>
+
+  <!-- แถบเลเซอร์วิ่งผ่าน -->
+  <div class="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-pulse opacity-70"></div>
+</div>
+
 
         <!-- ข้อความแสดงข้อผิดพลาด -->
         <div id="error-message" class="error-message">

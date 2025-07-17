@@ -2,99 +2,129 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@zxing/library@latest"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>สแกนบาร์โค้ด (Guest)</title>
-    <style>
-        * {
-            font-family: 'Kanit', sans-serif;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@zxing/library@latest"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+  <title>สแกนบาร์โค้ด</title>
+  <style>
+    * {
+      font-family: 'Kanit', sans-serif;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      height: 360px;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #f0fdf4;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); /* เขียวอ่อน */
+      border: 3px solid #10b981; /* emerald-500 */
+    }
+     @keyframes scan-line {
+            0% { transform: translateY(-50%) scaleY(1); opacity: 0.1; }
+            50% { transform: translateY(-50%) scaleY(1.2); opacity: 0.7; }
+            100% { transform: translateY(-50%) scaleY(1); opacity: 0.1; }
         }
-        .viewport {
-            position: relative;
-            width: 100%;
-            max-width: 640px;
-            height: 360px;
-            border: 2px dashed #3b82f6; /* เส้นประสีฟ้า */
-            border-radius: 10px; /* มุมโค้งมน */
-            overflow: hidden;
-            background-color: #f0f8ff;
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); /* เอฟเฟกต์เงานุ่ม */
+
+        .animate-pulse {
+            animation: scan-line 1.5s infinite ease-in-out;
         }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* ขยายให้เต็มพื้นที่ */
-            border-radius: 10px; /* มุมโค้งให้วิดีโอตรงกับกรอบ */
-        }
-        .scan-guide {
-            position: absolute;
-            bottom: -40px;
-            background-color: #f0f8ff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: #1e40af;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-    </style>
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    @keyframes scan-line {
+      0% { transform: translateY(-50%) scaleY(1); opacity: 0.1; }
+      50% { transform: translateY(-50%) scaleY(1.2); opacity: 0.8; }
+      100% { transform: translateY(-50%) scaleY(1); opacity: 0.1; }
+    }
+
+    .animate-scan {
+      animation: scan-line 1.5s infinite ease-in-out;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 font-sans h-screen">
-    <div class="pt-20 h-full flex flex-col items-center justify-start">
-        <h1 class="text-4xl font-bold text-gray-700 text-center mb-6">สแกนบาร์โค้ด</h1>
-        <div class="viewport">
-            <video id="video" autoplay playsinline></video>
-        </div>
-        <div id="error-message" class="hidden bg-red-100 text-red-700 px-4 py-2 rounded-lg mt-6">
-            ไม่สามารถตรวจจับบาร์โค้ดได้ กรุณาลองใหม่อีกครั้ง หรือกรอกรหัสบาร์โค้ดด้านล่าง
-        </div>
-        <form action="{% url 'scanner:handle_barcode_guest' %}" method="GET" class="flex flex-col items-center gap-4 mt-6">
-            <input 
-                type="text" 
-                name="barcode" 
-                placeholder="กรอกรหัสบาร์โค้ดที่นี่" 
-                class="border border-gray-300 rounded-lg px-4 py-2 text-lg w-64 focus:ring focus:ring-gray-400 focus:outline-none"
-                required>
-            <button 
-                type="submit" 
-                class="bg-yellow-600 text-white px-8 py-2 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
-                ค้นหาบาร์โค้ด
-            </button>
-        </form>
+<body class="bg-gray-50 min-h-screen">
+  <div class="pt-20 h-full flex flex-col items-center justify-start px-4">
+    <!-- หัวเรื่อง -->
+    <h1 class="text-4xl font-bold text-gray-900 text-center mb-6">สแกนบาร์โค้ด</h1>
+
+    <div class="relative mt-4 w-full max-w-md h-[360px] rounded-xl overflow-hidden shadow-lg border-4 border-emerald-400 bg-gray-100">
+    <!-- กล้อง -->
+    <video id="video" class="w-full h-full object-cover" autoplay playsinline></video>
+
+    <!-- เส้นกรอบสี่มุม -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-500 rounded-tl-xl"></div>
+        <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-500 rounded-tr-xl"></div>
+        <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-500 rounded-bl-xl"></div>
+        <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-500 rounded-br-xl"></div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const videoElement = document.getElementById("video");
-            const errorMessage = document.getElementById("error-message");
-        
-            const codeReader = new ZXing.BrowserMultiFormatReader();
-        
-            codeReader.getVideoInputDevices().then(videoInputDevices => {
-                if (videoInputDevices.length === 0) {
-                    console.error("ไม่พบกล้องในอุปกรณ์");
-                    alert("ไม่พบกล้องบนอุปกรณ์ของคุณ");
-                    return;
-                }
-        
-                const selectedDeviceId = videoInputDevices[0].deviceId; // ใช้กล้องตัวแรก
-        
-                codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, (result, err) => {
-                    if (result) {
-                        console.log("✅ บาร์โค้ดที่พบ:", result.text);
-                        window.location.href = '/scanner/handle-barcode/?barcode=' + result.text;
-                    } else if (err) {
-                        console.error("❌ ข้อผิดพลาด:", err);
-                        errorMessage.classList.remove("hidden");
-                    }
-                });
-            }).catch(err => {
-                console.error("❌ เกิดข้อผิดพลาดในการเข้าถึงกล้อง:", err);
-                alert("ไม่สามารถเข้าถึงกล้องได้ กรุณาตรวจสอบสิทธิ์");
-            });
+  <!-- แถบเลเซอร์วิ่งผ่าน -->
+  <div class="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-pulse opacity-70"></div>
+</div>
+
+
+
+    <!-- Error message -->
+    <div id="error-message" class="hidden mt-6 px-4 py-2 bg-red-100 text-red-600 text-sm rounded-lg shadow-sm inline-block mx-auto text-center">
+    ไม่สามารถตรวจจับบาร์โค้ดได้ กรุณาลองใหม่อีกครั้ง หรือกรอกรหัสบาร์โค้ดด้านล่าง
+    </div>
+
+
+
+    <!-- Input & ปุ่ม -->
+    <form action="{% url 'scanner:handle_barcode_guest' %}" method="GET" class="flex flex-col items-center gap-4 mt-6">
+      <input 
+        type="text" 
+        name="barcode" 
+        placeholder="กรอกรหัสบาร์โค้ดที่นี่" 
+        class="border border-gray-300 rounded-lg px-4 py-2 text-lg w-64 text-center focus:ring focus:ring-emerald-300 focus:outline-none"
+        required>
+      <button 
+        type="submit" 
+        class="bg-yellow-500 text-white px-8 py-2 rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-300">
+        ค้นหาบาร์โค้ด
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const videoElement = document.getElementById("video");
+      const errorMessage = document.getElementById("error-message");
+
+      const codeReader = new ZXing.BrowserMultiFormatReader();
+
+      codeReader.getVideoInputDevices().then(videoInputDevices => {
+        if (videoInputDevices.length === 0) {
+          alert("ไม่พบกล้องบนอุปกรณ์ของคุณ");
+          return;
+        }
+
+        const selectedDeviceId = videoInputDevices[0].deviceId;
+
+        codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, (result, err) => {
+          if (result) {
+            window.location.href = '/scanner/handle-barcode/?barcode=' + result.text;
+          } else if (err) {
+            errorMessage.classList.remove("hidden");
+          }
         });
-    </script>
+      }).catch(err => {
+        console.error("❌ ไม่สามารถเข้าถึงกล้อง:", err);
+        alert("ไม่สามารถเข้าถึงกล้องได้ กรุณาตรวจสอบสิทธิ์");
+      });
+    });
+  </script>
 </body>
 </html>

@@ -6,62 +6,395 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>รายการบาร์โค้ดทั้งหมด</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .product-card:hover::before {
+            left: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+        }
+        
+        .btn-view {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        }
+        
+        .barcode-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-content.show {
+            transform: scale(1);
+        }
+        
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+        
+        .image-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(102, 126, 234, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-card:hover .image-container::after {
+            opacity: 1;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+        
+        .grid-enter {
+            animation: gridEnter 0.6s ease-out;
+        }
+        
+        @keyframes gridEnter {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .brand-highlight {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        .search-box {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
     {% include 'accounts/header_logged_in.html' %}
 
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-semibold text-gray-800">รายการบาร์โค้ดทั้งหมด</h1>
-            <p class="text-lg text-gray-600">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-12 fade-in">
+            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">
+                รายการบาร์โค้ดทั้งหมด
+            </h1>
+            <p class="text-xl text-white opacity-90 max-w-2xl mx-auto">
                 รายการบาร์โค้ดทั้งหมด สามารถดูรายละเอียดหรือลบรายการได้ที่นี่
             </p>
+            
+            <!-- Search Box -->
+            <div class="flex justify-center mt-8">
+                <input type="text" 
+                       placeholder="ค้นหาบาร์โค้ด, ยี่ห้อ, หรือชื่อผลิตภัณฑ์..." 
+                       class="search-box"
+                       id="searchInput">
+            </div>
         </div>
 
-        <!-- Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for waste_item in waste_items %}
-            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow hover:shadow-lg transition">
-                <p class="text-sm text-gray-700"><strong>รหัสบาร์โค้ด:</strong> {{ waste_item.barcode }}</p>
-                <p class="text-sm text-gray-700"><strong>ชื่อยี่ห้อ:</strong> {{ waste_item.brand_name|default_if_none:'-' }}</p>
-                <p class="text-sm text-gray-700"><strong>ชื่อผลิตภัณฑ์:</strong> {{ waste_item.product_name|default_if_none:'-' }}</p>
-                {% if waste_item.product_image %}
-                <img src="{{ waste_item.product_image.url }}" alt="ภาพผลิตภัณฑ์" class="w-full h-40 object-contain rounded-md mt-4">
-                {% else %}
-                <p class="text-gray-500 text-center italic mt-4">ไม่มีภาพผลิตภัณฑ์</p>
-                {% endif %}
 
-                <!-- Buttons -->
-                <div class="flex justify-between items-center mt-4">
+            
+           
+            
+            
+
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid">
+            {% for waste_item in waste_items %}
+            <div class="product-card rounded-2xl p-6 grid-enter" style="animation-delay: {{ forloop.counter0|floatformat:0 }}00ms;">
+                <!-- Barcode Badge -->
+                <div class="flex justify-between items-start mb-4">
+                    <div class="barcode-badge">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        {{ waste_item.barcode }}
+                    </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="mb-4 space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-600">ชื่อยี่ห้อ:</span>
+                    </div>
+                    <p class="brand-highlight text-lg font-bold ml-6">{{ waste_item.brand_name|default_if_none:'ไม่ระบุ' }}</p>
+                    
+                    <div class="flex items-center space-x-2 mt-3">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-600">ชื่อผลิตภัณฑ์:</span>
+                    </div>
+                    <p class="text-gray-800 font-semibold ml-6">{{ waste_item.product_name|default_if_none:'ไม่ระบุ' }}</p>
+                </div>
+                
+                <!-- Product Image -->
+                <div class="image-container mb-6">
+                    {% if waste_item.product_image %}
+                    <img src="{{ waste_item.product_image.url }}" 
+                         alt="ภาพผลิตภัณฑ์" 
+                         class="w-full h-48 object-cover rounded-xl transition-transform duration-300 hover:scale-105">
+                    {% else %}
+                    <div class="w-full h-48 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <p class="text-gray-500 text-sm font-medium">ไม่มีภาพผลิตภัณฑ์</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center space-x-3">
                     <a href="{% url 'barcode_scanner:waste_item_detail' waste_item.id %}" 
-                       class="px-4 py-2 text-sm bg-gray-800 text-white rounded-md shadow hover:bg-gray-700 transition">
-                        ดูรายละเอียด
+                       class="btn-view text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 flex-1 justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <span>ดูรายละเอียด</span>
                     </a>
                     <button onclick="showDeleteModal({{ waste_item.id }})" 
-                            class="px-4 py-2 text-sm bg-red-500 text-white rounded-md shadow hover:bg-red-600 transition">
-                        ลบ
+                            class="btn-danger text-white px-4 py-3 rounded-xl font-semibold flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
             {% endfor %}
         </div>
+
+        <!-- Empty State -->
+        {% if not waste_items %}
+        <div class="text-center py-16">
+            <div class="glass-card rounded-2xl p-12 max-w-md mx-auto">
+                <svg class="w-20 h-20 text-white opacity-50 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <h3 class="text-2xl font-bold text-white mb-4">ไม่มีบาร์โค้ดในระบบ</h3>
+                <p class="text-white opacity-80">เริ่มต้นเพิ่มบาร์โค้ดแรกของคุณเลย</p>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
-    <!-- Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md text-center shadow-lg">
-            <h2 class="text-lg font-semibold text-gray-800">ยืนยันการลบ</h2>
-            <p class="text-sm text-gray-600 mt-2">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?</p>
-            <div class="flex justify-center gap-4 mt-6">
-                <form id="deleteForm" method="post">
+    <!-- Floating Action Button -->
+    <button class="floating-action text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+    </button>
+
+    <!-- Enhanced Modal -->
+    <div id="deleteModal" class="fixed inset-0 modal-backdrop hidden justify-center items-center z-50">
+        <div class="modal-content rounded-2xl p-8 w-full max-w-md text-center shadow-2xl mx-4">
+            <div class="mb-6">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">ยืนยันการลบ</h2>
+                <p class="text-gray-600">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้</p>
+            </div>
+            
+            <div class="flex justify-center gap-4">
+                <form id="deleteForm" method="post" class="flex-1">
                     {% csrf_token %}
-                    <button type="submit" class="px-6 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600 transition">
-                        ยืนยัน
+                    <button type="submit" class="btn-danger text-white px-8 py-3 rounded-xl font-semibold w-full">
+                        ยืนยันการลบ
                     </button>
                 </form>
                 <button onclick="hideDeleteModal()" 
-                        class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md shadow hover:bg-gray-400 transition">
+                        class="btn-primary text-white px-8 py-3 rounded-xl font-semibold flex-1">
                     ยกเลิก
                 </button>
             </div>
@@ -69,19 +402,62 @@
     </div>
 
     <script>
+        // Modal Functions
         function showDeleteModal(id) {
             const modal = document.getElementById("deleteModal");
             const form = document.getElementById("deleteForm");
+            const modalContent = modal.querySelector('.modal-content');
+            
             form.action = `/scanner/delete/${id}/`;
             modal.classList.remove("hidden");
             modal.classList.add("flex");
+            
+            setTimeout(() => {
+                modalContent.classList.add("show");
+            }, 10);
         }
 
         function hideDeleteModal() {
             const modal = document.getElementById("deleteModal");
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
+            const modalContent = modal.querySelector('.modal-content');
+            
+            modalContent.classList.remove("show");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+            }, 300);
         }
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.3s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Smooth scroll for floating action button
+        document.querySelector('.floating-action').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideDeleteModal();
+            }
+        });
     </script>
 </body>
 </html>
