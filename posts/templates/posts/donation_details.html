@@ -122,44 +122,71 @@
 .phone-number {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #1f2937;
+    color: #000000; /* เปลี่ยนเป็นสีดำ */
     margin-top: 0.625rem;
 }
 
 .phone-title {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #374151;
+    color: #000000; /* เปลี่ยนเป็นสีดำ */
 }
+
+/* Button Styles */
+.btn-close {
+    background-color: #1e40af; /* สีน้ำเงิน */
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-close:hover {
+    background-color: #1d4ed8; /* เปลี่ยนเป็นสีน้ำเงินเข้มเมื่อ hover */
+}
+
 
 /* Comment Styles */
 .comment-card {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
     padding: 0.75rem 1rem;
     margin-bottom: 0.625rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* เส้นกั้นสีเทาอ่อนด้านล่าง */
+    border-bottom: 1px solid #e5e7eb; /* เส้นกั้นสีเทาอ่อน */
 }
 
-.comment-card .comment-header {
+/* ส่วนหัวของความคิดเห็น */
+.comment-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
 }
 
-.comment-card .comment-content {
-    color: #4b5563;
+/* ส่วนเนื้อหาของความคิดเห็น */
+.comment-content {
+    color: #4b5563; /* สีเทาดำอ่อน */
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
 
-.comment-card .comment-footer {
+/* ส่วน footer ของความคิดเห็น */
+.comment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.8rem;
-    color: #9ca3af;
-    text-align: right;
+    color: #6b7280; /* สีเทาดำอ่อน */
+    text-align: left;
 }
+
+/* ให้วันที่อยู่ทางด้านขวา */
+.comment-footer .comment-date {
+    text-align: right;
+    margin-left: auto; /* ให้วันที่อยู่ทางขวาสุด */
+}
+
+
 
 /* Image Styles */
 .donation-image {
@@ -218,13 +245,27 @@ button:active {
     {% include 'accounts/header_logged_in.html' %}
 
     <main class="max-w-4xl mx-auto p-6 mt-8 bg-white shadow-md rounded-lg">
-        <div class="relative">
-            <!-- ภาพประกาศ -->
-            {% if donation.image %}
-            <img src="{{ donation.image.url }}" alt="ภาพการบริจาค" class="w-full h-auto object-cover rounded-md mb-4">
-            {% else %}
-                <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="donation-image">
-            {% endif %}
+            <div class="relative">
+        <!-- ภาพประกาศ -->
+        {% if donation.image %}
+        <div class="image-container cursor-pointer">
+            <img src="{{ donation.image.url }}" alt="ภาพการบริจาค" class="w-full h-auto object-cover rounded-md mb-4" id="imagePreview">
+        </div>
+        {% else %}
+            <div class="image-container cursor-pointer">
+                <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพ" class="w-full h-auto object-cover rounded-md mb-4" id="imagePreview">
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Modal สำหรับแสดงรูปภาพ -->
+    <div id="imageModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-auto max-w-4xl">
+            <span id="closeModal" class="text-white text-2xl absolute top-2 right-2 cursor-pointer">&times;</span>
+            <img src="" id="modalImage" class="w-full h-auto">
+        </div>
+    </div>
+
 
             <!-- เมนูการจัดการ -->
             {% if request.user == donation.user or request.user.is_staff %}
