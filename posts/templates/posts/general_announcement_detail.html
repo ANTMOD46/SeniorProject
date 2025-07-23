@@ -6,352 +6,519 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>รายละเอียดการประกาศ</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'kanit': ['Kanit', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.1)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(180deg)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * {
             font-family: "Kanit", sans-serif;
         }
 
-        .button-chat {
-            background-color: #1e40af;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .menu {
-            display: none;
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .comment-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .comment-card:hover {
+            border-left-color: #667eea;
+            transform: translateX(4px);
+            background-color: #f8fafc;
+        }
+
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glow-button::before {
+            content: '';
             position: absolute;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            right: 0;
-            z-index: 1000;
-            width: 100px;
-            padding: 10px 0;
-            top: 50px;
-            max-width: 200px;
-
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
         }
 
-        .menu-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            text-align: left;
-            transition: background-color 0.3s;
-            display: block;
-            color: #374151;
+        .glow-button:hover::before {
+            left: 100%;
         }
 
-        .menu-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .action-menu-container {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
-        }
-
-        .modal {
-            display: none;
+        .floating-elements {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .floating-elements::before,
+        .floating-elements::after {
+            content: '';
+            position: absolute;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
         }
 
-        .show-modal {
-            display: flex;
+        .floating-elements::before {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
         }
 
-        .btn-confirm {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
+        .floating-elements::after {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 3s;
         }
 
-        .btn-confirm:hover {
-            background-color: #45a049;
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6);
         }
 
-        .btn-cancel {
-            background-color: #e11d48;
-            color: white;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-left: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-cancel:hover {
-            background-color: #be123c;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-        }
-        .btn-blue {
-            background-color: #1e40af;
-            color: white;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-blue:hover {
-            background-color: #1d4ed8;
-        }
-
-        .btn-green {
-            background-color: #047857;
-            color: white;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-        .field-label {
-            color: #1f2937;
-            font-weight: bold;
-        }
-
-        .field-value {
-            color: #4b5563;
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
         }
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen font-kanit">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-4xl mx-auto p-6 mt-8 bg-white shadow-md rounded-lg">
-        <div class="relative">
-            {% if announcement.image %}
-            <img src="{{ announcement.image.url }}" alt="ภาพประกาศ" class="w-full h-auto object-cover rounded-md mb-4">
+    <!-- Floating background elements -->
+    <div class="floating-elements"></div>
 
-            {% else %}
-                <img src="{% static 'images/default_image.jpg' %}" alt="ไม่มีภาพประกาศ" class="w-full h-72 object-cover rounded-md mb-4">
-            {% endif %}
+    <main class="max-w-5xl mx-auto p-6 mt-8 relative">
+        <!-- Main Content Card -->
+        <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+            <div class="relative">
+                <!-- Image Section -->
+                {% if announcement.image %}
+                    <img src="{{ announcement.image.url }}" alt="ภาพประกาศ" class="w-full h-96 object-cover">
+                {% else %}
+                    <div class="w-full h-96 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
+                        <div class="text-white text-6xl opacity-50">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    </div>
+                {% endif %}
 
-            <div class="action-menu-container">
-                {% if request.user == announcement.user or request.user.is_staff %}
-                <!-- ปุ่มเมนู ⋯ -->
-                <button id="menuToggle" class="bg-gray-100 hover:bg-gray-200 text-gray-700 w-10 h-10 flex items-center justify-center rounded-md shadow-lg transition">
-                    &#8943;
-                </button>
+                <!-- Action Menu -->
+                <div class="absolute top-4 right-4">
+                    {% if request.user == announcement.user or request.user.is_staff %}
+                    <div class="relative">
+                        <button id="menuToggle" class="glass-effect w-12 h-12 rounded-full flex items-center justify-center text-gray-700 hover:text-indigo-600 transition-all duration-300 hover-lift glow-button">
+                            <i class="fas fa-ellipsis-v text-lg"></i>
+                        </button>
 
-                <!-- เมนู Dropdown -->
-                <div id="actionMenu" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-md border py-2 w-48">
-                    <a href="{% url 'edit_announcement' announcement.id %}" class="menu-item flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-100 rounded-md">
-                        แก้ไขโพสต์
-                    </a>
-                    <button type="button" id="deleteButton" class="menu-item flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-100 rounded-md">
-                        ลบโพสต์
-                    </button>
+                        <div id="actionMenu" class="hidden absolute right-0 mt-2 w-48 glass-effect rounded-2xl shadow-xl border py-2 animate-slide-up">
+                            <a href="{% url 'edit_announcement' announcement.id %}" class="flex items-center gap-3 px-4 py-3 text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-xl mx-2">
+                                <i class="fas fa-edit"></i>
+                                <span>แก้ไขโพสต์</span>
+                            </a>
+                            <button type="button" id="deleteButton" class="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 transition-all duration-200 rounded-xl mx-2">
+                                <i class="fas fa-trash"></i>
+                                <span>ลบโพสต์</span>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
 
-                {% endif %}
+                <!-- Date Badge -->
+                <div class="absolute bottom-4 left-4">
+                    <div class="glass-effect px-4 py-2 rounded-full flex items-center gap-2 text-amber-600">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="text-sm font-medium">{{ announcement.created_at|date:"d F Y, H:i a" }}</span>
+                    </div>
+                </div>
             </div>
-            
 
-        <div class="mt-6">
-            <!-- วันที่ -->
-            <div class="flex items-center text-sm text-yellow-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days mr-2">
-                    <path d="M8 2v4"/>
-                    <path d="M16 2v4"/>
-                    <rect width="18" height="18" x="3" y="4" rx="2"/>
-                    <path d="M3 10h18"/>
-                    <path d="M8 14h.01"/>
-                    <path d="M12 14h.01"/>
-                    <path d="M16 14h.01"/>
-                    <path d="M8 18h.01"/>
-                    <path d="M12 18h.01"/>
-                    <path d="M16 18h.01"/>
-                </svg>
-                <span>{{ announcement.created_at|date:"d F Y, H:i a" }}</span>
+            <!-- Content Section -->
+            <div class="p-8">
+                <!-- Title -->
+                <h1 class="text-4xl font-bold gradient-text mb-6 animate-slide-up">
+                    {{ announcement.title }}
+                </h1>
+
+                <!-- Author Info -->
+                <div class="flex items-center justify-center mb-8 animate-slide-up">
+                    <div class="flex items-center gap-4 glass-effect px-6 py-3 rounded-full">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 text-sm">โพสต์โดย</p>
+                            <p class="font-semibold text-gray-800">{{ announcement.user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="mx-4 w-px h-8 bg-gray-300"></div>
+                    <a href="{% url 'user_store' announcement.user.username %}" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors glow-button px-4 py-2 rounded-full hover:bg-indigo-50">
+                        <i class="fas fa-store"></i>
+                        <span>ดูประกาศทั้งหมด</span>
+                    </a>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center gap-4 mb-8 animate-bounce-in">
+                    <a href="{% url 'start_chat' post_id=announcement.id post_type='general_announcement' %}" class="flex items-center gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-2xl font-semibold hover-lift glow-button transition-all duration-300">
+                        <i class="fas fa-comments text-xl"></i>
+                        <span>เริ่มแชท</span>
+                    </a>
+                </div>
+
+                <!-- Details Section -->
+                <div class="space-y-6 animate-slide-up">
+                    <div class="glass-effect p-6 rounded-2xl hover-lift">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-info-circle text-indigo-500"></i>
+                            รายละเอียด
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">{{ announcement.content }}</p>
+                    </div>
+
+                    <div class="glass-effect p-6 rounded-2xl hover-lift">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-red-500"></i>
+                            สถานที่
+                        </h3>
+                        <p class="text-gray-600">{{ announcement.location }}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h1 class="text-2xl font-bold text-gray-900 mt-2">{{ announcement.title }}</h1>
-       
+        <!-- Comments Section -->
+        <div class="mt-8 glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                <i class="fas fa-comments text-indigo-500"></i>
+                ความคิดเห็น
+                <span class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm px-3 py-1 rounded-full">{{ announcement.comments.count }}</span>
+            </h2>
 
-         <div class="flex justify-center items-center mb-4 space-x-4 gap-4">
-            <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ announcement.user.username }}</span></p>
-            <a href="{% url 'user_store' announcement.user.username %}" class="text-blue-500 hover:underline flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store mr-1">
-                    <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                    <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
-                    <path d="M2 7h20"/>
-                    <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 16 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 12 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 8 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>
-                </svg>
-                ดูประกาศทั้งหมด
-            </a>
-        </div>
-
-
-        <div class="flex justify-center space-x-4 mt-6">
-            <a href="{% url 'start_chat' post_id=announcement.id post_type='general_announcement' %}" class="flex items-center btn-blue">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square mr-2">
-                    <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/>
-                    <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>
-                </svg>
-                แชท
-            </a>
-
-        </div>
-
-        <div id="phoneModal" class="modal">
-            <div class="modal-content">
-                <h2 class="text-xl font-bold text-gray-700 mb-4">เบอร์โทรศัพท์</h2>
-                <p class="text-lg text-gray-600">{{ announcement.phone }}</p>
-                <button id="closePhoneModal" class="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-md">
-                    ปิด
-                </button>
+            <!-- Comments List -->
+            <div class="space-y-4 mb-8">
+                {% for comment in announcement.comments.all %}
+                    <div class="comment-card p-6 rounded-2xl bg-white shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-400 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">{{ comment.user.username }}</p>
+                                    <p class="text-gray-600 mt-1 leading-relaxed">{{ comment.content }}</p>
+                                    <p class="text-gray-400 text-sm mt-2 flex items-center gap-2">
+                                        <i class="fas fa-clock"></i>
+                                        {{ comment.created_at|date:"d F Y, H:i a" }}
+                                    </p>
+                                </div>
+                            </div>
+                            {% if request.user == comment.user or request.user == announcement.user or request.user.is_staff %}
+                                <form method="POST" action="{% url 'delete_announcement_comment' announcement.id comment.id %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-12">
+                        <div class="text-6xl text-gray-300 mb-4">
+                            <i class="fas fa-comment-slash"></i>
+                        </div>
+                        <p class="text-gray-500 text-lg">ยังไม่มีความคิดเห็น</p>
+                        <p class="text-gray-400">เป็นคนแรกที่แสดงความคิดเห็น!</p>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
 
-        <div class="mt-4">
-            <p class="field-label">รายละเอียด: <span class="field-value">{{ announcement.content }}</span></p>
-        <p class="field-label mt-2">สถานที่: <span class="field-value">{{ announcement.location }}</span></p>
-        </div>
-        
-        <div id="deleteModal" class="modal">
-            <div class="modal-content">
-                <!-- ไอคอนเตือน -->
-                <div class="flex justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle mb-6">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-            </div>
-        
-                <!-- หัวข้อ -->
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">ยืนยันการลบโพสต์</h2>
-        
-                <!-- ข้อความอธิบาย -->
-                <p class="text-gray-600 mb-8">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
-        
-                <!-- ปุ่มยืนยันและยกเลิก -->
-                <form action="{% url 'delete_announcement' announcement.id %}" method="POST" class="flex justify-center space-x-6">
-                    {% csrf_token %}
-                    <!-- ปุ่มยืนยัน -->
-                    <button type="submit" class="btn-confirm flex items-center px-6 py-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check mr-2">
-                            <path d="M20 6 9 17l-5-5"/>
-                        </svg>
-                        ยืนยัน
+            <!-- Comment Form -->
+            <form action="{% url 'general_announcement_details' announcement.id %}" method="POST" class="space-y-4">
+                {% csrf_token %}
+                <div class="relative">
+                    <textarea 
+                        name="content"
+                        id="commentInput"
+                        class="w-full p-6 border-2 border-gray-200 rounded-2xl resize-none focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 bg-white shadow-sm"
+                        rows="4"
+                        placeholder="แสดงความคิดเห็นของคุณ..."
+                        required
+                    ></textarea>
+                    <div class="absolute bottom-4 right-4 text-gray-400 text-sm">
+                        <span id="charCount">0</span>/500
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <button type="button" class="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-lg">
+                            <i class="fas fa-smile text-xl"></i>
+                        </button>
+                        <button type="button" class="text-gray-400 hover:text-indigo-500 transition-colors p-2 hover:bg-indigo-50 rounded-lg">
+                            <i class="fas fa-image text-xl"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-3 rounded-2xl font-semibold hover-lift glow-button transition-all duration-300 flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>แสดงความคิดเห็น</span>
                     </button>
-        
-                    <!-- ปุ่มยกเลิก -->
-                    <button type="button" id="cancelDelete" class="btn-cancel flex items-center px-6 py-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x mr-2">
-                            <path d="M18 6 6 18"/>
-                            <path d="m6 6 12 12"/>
-                        </svg>
-                        ยกเลิก
+                </div>
+            </form>
+        </div>
+    </main>
+
+
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-3xl p-8 max-w-md w-full mx-4 animate-bounce-in">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">ยืนยันการลบโพสต์</h2>
+                <p class="text-gray-600 mb-8">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+                <form action="{% url 'delete_announcement' announcement.id %}" method="POST" class="flex gap-4">
+                    {% csrf_token %}
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 rounded-2xl font-semibold hover-lift transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-check"></i>
+                        <span>ยืนยัน</span>
+                    </button>
+                    <button type="button" id="cancelDelete" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i>
+                        <span>ยกเลิก</span>
                     </button>
                 </form>
             </div>
         </div>
+    </div>
 
-        <h2 class="mt-6 text-lg font-bold text-gray-800">ความคิดเห็น</h2>
-        <div class="mb-4">
-            {% for comment in announcement.comments.all %}
-                <div class="border-b py-2 flex justify-between items-center">
-                    <div>
-                        <p class="font-semibold">{{ comment.user.username }}</p>
-                        <p class="text-gray-600">{{ comment.content }}</p>
-                        <p class="text-gray-400 text-sm">{{ comment.created_at|date:"d F Y, H:i a" }}</p>
-                    </div>
-                    {% if request.user == comment.user or request.user == announcement.user or request.user.is_staff %}
-                        <form method="POST" action="{% url 'delete_announcement_comment' announcement.id comment.id %}" class="inline-block">
-                            {% csrf_token %}
-                            <button type="submit" class="text-red-500 hover:underline">ลบ</button>
-                        </form>
-                    {% endif %}
-                </div>
-            {% empty %}
-                <p class="text-gray-500">ยังไม่มีความคิดเห็น</p>
-            {% endfor %}
-        </div>
-
-        <form action="{% url 'general_announcement_details' announcement.id %}" method="POST" class="mb-6">
-            {% csrf_token %}
-            <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mt-2">แสดงความคิดเห็น</button>
-        </form>
-    </main>
+    <!-- Floating Back to Top Button -->
+    <button id="backToTop" class="floating-action w-14 h-14 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow-2xl hover-lift transition-all duration-300 opacity-0 pointer-events-none">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
 
     <script>
+        // DOM Elements
         const menuToggle = document.getElementById('menuToggle');
-        const showPhoneButton = document.getElementById('showPhoneButton');
-        const phoneModal = document.getElementById('phoneModal');
-        const closePhoneModal = document.getElementById('closePhoneModal');
         const actionMenu = document.getElementById('actionMenu');
         const deleteButton = document.getElementById('deleteButton');
         const deleteModal = document.getElementById('deleteModal');
         const cancelDelete = document.getElementById('cancelDelete');
+        const showPhoneButton = document.getElementById('showPhoneButton');
+        const phoneModal = document.getElementById('phoneModal');
+        const closePhoneModal = document.getElementById('closePhoneModal');
+        const commentInput = document.getElementById('commentInput');
+        const charCount = document.getElementById('charCount');
+        const backToTop = document.getElementById('backToTop');
 
+        // Menu Toggle
         menuToggle?.addEventListener('click', function(event) {
             event.stopPropagation();
-            actionMenu.style.display = actionMenu.style.display === 'block' ? 'none' : 'block';
+            actionMenu.classList.toggle('hidden');
         });
 
-        deleteButton?.addEventListener('click', function() {
-            deleteModal.classList.add('show-modal');
-        });
-
-        cancelDelete?.addEventListener('click', function() {
-            deleteModal.classList.remove('show-modal');
-        });
-
+        // Close menu when clicking outside
         document.addEventListener('click', function(event) {
-            if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
-                actionMenu.style.display = 'none';
+            if (!actionMenu?.contains(event.target) && event.target !== menuToggle) {
+                actionMenu?.classList.add('hidden');
             }
         });
 
+        // Delete Modal
+        deleteButton?.addEventListener('click', function() {
+            deleteModal.classList.remove('hidden');
+            deleteModal.classList.add('flex');
+        });
+
+        cancelDelete?.addEventListener('click', function() {
+            deleteModal.classList.add('hidden');
+            deleteModal.classList.remove('flex');
+        });
+
+        // Phone Modal
         showPhoneButton?.addEventListener('click', function() {
-            phoneModal.classList.add('show-modal');
+            phoneModal.classList.remove('hidden');
+            phoneModal.classList.add('flex');
         });
 
         closePhoneModal?.addEventListener('click', function() {
-            phoneModal.classList.remove('show-modal');
+            phoneModal.classList.add('hidden');
+            phoneModal.classList.remove('flex');
         });
 
-        window.addEventListener('click', function(event) {
-            if (event.target === phoneModal) {
-                phoneModal.classList.remove('show-modal');
+        // Close modals when clicking backdrop
+        [phoneModal, deleteModal].forEach(modal => {
+            modal?.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+        });
+
+        // Character Counter
+        commentInput?.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            if (length > 400) {
+                charCount.classList.add('text-red-500');
+            } else if (length > 300) {
+                charCount.classList.add('text-yellow-500');
+                charCount.classList.remove('text-red-500');
+            } else {
+                charCount.classList.remove('text-red-500', 'text-yellow-500');
+            }
+        });
+
+        // Back to Top Button
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.remove('opacity-0', 'pointer-events-none');
+                backToTop.classList.add('opacity-100');
+            } else {
+                backToTop.classList.add('opacity-0', 'pointer-events-none');
+                backToTop.classList.remove('opacity-100');
+            }
+        });
+
+        backToTop?.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.comment-card, .glass-effect').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Auto-resize textarea
+        commentInput?.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        // Add smooth page load animation
+        window.addEventListener('load', function() {
+            document.body.classList.add('animate-fade-in');
+        });
+
+        // Add hover effects to buttons
+        document.querySelectorAll('.glow-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.classList.add('animate-pulse-slow');
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.classList.remove('animate-pulse-slow');
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // ESC to close modals
+            if (event.key === 'Escape') {
+                deleteModal.classList.add('hidden');
+                deleteModal.classList.remove('flex');
+                phoneModal.classList.add('hidden');
+                phoneModal.classList.remove('flex');
+                actionMenu?.classList.add('hidden');
             }
         });
     </script>

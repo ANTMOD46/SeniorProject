@@ -1,596 +1,610 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>รายละเอียดสินค้า</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'kanit': ['Kanit', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.1)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(180deg)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * {
-            font-family: "Kanit", serif;
+            font-family: "Kanit", sans-serif;
         }
-        
-        body {
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        /* Menu Styles */
-        .menu {
-            display: none;
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sell-gradient {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .buy-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .closed-gradient {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .comment-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .comment-card:hover {
+            border-left-color: #10b981;
+            transform: translateX(4px);
+            background-color: #f0fdf4;
+        }
+
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glow-button::before {
+            content: '';
             position: absolute;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            right: 10px;
-            top: 10px;
-            z-index: 1000;
-            width: 160px;
-            padding: 10px 0;
-        }
-        
-        .menu.show {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        .menu-item {
-            padding: 10px 15px;
-            font-size: 16px;
-            text-align: left;
-            transition: background-color 0.3s;
-            border-radius: 4px;
-            display: block;
-            cursor: pointer;
+            top: 0;
+            left: -100%;
             width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
         }
-        
-        .menu-item:hover {
-            background-color: #f0f0f0;
+
+        .glow-button:hover::before {
+            left: 100%;
         }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Modal Base Styles */
-        .modal {
-            display: none;
+
+        .floating-elements {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s ease-in-out;
-            z-index: 1050;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
         }
-        
-        .modal-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            transform: scale(0.95);
-            opacity: 0;
-            transition: all 0.3s ease-in-out;
-            width: auto;
-            min-width: 320px;
-            max-width: 400px;
-        }
-        
-        .show-modal {
-            display: flex;
-        }
-        
-        .show-modal .modal-content {
-            transform: scale(1);
-            opacity: 1;
-        }
-        
-        /* Modal Components */
-        .modal-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 1rem;
-        }
-        
-        .modal-title {
-            color: #1f2937;
-            font-size: 1.5rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
-        .modal-message {
-            color: #6b7280;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-        
-        /* Button Styles */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            min-width: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-        }
-        
-        .btn-delete:hover {
-            background-color: #dc2626;
-        }
-        
-        .btn-close {
-            background-color: #22c55e;
-            color: white;
-        }
-        
-        .btn-close:hover {
-            background-color: #16a34a;
-        }
-        
-        .btn-cancel {
-            background-color: #e5e7eb;
-            color: #4b5563;
-        }
-        
-        .btn-cancel:hover {
-            background-color: #d1d5db;
-        }
-        
-        /* Announcement Type Styles */
-        .announcement-type {
-            padding: 8px 16px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: 2px solid #3b82f6;
-            background-color: #dbeafe;
-            color: #1d4ed8;
-            border-radius: 8px;
-            text-align: center;
-            display: inline-block;
-        }
-        
-        .announcement-type.sell {
-            background-color: #d1fae5;
-            color: #065f46;
-            border-color: #065f46;
-        }
-        
-        .announcement-type.buy {
-            background-color: #e0f2fe;
-            color: #0369a1;
-            border-color: #0369a1;
-        }
-        
-        .announcement-type.closed {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            border-color: #b91c1c;
-        }
-        
-        /* Container Styles */
-        .announcement-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
-        
-        .date-container {
-            display: flex;
-            align-items: center;
-            color: #f59e0b;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            margin-top: 12px;
-        }
-        
-        /* Field Styles */
-        .field-label {
-            color: #1f2937;
-            font-weight: bold;
-        }
-        
-        .field-value {
-            color: #4b5563;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 640px) {
-            .modal-content {
-                margin: 1rem;
-                min-width: auto;
-                width: calc(100% - 2rem);
-            }
-        
-            .modal-buttons {
-                flex-direction: column;
-            }
-        
-            .btn {
-                width: 100%;
-            }
-        }
-        
-        
-    </style>
 
-    <title>รายละเอียดการประกาศ</title>
+        .floating-elements::before,
+        .floating-elements::after {
+            content: '';
+            position: absolute;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-elements::before {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-elements::after {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .price-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            animation: pulse 2s infinite;
+        }
+    </style>
 </head>
 
-<body class="bg-pink-50">
+<body class="bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100 min-h-screen font-kanit">
     {% include 'accounts/header_logged_in.html' %}
 
-    <main class="max-w-4xl mx-auto p-6 mt-8 bg-white shadow-md rounded-lg">
-        <div class="relative">
-            <div class="absolute top-4 right-4">
-                {% if can_edit %}
-                <button id="menuToggle" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg shadow-md flex items-center justify-center w-10 h-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="19" cy="12" r="1"></circle>
-                        <circle cx="5" cy="12" r="1"></circle>
-                    </svg>
-                </button>
-                
-                <!-- เมนู dropdown -->
-                <div id="actionMenu" class="menu absolute bg-white shadow-lg rounded-lg p-2 hidden">
-                    <a href="{% url 'update_item' item_id=post_ad.id %}" class="menu-item text-blue-600 flex items-center gap-2 px-4 py-2 rounded-md hover:bg-blue-100">
-                        <i class="fas fa-edit"></i> แก้ไขโพสต์
-                    </a>
-                    <a href="#" id="deletePostButton" class="menu-item text-red-500 flex items-center gap-2 px-4 py-2 rounded-md hover:bg-red-100">
-                        <i class="fas fa-trash-alt"></i> ลบโพสต์
-                    </a>
-                    <button id="closeSaleButton" class="menu-item text-green-500 flex items-center gap-2 px-4 py-2 rounded-md hover:bg-green-100">
-                        <i class="fas fa-check-circle"></i> ปิดการขาย
-                    </button>
-                    </div>
-                {% endif %}
-            </div>
-            {% if post_ad.image %}
-            <img src="{{ post_ad.image.url }}" alt="Product Image" class="w-full h-auto max-h-72 object-cover rounded-md mb-4">
-            {% else %}
-                <img src="{% static 'path_to_default_image.jpg' %}" alt="No Product Image" class="w-full h-72 object-cover rounded-md mb-4">
-            {% endif %}
-        </div>
+    <!-- Floating background elements -->
+    <div class="floating-elements"></div>
 
-        <div class="announcement-container">
-            <div id="announcementStatus" class="announcement-type 
-                {% if post_ad.post_type == 'sell' %}sell{% elif post_ad.post_type == 'buy' %}buy{% endif %}
-                {% if post_ad.is_closed %} closed {% endif %}">
-                {% if post_ad.is_closed %}
-                    {% if post_ad.post_type == 'sell' %}
-                        ปิดการประกาศขายแล้ว
-                    {% elif post_ad.post_type == 'buy' %}
-                        ปิดการประกาศรับซื้อแล้ว
-                    {% endif %}
+    <main class="max-w-5xl mx-auto p-6 mt-8 relative">
+        <!-- Main Content Card -->
+        <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+            <div class="relative">
+                <!-- Image Section -->
+                {% if post_ad.image %}
+                    <img src="{{ post_ad.image.url }}" alt="รูปสินค้า" class="w-full h-96 object-cover">
                 {% else %}
-                    {% if post_ad.post_type == 'sell' %}
-                        ประกาศขาย
-                    {% elif post_ad.post_type == 'buy' %}
-                        ประกาศซื้อ
-                    {% endif %}
-                {% endif %}
-            </div>
-        </div>
-        
-        
-
-                        <!-- วันที่ -->
-            <div class="date-container">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days">
-                    <path d="M8 2v4"/>
-                    <path d="M16 2v4"/>
-                    <rect width="18" height="18" x="3" y="4" rx="2"/>
-                    <path d="M3 10h18"/>
-                    <path d="M8 14h.01"/>
-                    <path d="M12 14h.01"/>
-                    <path d="M16 14h.01"/>
-                    <path d="M8 18h.01"/>
-                    <path d="M12 18h.01"/>
-                    <path d="M16 18h.01"/>
-                </svg>
-                <span>{{ post_ad.created_at|date:"d F Y, H:i a" }}</span>
-            </div>
-
-
-            <!-- ชื่อประกาศ -->
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ post_ad.title }}</h1>
-
-
-            {% if post_ad.price %}
-            <p class="text-blue-900 text-2xl font-bold mb-4 text-left">ราคาที่คาดหวัง฿ {{ post_ad.price }}</p>
-        {% endif %}
-        
-        
-        
-        <div class="flex justify-center items-center mb-4 space-x-4">
-            <p class="text-gray-600">โพสต์โดย <span class="font-bold">{{ post_ad.user.username }}</span></p>
-            <a href="{% url 'user_store' post_ad.user.username %}" class="flex items-center text-blue-500 hover:underline">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store mr-1">
-                    <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                    <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
-                    <path d="M2 7h20"/>
-                    <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 16 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 12 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 8 12a2.7.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>
-                </svg>
-                ดูประกาศทั้งหมด
-            </a>
-        </div>
-
-        <div class="flex justify-center gap-4 mt-6">
-            <a href="{% url 'start_chat' user_id=post_ad.user.id %}" class="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square mr-2">
-                    <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/>
-                    <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>
-                </svg>
-                แชท
-            </a>
-
-            <button id="showPhoneButton" class="flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-call mr-2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                    <path d="M14.05 2a9 9 0 0 1 8 7.94"/>
-                    <path d="M14.05 6A5 5 0 0 1 18 10"/>
-                </svg>
-                โทร
-            </button>
-        </div>
-
-        <!-- Modal สำหรับแสดงเบอร์โทร -->
-        <div id="phoneModal" class="modal">
-            <div class="modal-content">
-                <h2 class="text-xl font-bold text-black mb-4">เบอร์โทรศัพท์</h2>
-                  <p class="text-lg text-black-600 text-center">{{ post_ad.phone }}</p>
-               <button id="closePhoneModal" class="mt-4 w-full bg-blue-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md text-center">
-                ปิด
-            </button>
-
-            </div>
-        </div>
-
-        <!-- Modal สำหรับลบโพสต์ -->
-        <div id="deletePostModal" class="modal">
-            <div class="modal-content">
-                <svg class="modal-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#ef4444">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                <h2 class="modal-title">ยืนยันการลบโพสต์</h2>
-                <p class="modal-message">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
-                <div class="modal-buttons">
-                    <button id="confirmDeletePost" class="btn btn-delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 6h18"></path>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                        ลบโพสต์
-                    </button>
-                    <button id="cancelDeletePost" class="btn btn-cancel">ยกเลิก</button>
-                </div>
-            </div>
-        </div>
-        
-
-        <!-- Modal สำหรับปิดการขาย -->
-        <div id="closeSaleModal" class="modal">
-            <div class="modal-content">
-                <svg class="modal-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#22c55e">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 class="modal-title">ยืนยันการปิดการขาย</h2>
-                <p class="modal-message">คุณแน่ใจหรือไม่ว่าต้องการปิดการขายนี้?</p>
-                <div class="modal-buttons">
-                    <button id="confirmCloseSale" class="btn btn-close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18"></path>
-                            <path d="m6 6 12 12"></path>
-                        </svg>
-                        ปิดการขาย
-                    </button>
-                    <button id="cancelCloseSale" class="btn btn-cancel"ร>ยกเลิก</button>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="mt-6">           
-            <p class="field-label">รายละเอียด: <span class="field-value">{{ post_ad.description }}</span></p>
-            <p class="field-label mt-2">สถานที่: <span class="field-value">{{ post_ad.location|default:"ไม่ระบุ" }}</span></p>
-        </div>
-
-
-
-
-        <h2 class="text-xl font-bold text-blue-600 mt-6">ความคิดเห็น</h2>
-
-        <div class="mb-4">
-            {% for comment in post_ad.comments.all %}
-                <div class="border-b py-2 flex justify-between items-center">
-                    <div>
-                        <p class="font-semibold">{{ comment.user.username }}</p>
-                        <p class="text-gray-600">{{ comment.content }}</p>
-                        <p class="text-gray-400 text-sm">{{ comment.created_at|date:"d F Y, H:i a" }}</p>
+                    <div class="w-full h-96 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 flex items-center justify-center">
+                        <div class="text-white text-6xl opacity-50">
+                            <i class="fas fa-image"></i>
+                        </div>
                     </div>
-                    {% if request.user == comment.user or request.user == post_ad.user or request.user.is_staff %}
-                        <form method="POST" action="{% url 'delete_comment' post_ad.id comment.id %}" class="inline-block">
-                            {% csrf_token %}
-                            <button type="submit" class="text-red-500 hover:underline">ลบ</button>
-                        </form>
+                {% endif %}
+
+                <!-- Action Menu -->
+                <div class="absolute top-4 right-4">
+                    {% if can_edit %}
+                    <div class="relative">
+                        <button id="menuToggle" class="glass-effect w-12 h-12 rounded-full flex items-center justify-center text-gray-700 hover:text-emerald-600 transition-all duration-300 hover-lift glow-button">
+                            <i class="fas fa-ellipsis-v text-lg"></i>
+                        </button>
+
+                        <div id="actionMenu" class="hidden absolute right-0 mt-2 w-48 glass-effect rounded-2xl shadow-xl border py-2 animate-slide-up">
+                            <a href="{% url 'update_item' item_id=post_ad.id %}" class="flex items-center gap-3 px-4 py-3 text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-xl mx-2">
+                                <i class="fas fa-edit"></i>
+                                <span>แก้ไขโพสต์</span>
+                            </a>
+                            <button type="button" id="deletePostButton" class="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 transition-all duration-200 rounded-xl mx-2">
+                                <i class="fas fa-trash"></i>
+                                <span>ลบโพสต์</span>
+                            </button>
+                            <button type="button" id="closeSaleButton" class="w-full flex items-center gap-3 px-4 py-3 text-green-500 hover:bg-green-50 transition-all duration-200 rounded-xl mx-2">
+                                <i class="fas fa-check-circle"></i>
+                                <span>ปิดการขาย</span>
+                            </button>
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
-            {% empty %}
-                <p class="text-gray-500">ยังไม่มีความคิดเห็น</p>
-            {% endfor %}
+
+                <!-- Date Badge -->
+                <div class="absolute bottom-4 left-4">
+                    <div class="glass-effect px-4 py-2 rounded-full flex items-center gap-2 text-amber-600">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="text-sm font-medium">{{ post_ad.created_at|date:"d F Y, H:i a" }}</span>
+                    </div>
+                </div>
+
+                <!-- Status Badge -->
+                <div class="absolute top-4 left-4">
+                    <div id="announcementStatus" class="px-6 py-3 rounded-full text-white font-bold text-sm shadow-lg
+                        {% if post_ad.is_closed %}closed-gradient{% elif post_ad.post_type == 'sell' %}sell-gradient{% else %}buy-gradient{% endif %}">
+                        {% if post_ad.is_closed %}
+                            {% if post_ad.post_type == 'sell' %}
+                                <i class="fas fa-times-circle mr-2"></i>ปิดการประกาศขายแล้ว
+                            {% else %}
+                                <i class="fas fa-times-circle mr-2"></i>ปิดการประกาศรับซื้อแล้ว
+                            {% endif %}
+                        {% else %}
+                            {% if post_ad.post_type == 'sell' %}
+                                <i class="fas fa-tag mr-2"></i>ประกาศขาย
+                            {% else %}
+                                <i class="fas fa-shopping-cart mr-2"></i>ประกาศซื้อ
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="p-8">
+                <!-- Title -->
+                <h1 class="text-4xl font-bold gradient-text mb-4 animate-slide-up">
+                    {{ post_ad.title }}
+                </h1>
+
+                <!-- Price -->
+                {% if post_ad.price %}
+                <div class="flex justify-center mb-6 animate-bounce-in">
+                    <div class="price-badge text-white px-8 py-4 rounded-2xl shadow-xl">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-money-bill-wave text-2xl"></i>
+                            <div>
+                                <p class="text-sm opacity-90">ราคาที่คาดหวัง</p>
+                                <p class="text-3xl font-bold">฿{{ post_ad.price }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Author Info -->
+                <div class="flex items-center justify-center mb-8 animate-slide-up">
+                    <div class="flex items-center gap-4 glass-effect px-6 py-3 rounded-full">
+                        <div class="w-10 h-10 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 text-sm">โพสต์โดย</p>
+                            <p class="font-semibold text-gray-800">{{ post_ad.user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="mx-4 w-px h-8 bg-gray-300"></div>
+                    <a href="{% url 'user_store' post_ad.user.username %}" class="flex items-center gap-2 text-emerald-600 hover:text-emerald-800 transition-colors glow-button px-4 py-2 rounded-full hover:bg-emerald-50">
+                        <i class="fas fa-store"></i>
+                        <span>ดูประกาศทั้งหมด</span>
+                    </a>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center gap-4 mb-8 animate-bounce-in">
+                    <a href="{% url 'start_chat' user_id=post_ad.user.id %}" class="flex items-center gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-2xl font-semibold hover-lift glow-button transition-all duration-300">
+                        <i class="fas fa-comments text-xl"></i>
+                        <span>เริ่มแชท</span>
+                    </a>
+                    <button id="showPhoneButton" class="flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-2xl font-semibold hover-lift glow-button transition-all duration-300">
+                        <i class="fas fa-phone text-xl"></i>
+                        <span>เบอร์โทร</span>
+                    </button>
+                </div>
+
+                <!-- Details Section -->
+                <div class="space-y-6 animate-slide-up">
+                    <div class="glass-effect p-6 rounded-2xl hover-lift">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-info-circle text-emerald-500"></i>
+                            รายละเอียด
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">{{ post_ad.description }}</p>
+                    </div>
+
+                    <div class="glass-effect p-6 rounded-2xl hover-lift">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-red-500"></i>
+                            สถานที่
+                        </h3>
+                        <p class="text-gray-600">{{ post_ad.location|default:"ไม่ระบุ" }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- ฟอร์มเพิ่มความคิดเห็น -->
-        <form method="POST" action="{% url 'add_comment' post_ad.id %}" class="mt-6">
-            {% csrf_token %}
-            <textarea name="content" class="w-full p-4 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ใส่ความคิดเห็นของคุณที่นี่" required></textarea>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-md mt-2">ส่งความคิดเห็น</button>
-        </form>
+        <!-- Comments Section -->
+        <div class="mt-8 glass-effect rounded-3xl shadow-2xl p-8 animate-fade-in">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                <i class="fas fa-comments text-emerald-500"></i>
+                ความคิดเห็น
+                <span class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm px-3 py-1 rounded-full">{{ post_ad.comments.count }}</span>
+            </h2>
+
+            <!-- Comments List -->
+            <div class="space-y-4 mb-8">
+                {% for comment in post_ad.comments.all %}
+                    <div class="comment-card p-6 rounded-2xl bg-white shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">{{ comment.user.username }}</p>
+                                    <p class="text-gray-600 mt-1 leading-relaxed">{{ comment.content }}</p>
+                                    <p class="text-gray-400 text-sm mt-2 flex items-center gap-2">
+                                        <i class="fas fa-clock"></i>
+                                        {{ comment.created_at|date:"d F Y, H:i a" }}
+                                    </p>
+                                </div>
+                            </div>
+                            {% if request.user == comment.user or request.user == post_ad.user or request.user.is_staff %}
+                                <form method="POST" action="{% url 'delete_comment' post_ad.id comment.id %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-400 hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-lg">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-12">
+                        <div class="text-6xl text-gray-300 mb-4">
+                            <i class="fas fa-comment-slash"></i>
+                        </div>
+                        <p class="text-gray-500 text-lg">ยังไม่มีความคิดเห็น</p>
+                        <p class="text-gray-400">เป็นคนแรกที่แสดงความคิดเห็น!</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Comment Form -->
+            <form action="{% url 'add_comment' post_ad.id %}" method="POST" class="space-y-4">
+                {% csrf_token %}
+                <div class="relative">
+                    <textarea 
+                        name="content"
+                        id="commentInput"
+                        class="w-full p-6 border-2 border-gray-200 rounded-2xl resize-none focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all duration-300 bg-white shadow-sm"
+                        rows="4"
+                        placeholder="แสดงความคิดเห็นของคุณ..."
+                        required
+                    ></textarea>
+                    <div class="absolute bottom-4 right-4 text-gray-400 text-sm">
+                        <span id="charCount">0</span>/500
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <button type="button" class="text-gray-400 hover:text-emerald-500 transition-colors p-2 hover:bg-emerald-50 rounded-lg">
+                            <i class="fas fa-smile text-xl"></i>
+                        </button>
+                        <button type="button" class="text-gray-400 hover:text-emerald-500 transition-colors p-2 hover:bg-emerald-50 rounded-lg">
+                            <i class="fas fa-image text-xl"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-2xl font-semibold hover-lift glow-button transition-all duration-300 flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>แสดงความคิดเห็น</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </main>
 
-    <script>
-        const showPhoneButton = document.getElementById('showPhoneButton');
-        const phoneModal = document.getElementById('phoneModal');
-        const closePhoneModal = document.getElementById('closePhoneModal');
+    <!-- Phone Modal -->
+    <div id="phoneModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-3xl p-8 max-w-sm w-full mx-4 animate-bounce-in">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-phone text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">เบอร์โทรศัพท์</h2>
+                <p class="text-3xl font-bold gradient-text mb-6">{{ post_ad.phone }}</p>
+                <div class="flex gap-3">
+                    <a href="tel:{{ post_ad.phone }}" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-2xl font-semibold hover-lift transition-all duration-300 text-center">
+                        <i class="fas fa-phone mr-2"></i>
+                        โทร
+                    </a>
+                    <button id="closePhoneModal" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-2xl font-semibold transition-all duration-300">
+                        ปิด
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deletePostModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-3xl p-8 max-w-md w-full mx-4 animate-bounce-in">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">ยืนยันการลบโพสต์</h2>
+                <p class="text-gray-600 mb-8">คุณแน่ใจหรือไม่ว่าต้องการลบโพสต์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+                <div class="flex gap-4">
+                    <button id="confirmDeletePost" class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 rounded-2xl font-semibold hover-lift transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-check"></i>
+                        <span>ยืนยัน</span>
+                    </button>
+                    <button id="cancelDeletePost" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i>
+                        <span>ยกเลิก</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Close Sale Confirmation Modal -->
+    <div id="closeSaleModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-3xl p-8 max-w-md w-full mx-4 animate-bounce-in">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">ยืนยันการปิดการขาย</h2>
+                <p class="text-gray-600 mb-8">คุณแน่ใจหรือไม่ว่าต้องการปิดการขายนี้?</p>
+                <div class="flex gap-4">
+                    <button id="confirmCloseSale" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-2xl font-semibold hover-lift transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-check"></i>
+                        <span>ปิดการขาย</span>
+                    </button>
+                    <button id="cancelCloseSale" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i>
+                        <span>ยกเลิก</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="backToTop" class="floating-action w-14 h-14 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full shadow-2xl hover-lift transition-all duration-300 opacity-0 pointer-events-none">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <script>
+        // DOM Elements
+        const menuToggle = document.getElementById('menuToggle');
+        const actionMenu = document.getElementById('actionMenu');
         const deletePostButton = document.getElementById('deletePostButton');
         const deletePostModal = document.getElementById('deletePostModal');
         const confirmDeletePost = document.getElementById('confirmDeletePost');
         const cancelDeletePost = document.getElementById('cancelDeletePost');
-
         const closeSaleButton = document.getElementById('closeSaleButton');
         const closeSaleModal = document.getElementById('closeSaleModal');
         const confirmCloseSale = document.getElementById('confirmCloseSale');
         const cancelCloseSale = document.getElementById('cancelCloseSale');
+        const showPhoneButton = document.getElementById('showPhoneButton');
+        const phoneModal = document.getElementById('phoneModal');
+        const closePhoneModal = document.getElementById('closePhoneModal');
+        const commentInput = document.getElementById('commentInput');
+        const charCount = document.getElementById('charCount');
+        const backToTop = document.getElementById('backToTop');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuToggle = document.getElementById('menuToggle');
-            const actionMenu = document.getElementById('actionMenu');
-        
-            if (menuToggle && actionMenu) {
-                // แสดง/ซ่อนเมนูเมื่อกดปุ่มจุดสามจุด
-                menuToggle.addEventListener('click', (event) => {
-                    event.stopPropagation(); // หยุด event propagation
-                    actionMenu.classList.toggle('show');
-                });
-        
-                // ซ่อนเมนูเมื่อคลิกที่อื่น
-                document.addEventListener('click', (event) => {
-                    if (!actionMenu.contains(event.target) && event.target !== menuToggle) {
-                        actionMenu.classList.remove('show');
-                    }
-                });
+        // Menu Toggle
+        menuToggle?.addEventListener('click', function(event) {
+            event.stopPropagation();
+            actionMenu.classList.toggle('hidden');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!actionMenu?.contains(event.target) && event.target !== menuToggle) {
+                actionMenu?.classList.add('hidden');
             }
         });
-        
 
-        // Toggle Delete Post Modal
-        if (deletePostButton) {
-            deletePostButton.addEventListener('click', () => {
-                deletePostModal.classList.add('show-modal');
-            });
-        
-            cancelDeletePost.addEventListener('click', () => {
-                deletePostModal.classList.remove('show-modal');
-            });
-        
-            confirmDeletePost.addEventListener('click', () => {
-                fetch("{% url 'delete_item' post_ad.id %}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('ลบโพสต์สำเร็จ');
-                            window.location.href = "{% url 'sell_item_all' %}";
-                        } else {
-                            alert('เกิดข้อผิดพลาด: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('ไม่สามารถลบโพสต์ได้');
-                    });
-            });
-        }
-            
-        // Toggle Close Sale Modal
-        if (closeSaleButton) {
-            closeSaleButton.addEventListener('click', () => {
-                closeSaleModal.classList.add('show-modal');
-            });
-        
-            cancelCloseSale.addEventListener('click', () => {
-                closeSaleModal.classList.remove('show-modal');
-            });
-        
-            confirmCloseSale.addEventListener('click', () => {
-                fetch("{% url 'close_sale' post_ad.id %}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // อัปเดต DOM เพื่อแสดงสถานะปิดการขาย/ซื้อ
-                        const announcementStatus = document.getElementById('announcementStatus');
-                        if (announcementStatus) {
-                            const postType = announcementStatus.classList.contains('sell') ? 'ขาย' : 'รับซื้อ';
-                            announcementStatus.textContent = `ปิดการประกาศ${postType}แล้ว`;
-                            announcementStatus.classList.add('closed');
-                        }
-                        closeSaleModal.classList.remove('show-modal');
-                    } else {
-                        alert('เกิดข้อผิดพลาด: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('ไม่สามารถปิดการประกาศได้');
-                });
-            });
-        }
-        
-            
-        
-        
+        // Delete Post Modal
+        deletePostButton?.addEventListener('click', function() {
+            deletePostModal.classList.remove('hidden');
+            deletePostModal.classList.add('flex');
+        });
 
-        // Phone Modal
-        if (showPhoneButton && phoneModal && closePhoneModal) {
-            showPhoneButton.addEventListener('click', function() {
-                phoneModal.classList.add('show-modal');
-            });
+        cancelDeletePost?.addEventListener('click', function() {
+            deletePostModal.classList.add('hidden');
+            deletePostModal.classList.remove('flex');
+        });
 
-            closePhoneModal.addEventListener('click', function() {
-                phoneModal.classList.remove('show-modal');
-            });
-
-            window.addEventListener('click', function(event) {
-                if (event.target === phoneModal) {
-                    phoneModal.classList.remove('show-modal');
+        confirmDeletePost?.addEventListener('click', function() {
+            fetch("{% url 'delete_item' post_ad.id %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('ลบโพสต์สำเร็จ');
+                    window.location.href = "{% url 'sell_item_all' %}";
+                } else {
+                    alert('เกิดข้อผิดพลาด: ' + data.message);
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('ไม่สามารถลบโพสต์ได้');
             });
+        });
+
+        // Close Sale Modal
+        closeSaleButton?.addEventListener('click', function() {
+            closeSaleModal.classList.remove('hidden');
+            closeSaleModal.classList.add('flex');
+        });
+
+        cancelCloseSale?.addEventListener('click', function() {
+            closeSaleModal.classList.add('hidden');
+            closeSaleModal.classList.remove('flex');
+        });
+
+      confirmCloseSale?.addEventListener('click', function() {
+    fetch("{% url 'close_sale' post_ad.id %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update DOM to show closed status
+            const announcementStatus = document.getElementById('announcementStatus');
+            if (announcementStatus) {
+                const postType = announcementStatus.classList.contains('sell-gradient') ? 'ขาย' : 'รับซื้อ';
+                announcementStatus.innerHTML = `<i class="fas fa-times-circle mr-2"></i>ปิดการประกาศ${postType}แล้ว`;
+                announcementStatus.className = 'px-6 py-3 rounded-full text-white font-bold text-sm shadow-lg closed-gradient';
+            }
+
+            closeSaleModal.classList.add('hidden');
+            closeSaleModal.classList.remove('flex');
+
+            // Optional: show toast or reload
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce-in';
+            toast.innerHTML = '<i class="fas fa-check mr-2"></i>' + data.message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                location.reload();  // หรือเอาออกถ้าไม่อยาก reload
+            }, 2000);
+        } else {
+            alert('ไม่สามารถปิดการขายได้: ' + data.message);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('เกิดข้อผิดพลาด');
+    });
+});
+    showPhoneButton?.addEventListener('click', function () {
+        phoneModal.classList.remove('hidden');
+        phoneModal.classList.add('flex');
+    });
+
+    // Close Phone Modal
+    closePhoneModal?.addEventListener('click', function () {
+        phoneModal.classList.add('hidden');
+        phoneModal.classList.remove('flex');
+    });
+
     </script>
 </body>
 </html>
